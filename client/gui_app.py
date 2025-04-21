@@ -41,7 +41,7 @@ class Frame(tk.Frame):
         self.label_correo.config(font=("Arial", 12, "bold"),bg="white")
         self.label_correo.grid(row=2, column=0, padx=10, pady=10)
         
-        self.label_direccion = tk.Label(self, text="Direccin Aspirante:")
+        self.label_direccion = tk.Label(self, text="Direccion Aspirante:")
         self.label_direccion.config(font=("Arial", 12, "bold"),bg="white")
         self.label_direccion.grid(row=3, column=0, padx=10, pady=10)
         
@@ -149,7 +149,7 @@ class Frame(tk.Frame):
         datos = db_py.obtener_todos()
         
         self.tabla = ttk.Treeview(self, columns=("ID", "Nombre Aspirante", "Telefono Aspirante", "Correo Aspirante", "Dirección Aspirante"), show='headings')
-        self.tabla.grid(row=4, column=0, columnspan=4, padx=10, pady=10)
+        self.tabla.grid(row=5, column=0, columnspan=4, padx=10, pady=10)
         
         self.tabla.heading("#1", text="ID")
         self.tabla.heading("#2", text="Nombre Aspirante")
@@ -157,14 +157,11 @@ class Frame(tk.Frame):
         self.tabla.heading("#4", text="Correo Aspirante")
         self.tabla.heading("#5", text="Direccion Aspirante")
         
-        
-        
-        
         self.boton_editar = tk.Button(self, text="Editar")
         self.boton_editar.config(width= 20, font=("Arial", 12, "bold"), fg = "white", bg="#158645", cursor="hand2", activebackground="#35bd6f")
-        self.boton_editar.grid(row=5, column=0, padx=10, pady=10)
+        self.boton_editar.grid(row=6, column=0, padx=10, pady=10)
         
         self.boton_eliminar = tk.Button(self, text="Eliminar")
         self.boton_eliminar.config(width= 20, font=("Arial", 12, "bold"), fg = "white", bg="#BD152E", cursor="hand2", activebackground="#E15370")
-        self.boton_eliminar.grid(row=5, column=1, padx=10, pady=10)
+        self.boton_eliminar.grid(row=6, column=1, padx=10, pady=10)
         
