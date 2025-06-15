@@ -1,0 +1,119 @@
+/* Reset y fuentes */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: #243238;
+    line-height: 1.6;
+}
+
+/* Header y navegación */
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px #0000001a;
+    padding: 5px 0px;
+}
+
+.menu{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+nav {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px;
+}
+
+nav img {
+    position: absolute;
+    left: -250px;
+    height: 80px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+    padding: 0;
+}
+
+nav li {
+    font-weight: bold;
+    font-size: 20px;
+    padding: 0 40px 0 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: #0C254B;
+    padding: 5px 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+nav a:hover {
+    color: #009bf4;
+    border-bottom: 2px solid #009bf4;
+}
+
+/* Contenido principal */
+
+#container {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    max-width: 1100px;
+    margin: 150px auto 80px auto;
+    text-align: center;
+    padding: 90px;
+}
+
+#container .imagen img{
+    margin: 10px 88 0px;
+    height: 200px;
+
+}
+
+
+#container .contenido h1 {
+    font-size: 2.5rem;
+    color: #0C254B;
+    width: 600px;
+    margin-bottom: 10px;
+}
+
+#container .contenido p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.contenido{
+    position: relative;
+    left: 50px;
+}
+
+
+
+/* Botón de login */
+#container a {
+    display: inline-block;
+    background-color: #009bf4;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#container a:hover {
+    background-color: #3ba8e7;
+}
