@@ -1,0 +1,31 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  text-align: center;
+}
+
+form {
+  margin-top: 20px;
+}
+
+input, button {
+  display: block;
+  width: 250px;
+  margin: 10px auto;
+  padding: 10px;
+  font-size: 14px;
+}
+
+button {
+  background-color: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
