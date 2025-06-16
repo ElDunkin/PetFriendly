@@ -1,12 +1,18 @@
 from flask import Flask, render_template
-import os
 
-main = Flask(__name__) #se crea el objeto "aplicacion"
+app = Flask(__name__)
 
-
-@main.route('/')
+@app.route('/')
 def index():
-    return render_template('index.html') #redirige a la plantilla de "index"
+    return render_template('index.html')
+
+@app.route('/contactenos')
+def contactenos():
+    return render_template('contactenos.html')
+
+@app.route('/servicios')
+def servicios():
+    return render_template('servicios.html')
 
 if __name__ == '__main__':
-    main.run(debug=True)
+    app.run(debug=True)

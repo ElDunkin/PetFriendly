@@ -14,10 +14,17 @@ body {
 /* Header y navegación */
 header {
     background-color: #ffffff;
-    box-shadow: 0 2px 5px #0000001a;
+    
     padding: 5px 0px;
 }
 
+.logo{
+    background-image: url('/static/img/patitas3.png');
+    background-repeat:no-repeat;
+    background-position: left;
+    background-size: 85px;
+    margin-left: 10px;
+}
 .menu{
     display: flex;
     flex-direction: row;
@@ -29,12 +36,6 @@ nav {
     max-width: 1200px;
     margin: auto;
     padding: 30px;
-}
-
-nav img {
-    position: absolute;
-    left: -250px;
-    height: 80px;
 }
 
 nav ul {
@@ -64,46 +65,60 @@ nav a:hover {
 
 /* Contenido principal */
 
-#container {
-    background-color: #ffffff;
+.container{
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    height: 500px;
+    background:
+        linear-gradient(217deg, #ccf6fdb4, rgba(255, 0, 0, 0) 90.71%),
+        linear-gradient(127deg, #ffffffc4, rgba(0, 255, 0, 0) 80.71%),
+        linear-gradient(127deg, #97efffb4 , rgba(0, 255, 0, 0) 30.71%);
+}
+
+.imagen{
+    display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 1100px;
-    margin: 150px auto 80px auto;
-    text-align: center;
-    padding: 90px;
-}
-
-#container .imagen img{
-    margin: 10px 88 0px;
+    background-image: url('/static/img/patitas2.png');
+    background-repeat:no-repeat;
+    background-position: center;
+    background-size: 500px;
+    margin: 0px 0 0 auto;
+    padding: 0 300px 300px 300px;
+    width: 50%;
     height: 200px;
-
 }
 
 
-#container .contenido h1 {
+.contenido {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 380px;
+    margin: 120px auto 120px 0;
+    text-align: center;
+    padding: 50px 90px 70px 70px;
+}
+
+.contenido h1 {
     font-size: 2.5rem;
     color: #0C254B;
     width: 600px;
-    margin-bottom: 10px;
 }
 
-#container .contenido p {
+.contenido p {
     font-size: 1.2rem;
     margin-bottom: 30px;
 }
 
-.contenido{
-    position: relative;
-    left: 50px;
-}
-
-
 
 /* Botón de login */
-#container a {
+.contenido a {
     display: inline-block;
     background-color: #009bf4;
     color: white;
@@ -114,6 +129,135 @@ nav a:hover {
     transition: background-color 0.3s ease;
 }
 
-#container a:hover {
+.contenido a:hover {
     background-color: #3ba8e7;
+}
+
+
+.sector-uno{
+    margin-bottom   : 5px;
+    background-color:#fafafa;
+    width: 100%;
+    height: 600px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    box-shadow: 0 400px -50px rgba(0, 0, 0, 0.102);
+}
+
+#imagen-servicios{
+    background-image: url('/static/img/perro_y_gato.png');
+    background-repeat:no-repeat;
+    background-position: center;
+    background-size: 400px;
+    width: 15%;
+    height: 50px;
+    padding: 150px;
+    margin-top: 80px;
+}
+.texto-servicios{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    margin-top: 80px;
+}
+
+.texto-servicios h1{
+    line-height: 1.3em;
+    font-size: 2.5rem;
+    font-family: 'Changa One', display;
+    color:#0C254B;
+}
+.texto-servicios ul{
+    display: flex;
+    flex-direction: column;
+    padding: 0 50px;
+}
+
+.texto-servicios a{
+    display: inline-block;
+    background-color: #009bf4;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    max-width: 150px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 30px;
+    margin-left: 200px;
+    padding: 10px 15px;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.texto-servicios a:hover{
+    background-color: #44ace9;
+}
+
+.sector-dos{
+    background-color:#f7f7f7;
+    width: 100%;
+    height: 650px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.texto-contactenos{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    margin-top: 200px;
+}
+
+.texto-contactenos h1{
+    line-height: 1.3em;
+    font-size: 2.5rem;
+    font-family: 'Changa One', display;
+    color:#0C254B;
+}
+
+#imagen-contactenos{
+    background-image: url('/static/img/Centro.jpg');
+    background-repeat:no-repeat;
+    background-position: center;
+    background-size: 400px;
+    width: 15%;
+    height: 500px;
+    padding: 100px 150px;
+    margin-top: 0;
+    margin-left: 100px;
+}
+
+.texto-contactenos a{
+    display: inline-block;
+    background-color: #009bf4;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    max-width: 150px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 30px;
+    margin-left: 200px;
+    padding: 10px 15px;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.texto-contactenos a:hover{
+    background-color: #44ace9;
+}
+
+footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: white;
+    padding-bottom: 30px;
+    padding-top: 50px;
+    font-weight: bold;
+    font-size: 15px;
 }
