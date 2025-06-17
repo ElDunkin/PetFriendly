@@ -1,18 +1,22 @@
 from flask import Flask, render_template
 
-app = Flask(__name__)
+main = Flask(__name__)
 
-@app.route('/')
+@main.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/contactenos')
+@main.route('/contactenos')
 def contactenos():
     return render_template('contactenos.html')
 
-@app.route('/servicios')
+@main.route('/servicios')
 def servicios():
     return render_template('servicios.html')
 
+@main.route('/login_empleados')
+def login_empleados():
+    return render_template('login_empleados.html')
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    main.run(debug=True)
