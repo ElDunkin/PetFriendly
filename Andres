@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Empleados</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <img src="{{ url_for('static', filename='patitas2.png') }}" alt="Logo Patitas" class="logo">
+        <h1>Centro Veterinario Patitas</h1>
+        <h2>Iniciar Sesión (Empleados)</h2>
+
+        <form method="POST">
+            <input type="text" name="usuario" placeholder="Correo o Usuario" required>
+            <input type="password" name="contraseña" placeholder="Contraseña" required>
+
+            <div class="extra">
+                <a href="#">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button type="submit">Ingresar</button>
+
+            <label class="keep-session">
+                <input type="checkbox"> Mantener la sesión iniciada
+            </label>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="mensaje">
+                    {% for msg in messages %}
+                        <p>{{ msg }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
