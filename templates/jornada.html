@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Jornada</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <img src="{{ url_for('static', filename='patitas2.png') }}" alt="Logo Patitas" class="logo">
+        <h1>Registrar Jornada</h1>
+        <form method="POST">
+            <input type="text" name="nombre" placeholder="Nombre de la jornada" required>
+            <input type="date" name="fecha" required>
+            <input type="time" name="hora" required>
+            <input type="text" name="lugar" placeholder="Lugar" required>
+            <input type="text" name="responsable" placeholder="Responsable" required>
+            <textarea name="observaciones" placeholder="Observaciones"></textarea>
+            <div class="btn-group">
+                <button type="submit" class="btn-cambios">Guardar Jornada</button>
+                <a href="{{ url_for('dashboard') }}" class="btn-cupo">← Volver</a>
+            </div>
+        </form>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="mensaje">
+                    {% for msg in messages %}
+                        <p>{{ msg }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

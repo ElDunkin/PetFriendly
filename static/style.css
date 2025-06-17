@@ -1,31 +1,83 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    background-color: #d0f0c0;
+    font-family: Arial, sans-serif;
 }
 
 .login-container {
-  text-align: center;
+    width: 90%;
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 10px;
+    text-align: center;
 }
 
-form {
-  margin-top: 20px;
+.logo {
+    width: 100px;
+    margin-bottom: 10px;
 }
 
-input, button {
-  display: block;
-  width: 250px;
-  margin: 10px auto;
-  padding: 10px;
-  font-size: 14px;
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #999;
 }
 
 button {
-  background-color: #333;
-  color: white;
-  border: none;
-  cursor: pointer;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.banner {
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-cupo {
+    flex: 1;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-cambios {
+    flex: 1;
+    background-color: #1e88e5;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.mensaje {
+    margin-top: 10px;
+    color: green;
+    font-weight: bold;
 }
