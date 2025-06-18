@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion usuarios</title>
+</head>
+<body>
+    <h1>Registro de usuarios</h1>
+    <form action="/registro_usuarios" method="POST">
+    
+    <label>Nombres completos</label>
+    <input type="text" name="nombre_usuario">
+    <label>Apellidos completos</label>
+    <input type="text" name="apellido_usuario">
+    <br>
+    <label>Tipo de documento</label>
+    <select name="documento" id="documento" name="tipo_documento_usuario">
+        <option value="">---- Seleccione uno ----</option>
+        <option value="cedulaC">Cedula de Ciudadania</option>
+        <option value="cedulaE">Cedula de Extranjeria</option>
+        <option value="pasaporte">Pasaporte</option>
+        <option value="ppt">PPT</option>
+    </select>
+    <label>Número de Documento</label>
+    <input type="text" name="numero_documento">
+    <br> 
+    <label>Correo electronico</label>
+    <input type="email" name="correo_electronico_usuario">
+    <br>
+    <label>Celular</label>
+    <input type="text" name="telefono">
+    <label>Rol</label>
+    <select name="rol" id="rol" name="rol">
+        <option value="">---- Seleccione uno ----</option>
+        <option value="SuperAdmin">Prueba</option>
+        <option value="Administrador">Administrador</option>
+        <option value="Medico Veterinario">Medico Veterinario</option>
+        <option value="Cliente">Cliente</option>
+    </select>
+    <br>
+    <label>Contraseña</label>
+    <input type="password" name="contraseña">
+    <br>
+    <input type="checkbox">Al registrarme, acepto los Términos de Uso y la Política de Privacidad
+    <br>
+    <input type="submit" value="Registrar"></button>
+    </form>
+
+    <h1>{{text}}</h1>
+</body>
+</html>

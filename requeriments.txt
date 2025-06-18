@@ -1,0 +1,6 @@
+pip install Flask
+pip install flask-sqlalchemy mysql-connector-python
+pip install Flask-Ext
+pip install mysql
+pip install Flask-MySQL
+pip install PyMySQL
