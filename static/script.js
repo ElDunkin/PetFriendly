@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const nombre = form.nombre.value.trim();
         if (nombre.length < 3) {
             e.preventDefault();
-            alert("Por favor ingresa un nombre de jornada válido.");
+            alert("Por favor ingresa un nombre de jornada válido.xd");
         }
     });
 });

@@ -8,7 +8,7 @@ def login():
     if request.method == 'POST':
         usuario = request.form['usuario']
         contrasena = request.form['contrasena']
-        if usuario == 'admin' and contrasena == '1234':
+        if usuario == 'admin' and contrasena == '12345':
             return redirect(url_for('dashboard'))
         else:
             flash('Usuario o contraseña incorrectos')
