@@ -14,7 +14,9 @@ body {
 /* Header y navegación */
 header {
     background-color: #ffffff;
-    
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #243238;
+    line-height: 1.6;
     padding: 5px 0px;
 }
 

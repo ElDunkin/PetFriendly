@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, request, redirect, url_for
 from flaskext.mysql import MySQL
+from werkzeug.security import generate_password_hash
 import pymysql
 
 mysql = MySQL()
@@ -31,33 +32,51 @@ def login_empleados():
 @main.route('/registro_usuarios', methods=['GET','POST'])
 def registro_usuarios():
     text = ''
-    if request.method == 'POST' and 'numero_documento' in request.form and 'nombre_usuario' in request.form and 'apellido_usuario' in request.form and 'tipo_documento_usuario' in request.form and 'correo_electronico_usuario' in request.form and 'telefono' in request.form and 'rol' in request.form and 'contraseña' in request.form:
-        numero_documento = request.form['numero_documento']
-        nombre_usuario = request.form['nombre_usuario']
-        apellido_usuario = request.form['apellido_usuario']
-        tipo_documento_usuario = request.form['tipo_documento_usuario']
-        correo_electronico_usuario = request.form['correo_electronico_usuario']
-        telefono = request.form['telefono']
-        rol = request.form['rol']
-        contrasena = request.form['contraseña']
+    if request.method == 'POST':
+        accion = request.form.get('action')
 
-        conn = mysql.connect()
-        cur = conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute('SELECT * FROM usuarios WHERE numero_documento = %s', (numero_documento,))
-        usuario = cur.fetchone()
-        
-        if usuario:
-            text = 'El usuario ya existe'
-        else: 
-            cur.execute('INSERT INTO usuarios (numero_documento, nombre_usuario, apellido_usuario, tipo_documento_usuario, correo_electronico_usuario, telefono, rol, contraseña) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (numero_documento, nombre_usuario, apellido_usuario, tipo_documento_usuario, correo_electronico_usuario, telefono, rol, contrasena))
-            conn.commit()
-            text = 'Usuario registrado exitosamente'
-    elif request.method == 'POST':
-        text = 'Por favor llene todos los campos'
+        if accion == 'Registrar':
+            # Validación y registro
+            required_fields = ['numero_documento', 'nombre_usuario', 'apellido_usuario', 'tipo_documento_usuario', 'correo_electronico_usuario', 'telefono', 'rol', 'contrasena']
+            if all(request.form.get(field) for field in required_fields):
+                numero_documento = request.form['numero_documento']
+                nombre_usuario = request.form['nombre_usuario']
+                apellido_usuario = request.form['apellido_usuario']
+                tipo_documento_usuario = request.form['tipo_documento_usuario']
+                correo_electronico_usuario = request.form['correo_electronico_usuario']
+                telefono = request.form['telefono']
+                rol = request.form['rol']
+                contrasena = generate_password_hash(request.form['contrasena'], method='pbkdf2:sha256')
+
+                conn = mysql.connect()
+                cur = conn.cursor(pymysql.cursors.DictCursor)
+                cur.execute('SELECT * FROM usuarios WHERE numero_documento = %s', (numero_documento,))
+                usuario = cur.fetchone()
+
+                if usuario:
+                    text = 'El usuario ya existe'
+                else:
+                    cur.execute('INSERT INTO usuarios (numero_documento, nombre_usuario, apellido_usuario, tipo_documento_usuario, correo_electronico_usuario, telefono, rol, contrasena) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', 
+                                (numero_documento, nombre_usuario, apellido_usuario, tipo_documento_usuario, correo_electronico_usuario, telefono, rol, contrasena))
+                    conn.commit()
+                    text = 'Usuario registrado exitosamente'
+            else:
+                text = 'Por favor llene todos los campos'
+
+        elif accion == 'Ver lista de usuarios':
+            return redirect('/listar_usuarios')  # Asegúrate de tener esta ruta creada
+
     return render_template('registro_usuarios.html', text=text)
+
+@main.route('/listar_usuarios')
+def listar_usuarios():
+    conn = mysql.connect()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+    cur.execute('SELECT * FROM usuarios')
+    usuarios = cur.fetchall()
     
-
-
+    return render_template('listar_usuarios.html', usuarios=usuarios)
+    
 
 if __name__ == '__main__':
     main.run(debug=True)

@@ -1,0 +1,10 @@
+CREATE TABLE `usuarios` (
+`numero_documento` varchar(50) NOT NULL,
+`nombre_usuario` varchar(100) NOT NULL,
+`apellido_usuario` varchar(100) NOT NULL,
+`tipo_documento_usuario` enum('CC','CE','PASAPORTE','PPT') NOT NULL,
+`correo_electronico_usuario` varchar(200) NOT NULL,
+`telefono` varchar(20) NOT NULL,
+`rol` enum('Administrador','Medico_Veterinario','Cliente') NOT NULL,
+`contrasena` varchar(255) NOT NULL
+);

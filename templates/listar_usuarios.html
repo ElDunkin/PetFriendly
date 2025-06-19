@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Usuarios</title>
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/listar_usuarios.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/contactenos">Contactenos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <h1>Usuarios Registrados</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>N° Documento</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Tipo Documento</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.numero_documento }}</td>
+                <td>{{ usuario.nombre_usuario }}</td>
+                <td>{{ usuario.apellido_usuario }}</td>
+                <td>{{ usuario.tipo_documento_usuario }}</td>
+                <td>{{ usuario.correo_electronico_usuario }}</td>
+                <td>{{ usuario.telefono }}</td>
+                <td>{{ usuario.rol }}</td>
+                <td>
+                    <a href="#">Editar</a>
+                    <a href="#">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+</body>
+</html>

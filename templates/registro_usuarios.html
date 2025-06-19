@@ -3,10 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/registro_usuarios.css">
+    <link rel="stylesheet" href="/static/css/generic.css">
     <title>Gestion usuarios</title>
 </head>
 <body>
-    <h1>Registro de usuarios</h1>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/contactenos">Contactenos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <h1>Registro Nuevo usuario</h1>
+
     <form action="/registro_usuarios" method="POST">
     
     <label>Nombres completos</label>
@@ -15,12 +30,12 @@
     <input type="text" name="apellido_usuario">
     <br>
     <label>Tipo de documento</label>
-    <select name="documento" id="documento" name="tipo_documento_usuario">
+    <select id="documento" name="tipo_documento_usuario">
         <option value="">---- Seleccione uno ----</option>
-        <option value="cedulaC">Cedula de Ciudadania</option>
-        <option value="cedulaE">Cedula de Extranjeria</option>
-        <option value="pasaporte">Pasaporte</option>
-        <option value="ppt">PPT</option>
+        <option value="CC">Cedula de Ciudadania</option>
+        <option value="CE">Cedula de Extranjeria</option>
+        <option value="PASAPORTE">Pasaporte</option>
+        <option value="PPT">PPT</option>
     </select>
     <label>Número de Documento</label>
     <input type="text" name="numero_documento">
@@ -31,22 +46,34 @@
     <label>Celular</label>
     <input type="text" name="telefono">
     <label>Rol</label>
-    <select name="rol" id="rol" name="rol">
+    <select name="rol" id="rol">
         <option value="">---- Seleccione uno ----</option>
-        <option value="SuperAdmin">Prueba</option>
         <option value="Administrador">Administrador</option>
-        <option value="Medico Veterinario">Medico Veterinario</option>
+        <option value="Medico_Veterinario">Medico Veterinario</option>
         <option value="Cliente">Cliente</option>
     </select>
     <br>
     <label>Contraseña</label>
-    <input type="password" name="contraseña">
+    <input type="password" name="contrasena">
     <br>
     <input type="checkbox">Al registrarme, acepto los Términos de Uso y la Política de Privacidad
     <br>
-    <input type="submit" value="Registrar"></button>
+    <input type="submit" value="Registrar" name="action">
+    <br>
+    <input type="submit" value="Ver lista de usuarios" name="action">
     </form>
 
-    <h1>{{text}}</h1>
+<h1>{{text}}</h1>
+
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
 </body>
 </html>
