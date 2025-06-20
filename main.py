@@ -15,15 +15,15 @@ mysql.init_app(main)
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('pantalla_principal/index.html')
 
 @main.route('/contactenos')
 def contactenos():
-    return render_template('contactenos.html')
+    return render_template('pantalla_principal/contactenos.html')
 
 @main.route('/servicios')
 def servicios():
-    return render_template('servicios.html')
+    return render_template('pantalla_principal/servicios.html')
 
 @main.route('/login_empleados')
 def login_empleados():
@@ -66,17 +66,47 @@ def registro_usuarios():
         elif accion == 'Ver lista de usuarios':
             return redirect('/listar_usuarios')  # Asegúrate de tener esta ruta creada
 
-    return render_template('registro_usuarios.html', text=text)
+    return render_template('crud_usuarios/registro_usuarios.html', text=text)
 
-@main.route('/listar_usuarios')
+@main.route('/listar_usuarios/')
 def listar_usuarios():
     conn = mysql.connect()
     cur = conn.cursor(pymysql.cursors.DictCursor)
     cur.execute('SELECT * FROM usuarios')
     usuarios = cur.fetchall()
     
-    return render_template('listar_usuarios.html', usuarios=usuarios)
+    return render_template('crud_usuarios/listar_usuarios.html', usuarios=usuarios)
+
+@main.route('/modificar_usuario/<int:numero_documento>', methods=['GET', 'POST'])
+def modificar_usuarios(numero_documento):
+    text = ''
+    conn = mysql.connect()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+    cur.execute('SELECT * FROM usuarios WHERE numero_documento = %s', (numero_documento,))
+    usuarios = cur.fetchall()
+
+    if usuarios:
+        return render_template('crud_usuarios/modificar_usuario.html', usuarios=usuarios)
+    else: 
+        text = 'No se encontró el usuario'
+    return render_template('crud_usuarios/mostrar_usuario.html', usuarios=usuarios)
+
+@main.route('/eliminar_usuario/<int:numero_documento>', methods=['GET', 'POST'])
+def eliminar_usuarios(numero_documento):
+    text = ''
+    conn = mysql.connect()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+    cur.execute('SELECT * FROM usuarios WHERE numero_documento = %s', (numero_documento,))
+    usuarios = cur.fetchall()
     
+    if usuarios:
+        cur.execute('DELETE FROM usuarios WHERE numero_documento = %s')
+        text = "Usuario eliminado exitosamente"
+        return redirect('/listar_usuarios')
+    else:
+        text = 'No se encontró el usuario'
+    return render_template('crud_usuarios/listar_usuarios.html', usuarios=usuarios)
+
 
 if __name__ == '__main__':
     main.run(debug=True)

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/contactenos">Contactenos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <div class="container">
+        <h1>Modificar Usuario</h1>
+        <form action="/modificar_usuarios" method="POST">
+            <label for="nombre_usuario">Nombre:</label>
+            <input type="text" id="nombre_usuario" name="nombre_usuario" value="{{ usuarios.nombre_usuario }}">
+            <br>
+            <label for="apellido_usuario">Apellido:</label>
+            <input type="text" id="apellido_usuario" name="apellido_usuario" value="{{ usuarios.apellido_usuario }}">
+            <br>
+            <label for="correo_electronico_usuario">Correo:</label>
+            <input type="email" id="correo_electronico_usuario" name="correo_electronico_usuario" value="{{ usuarios.correo_electronico_usuario }}">
+            <br>
+            <label for="telefono">Correo:</label>
+            <input type="text" id="telefono" name="telefono" value="{{ usuarios.telefono }}">
+            <br>
+            <label for="rol">Rol</label>
+            <input type="text" id="rol" name="rol" value="{{ usuarios.rol }}">
+            <br>
+            <label for="contrasena">Contraseña:</label>
+            <input type="password" id="contrasena" name="contrasena" value="{{ usuarios.contrasena }}">
+            <br>
+
+            <button type="submit">Modificar</button>
+
+            <h1>{{text}}</h1>
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+</body>
+</html>

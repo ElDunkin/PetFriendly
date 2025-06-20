@@ -44,8 +44,8 @@
                 <td>{{ usuario.telefono }}</td>
                 <td>{{ usuario.rol }}</td>
                 <td>
-                    <a href="#">Editar</a>
-                    <a href="#">Eliminar</a>
+                    <a href="/modificar_usuario/{{ usuario.numero_documento }}">Editar</a>
+                    <a href="/eliminar_usuario/{{ usuario.numero_documento }}">Eliminar</a>
                 </td>
             </tr>
             {% endfor %}

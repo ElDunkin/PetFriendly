@@ -1,5 +1,5 @@
 CREATE TABLE `usuarios` (
-`numero_documento` varchar(50) NOT NULL,
+`numero_documento` int NOT NULL,
 `nombre_usuario` varchar(100) NOT NULL,
 `apellido_usuario` varchar(100) NOT NULL,
 `tipo_documento_usuario` enum('CC','CE','PASAPORTE','PPT') NOT NULL,
