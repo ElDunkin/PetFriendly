@@ -18,39 +18,40 @@
             </ul>
         </nav>
     </header>
-
     <h1>Usuarios Registrados</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>N° Documento</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Tipo Documento</th>
-                <th>Correo</th>
-                <th>Teléfono</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for usuario in usuarios %}
-            <tr>
-                <td>{{ usuario.numero_documento }}</td>
-                <td>{{ usuario.nombre_usuario }}</td>
-                <td>{{ usuario.apellido_usuario }}</td>
-                <td>{{ usuario.tipo_documento_usuario }}</td>
-                <td>{{ usuario.correo_electronico_usuario }}</td>
-                <td>{{ usuario.telefono }}</td>
-                <td>{{ usuario.rol }}</td>
-                <td>
-                    <a href="/modificar_usuario/{{ usuario.numero_documento }}">Editar</a>
-                    <a href="/eliminar_usuario/{{ usuario.numero_documento }}">Eliminar</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>N° Documento</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Tipo Documento</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.numero_documento }}</td>
+                    <td>{{ usuario.nombre_usuario }}</td>
+                    <td>{{ usuario.apellido_usuario }}</td>
+                    <td>{{ usuario.tipo_documento_usuario }}</td>
+                    <td>{{ usuario.correo_electronico_usuario }}</td>
+                    <td>{{ usuario.telefono }}</td>
+                    <td>{{ usuario.rol }}</td>
+                    <td>
+                        <a href="/modificar_usuarios/{{ usuario.numero_documento }}">Editar</a>
+                        <a href="/eliminar_usuarios/{{ usuario.numero_documento }}">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
 
     <footer>
         <div>

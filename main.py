@@ -77,35 +77,51 @@ def listar_usuarios():
     
     return render_template('crud_usuarios/listar_usuarios.html', usuarios=usuarios)
 
-@main.route('/modificar_usuario/<int:numero_documento>', methods=['GET', 'POST'])
+
+@main.route('/modificar_usuarios/<int:numero_documento>', methods=['GET', 'POST'])
 def modificar_usuarios(numero_documento):
     text = ''
-    conn = mysql.connect()
-    cur = conn.cursor(pymysql.cursors.DictCursor)
-    cur.execute('SELECT * FROM usuarios WHERE numero_documento = %s', (numero_documento,))
-    usuarios = cur.fetchall()
-
-    if usuarios:
-        return render_template('crud_usuarios/modificar_usuario.html', usuarios=usuarios)
-    else: 
-        text = 'No se encontró el usuario'
-    return render_template('crud_usuarios/mostrar_usuario.html', usuarios=usuarios)
-
-@main.route('/eliminar_usuario/<int:numero_documento>', methods=['GET', 'POST'])
-def eliminar_usuarios(numero_documento):
-    text = ''
-    conn = mysql.connect()
-    cur = conn.cursor(pymysql.cursors.DictCursor)
-    cur.execute('SELECT * FROM usuarios WHERE numero_documento = %s', (numero_documento,))
-    usuarios = cur.fetchall()
     
-    if usuarios:
-        cur.execute('DELETE FROM usuarios WHERE numero_documento = %s')
-        text = "Usuario eliminado exitosamente"
+    conn = mysql.connect()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+
+    if request.method == 'POST':
+        
+        nombre = request.form['nombre_usuario']
+        apellido = request.form['apellido_usuario']
+        correo = request.form['correo_electronico_usuario']
+        telefono = request.form['telefono']
+
+        cur.execute('''
+            UPDATE usuarios
+            SET nombre_usuario = %s, apellido_usuario = %s,
+                correo_electronico_usuario = %s, telefono = %s
+            WHERE numero_documento = %s
+        ''', (nombre, apellido, correo, telefono, numero_documento))
+        conn.commit()
+        cur.close()
         return redirect('/listar_usuarios')
+
+    cur.execute('SELECT * FROM usuarios WHERE numero_documento = %s', (numero_documento,))
+    usuario = cur.fetchone()
+    cur.close()
+
+    if usuario:
+        return render_template('crud_usuarios/modificar_usuarios.html', text=text, usuario=usuario)
     else:
-        text = 'No se encontró el usuario'
-    return render_template('crud_usuarios/listar_usuarios.html', usuarios=usuarios)
+        text = 'Usuario no encontrado'
+        
+
+@main.route('/eliminar_usuarios/<int:numero_documento>', methods=['GET'])
+def eliminar_usuarios(numero_documento):
+    
+    conn = mysql.connect()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+    cur.execute('DELETE FROM usuarios WHERE numero_documento = %s', (numero_documento,))
+    conn.commit()
+    cur.close()
+    return render_template('crud_usuarios/eliminar_usuarios.html')
+    
 
 
 if __name__ == '__main__':
