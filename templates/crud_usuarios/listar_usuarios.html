@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista de Usuarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/generic.css">
     <link rel="stylesheet" href="/static/css/listar_usuarios.css">
 </head>
@@ -12,9 +13,9 @@
         <nav class="menu">
             
             <ul>
-                <li><a href="/">Inicio</a></li>
-                <li><a href="/servicios">Servicios</a></li>
-                <li><a href="/contactenos">Contactenos</a></li>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
             </ul>
         </nav>
     </header>
@@ -42,10 +43,10 @@
                     <td>{{ usuario.tipo_documento_usuario }}</td>
                     <td>{{ usuario.correo_electronico_usuario }}</td>
                     <td>{{ usuario.telefono }}</td>
-                    <td>{{ usuario.rol }}</td>
+                    <td>{{ usuario.nombre_rol }}</td>
                     <td>
-                        <a href="/modificar_usuarios/{{ usuario.numero_documento }}">Editar</a>
-                        <a href="/eliminar_usuarios/{{ usuario.numero_documento }}">Eliminar</a>
+                        <a href="/modificar_usuarios/{{ usuario.numero_documento }}" class="btn btn-success">Editar</a>
+                        <a href="/eliminar_usuarios/{{ usuario.numero_documento }}" class="btn btn-danger">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}

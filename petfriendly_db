@@ -1,10 +1,29 @@
-CREATE TABLE `usuarios` (
-`numero_documento` int NOT NULL,
-`nombre_usuario` varchar(100) NOT NULL,
-`apellido_usuario` varchar(100) NOT NULL,
-`tipo_documento_usuario` enum('CC','CE','PASAPORTE','PPT') NOT NULL,
-`correo_electronico_usuario` varchar(200) NOT NULL,
-`telefono` varchar(20) NOT NULL,
-`rol` enum('Administrador','Medico_Veterinario','Cliente') NOT NULL,
-`contrasena` varchar(255) NOT NULL
+CREATE DATABASE `petfriendly_db`;
+
+USE `petfriendly_db`;
+
+CREATE TABLE `rol` (
+    `id_rol` INT AUTO_INCREMENT PRIMARY KEY,
+    `nombre_rol` ENUM('Administrador','Medico_Veterinario','Cliente') NOT NULL
 );
+
+CREATE TABLE `usuarios` (
+    `numero_documento` INT PRIMARY KEY,
+    `nombre_usuario` VARCHAR(100) NOT NULL,
+    `apellido_usuario` VARCHAR(100) NOT NULL,
+    `tipo_documento_usuario` ENUM('CC','CE','PASAPORTE','PPT') NOT NULL,
+    `correo_electronico_usuario` VARCHAR(200) NOT NULL UNIQUE,
+    `telefono` VARCHAR(20) NOT NULL,
+    `id_rol` INT,
+    `contrasena` VARCHAR(255) NOT NULL,
+    FOREIGN KEY (`id_rol`) REFERENCES `rol`(`id_rol`)
+);
+
+
+INSERT INTO `rol` (`nombre_rol`) VALUES ('Administrador'),('Medico_Veterinario'),('Cliente');
+
+INSERT INTO `usuarios` (`numero_documento`, `nombre_usuario`, `apellido_usuario`, `tipo_documento_usuario`, `correo_electronico_usuario`, `telefono`, `id_rol`, `contrasena`) 
+VALUES
+(1000000001, 'Juan', 'Perez', 'CC', 'juanperez@gmail.com', '3110000001', 2, '12345'),
+(1000000002, 'Maria', 'Gomez', 'CC', 'mariagomez@gmail.com', '3110000002', 3, '12345'),
+(1016102401, 'Duncan Nicolás', 'Hernández Rodriguez', 'CC', 'dnicolas.hr.98@gmail.com', '3144902872', 1, '12345');

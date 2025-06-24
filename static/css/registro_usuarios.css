@@ -37,17 +37,6 @@ input, select {
     border-radius: 8px;
 }
 
-input[type="submit"] {
-    background-color: #0C254B;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-input[type="submit"]:hover {
-    background-color: #06162a;
-}
 
 input[type="checkbox"] {
     width: auto;

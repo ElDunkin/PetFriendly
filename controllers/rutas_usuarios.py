@@ -1,5 +1,5 @@
-from flask import Flask, Blueprint, render_template, session, request, redirect, url_for
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, Blueprint, render_template, session, request, redirect
+from werkzeug.security import generate_password_hash
 from models.conexion import obtener_conexion
 import pymysql
 
@@ -13,7 +13,7 @@ def registro_usuarios():
 
         if accion == 'Registrar':
             
-            campos = ['numero_documento', 'nombre_usuario', 'apellido_usuario', 'tipo_documento_usuario', 'correo_electronico_usuario', 'telefono', 'rol', 'contrasena']
+            campos = ['numero_documento', 'nombre_usuario', 'apellido_usuario', 'tipo_documento_usuario', 'correo_electronico_usuario', 'telefono', 'id_rol', 'contrasena']
             if all(request.form.get(field) for field in campos):
                 numero_documento = request.form['numero_documento']
                 nombre_usuario = request.form['nombre_usuario']
@@ -21,18 +21,18 @@ def registro_usuarios():
                 tipo_documento_usuario = request.form['tipo_documento_usuario']
                 correo_electronico_usuario = request.form['correo_electronico_usuario']
                 telefono = request.form['telefono']
-                rol = request.form['rol']
+                rol = request.form['id_rol']
                 contrasena = generate_password_hash(request.form['contrasena'], method='pbkdf2:sha256')
 
                 conn = obtener_conexion()
                 cur = conn.cursor(pymysql.cursors.DictCursor)
-                cur.execute('SELECT * FROM usuarios WHERE numero_documento = %s', (numero_documento,))
+                cur.execute('SELECT * FROM usuarios WHERE correo_electronico_usuario = %s OR numero_documento = %s', (correo_electronico_usuario, numero_documento,))
                 usuario = cur.fetchone()
 
                 if usuario:
-                    text = 'El usuario ya existe'
+                    text = 'el correo o numero de documento ya se encuentra registrado'
                 else:
-                    cur.execute('INSERT INTO usuarios (numero_documento, nombre_usuario, apellido_usuario, tipo_documento_usuario, correo_electronico_usuario, telefono, rol, contrasena) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', 
+                    cur.execute('INSERT INTO usuarios (numero_documento, nombre_usuario, apellido_usuario, tipo_documento_usuario, correo_electronico_usuario, telefono, id_rol, contrasena) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', 
                                 (numero_documento, nombre_usuario, apellido_usuario, tipo_documento_usuario, correo_electronico_usuario, telefono, rol, contrasena))
                     conn.commit()
                     text = 'Usuario registrado exitosamente'
@@ -48,7 +48,13 @@ def registro_usuarios():
 def listar_usuarios():
     conn = obtener_conexion()
     cur = conn.cursor(pymysql.cursors.DictCursor)
-    cur.execute('SELECT * FROM usuarios')
+    cur.execute('''
+    SELECT u.numero_documento, u.nombre_usuario, u.apellido_usuario, 
+        u.tipo_documento_usuario, u.correo_electronico_usuario, 
+        u.telefono, r.nombre_rol
+    FROM usuarios u
+    JOIN rol r ON u.id_rol = r.id_rol
+    ''')
     usuarios = cur.fetchall()
     
     return render_template('crud_usuarios/listar_usuarios.html', usuarios=usuarios)

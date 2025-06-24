@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/registro_usuarios.css">
     <link rel="stylesheet" href="/static/css/generic.css">
     <title>Gestion usuarios</title>
@@ -13,11 +14,15 @@
         <nav class="menu">
             
             <ul>
-                <li><a href="/">Inicio</a></li>
-                <li><a href="/servicios">Servicios</a></li>
-                <li><a href="/contactenos">Contactenos</a></li>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
             </ul>
         </nav>
+
+        <div class="logout">
+            
+        </div>
     </header>
 
     <h1>Registro Nuevo usuario</h1>
@@ -46,21 +51,20 @@
     <label>Celular</label>
     <input type="text" name="telefono">
     <label>Rol</label>
-    <select name="rol" id="rol">
+    <select name="id_rol" id="_id_rol">
         <option value="">---- Seleccione uno ----</option>
-        <option value="Administrador">Administrador</option>
-        <option value="Medico_Veterinario">Medico Veterinario</option>
-        <option value="Cliente">Cliente</option>
+        <option value="1">Administrador</option>
+        <option value="2">Medico Veterinario</option>
+        <option value="3">Cliente</option>
     </select>
     <br>
     <label>Contraseña</label>
     <input type="password" name="contrasena">
     <br>
-    <input type="checkbox">Al registrarme, acepto los Términos de Uso y la Política de Privacidad
     <br>
-    <input type="submit" value="Registrar" name="action">
+    <input type="submit" value="Registrar" name="action" class="btn btn-success">
     <br>
-    <input type="submit" value="Ver lista de usuarios" name="action">
+    <input type="submit" value="Ver lista de usuarios" name="action" class="btn btn-primary">
     </form>
 
 <h1>{{text}}</h1>
