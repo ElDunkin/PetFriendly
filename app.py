@@ -3,7 +3,7 @@ from flask import Flask, render_template, jsonify
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-# Simula datos de usuario y mascotas
+# Datos de prueba
 def get_user_dashboard_data(user_id):
     return {
         "user": {"nombre": "Juan", "avatar_url": ""},
@@ -13,7 +13,7 @@ def get_user_dashboard_data(user_id):
         ]
     }
 
-# Simula historial de mascotas
+# Datos de prueba para historial de mascotas
 historial_dummy = {
     1: [  # Rocky
         {"fecha": "2024-05-01", "descripcion": "Vacunación anual. Aplicación de vacuna antirrábica y quíntuple canina."},
