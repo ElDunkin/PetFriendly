@@ -3,9 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/registro_usuarios.css">
     <title>Document</title>
 </head>
 <body>
-    Holi
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+            </ul>
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+
+        <div class="logout">
+            
+        </div>
+    </header>
+
+    <h1>Registro Nuevo paciente</h1>
+
+    <form action="/registro_paciente_animal" method="POST">
+    
+        <label>Nombres del paciente</label>
+        <input type="text" name="nombre_usuario">
+        <label>Especie del paciente</label>
+        <input type="text" name="apellido_usuario">
+        <br>
+        <label>Raza del paciente</label>
+        <select id="documento" name="tipo_documento_usuario">
+            <option value="">---- Seleccione uno ----</option>
+            <option value="CC">Cedula de Ciudadania</option>
+            <option value="CE">Cedula de Extranjeria</option>
+            <option value="PASAPORTE">Pasaporte</option>
+            <option value="PPT">PPT</option>
+        </select>
+        <label>El paciente es recatado o adoptado?</label>
+        <input type="text" name="numero_documento">
+        <br> 
+        <label>Color de pelaje del paciente</label>
+        <input type="email" name="correo_electronico_usuario">
+        <br>
+        <label>Peso del paciente (En KG)</label>
+        <input type="text" name="telefono">
+        <label>genero del paciente</label>
+        <select name="id_rol" id="_id_rol">
+            <option value="">---- Seleccione uno ----</option>
+            <option value="1">Administrador</option>
+            <option value="2">Medico Veterinario</option>
+            <option value="3">Cliente</option>
+        </select>
+        <br>
+        <label>Edad aproximada</label>
+        <input type="password" name="contrasena">
+        <label>Insertar foto</label>
+        <br>
+        <br>
+        <input type="submit" value="Registrar" name="action" class="btn btn-success">
+        <br>
+        <input type="submit" value="Ver pacientes registrados" name="action" class="btn btn-primary">
+    </form>
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
 </body>
 </html>
