@@ -15,7 +15,9 @@ def registro_pacientes():
     if request.method == 'POST':
         accion = request.form.get('action')
         if accion == 'Registrar':
-            campos = ['nombre_paciente', 'especie_paciente', 'raza_paciente', 'sexo_paciente', 'peso_paciente', 'color_pelaje_paciente', 'fecha_nacimiento_paciente', 'edad_estimada_paciente', 'foto_paciente', 'rescatado', 'adoptado','numero_documento']
+            campos = ['nombre_paciente', 'especie_paciente', 'raza_paciente', 
+                    'sexo_paciente', 'peso_paciente', 'color_pelaje_paciente', 
+                    'rescatado', 'adoptado','numero_documento']
             archivo = request.files.get('foto_paciente')
             
             if all(request.form.get(campo) for campo in campos) and archivo and archivo.filename:
@@ -45,7 +47,10 @@ def registro_pacientes():
                 if paciente:
                     text = 'El paciente ya existe'
                 else:
-                    cur.execute('INSERT INTO paciente_animal (nombre_paciente,especie_paciente, raza_paciente,sexo_paciente,peso_paciente,color_pelaje_paciente, fecha_nacimiento_paciente,edad_estimada_paciente,foto_paciente,rescatado,adoptado,   numero_documento) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', 
+                    cur.execute('''
+                                INSERT INTO paciente_animal (
+                                    nombre_paciente,especie_paciente, raza_paciente,sexo_paciente,peso_paciente,color_pelaje_paciente, fecha_nacimiento_paciente,edad_estimada_paciente,foto_paciente,rescatado,adoptado,   numero_documento) 
+                                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''', 
                                 (nombre_paciente,  especie_paciente,raza_paciente,sexo_paciente,peso_paciente,color_pelaje_paciente, fecha_nacimiento_paciente,edad_estimada_paciente,foto_paciente,rescatado,adoptado, numero_documento))
                     conn.commit()
                     text = 'Paciente registrado correctamente'
@@ -55,5 +60,5 @@ def registro_pacientes():
             return redirect('/listar_pacientes')
         
     return render_template('registro_paciente_animal.html', text=text)
-        
-    
+
+
