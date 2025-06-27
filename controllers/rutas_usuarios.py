@@ -54,7 +54,7 @@ def listar_usuarios():
         u.telefono, r.nombre_rol
     FROM usuarios u
     JOIN rol r ON u.id_rol = r.id_rol
-    ''')
+    ''') # Crear una vista usuario * rol
     usuarios = cur.fetchall()
     
     return render_template('crud_usuarios/listar_usuarios.html', usuarios=usuarios)

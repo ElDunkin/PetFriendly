@@ -19,6 +19,22 @@ CREATE TABLE `usuarios` (
     FOREIGN KEY (`id_rol`) REFERENCES `rol`(`id_rol`)
 );
 
+CREATE TABLE `paciente_animal` (
+    `id_paciente` INT AUTO_INCREMENT PRIMARY KEY,
+    `nombre_paciente` VARCHAR(100) NOT NULL,
+    `especie_paciente` ENUM ('Perro','Gato') NOT NULL,
+    `raza_paciente` VARCHAR(100) NOT NULL,
+    `sexo_paciente` ENUM ('Macho','Hembra') NOT NULL,
+    `peso_paciente` DECIMAL(5,2) NOT NULL,
+    `color_pelaje_paciente` VARCHAR(100) NOT NULL,
+    `fecha_nacimiento_paciente` DATE DEFAULT NULL,
+    `edad_estimada_paciente` INT DEFAULT NULL,
+    `foto_paciente` VARCHAR(255) DEFAULT NULL,
+    `rescatado` BOOLEAN NOT NULL DEFAULT FALSE,
+    `adoptado` BOOLEAN NOT NULL DEFAULT FALSE,
+    `numero_documento` INT DEFAULT NULL,
+    FOREIGN KEY (`numero_documento`) REFERENCES `usuarios`(`numero_documento`)
+);
 
 INSERT INTO `rol` (`nombre_rol`) VALUES ('Administrador'),('Medico_Veterinario'),('Cliente');
 
