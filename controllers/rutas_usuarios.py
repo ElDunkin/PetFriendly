@@ -10,7 +10,6 @@ def registro_usuarios():
     text = ''
     if request.method == 'POST':
         accion = request.form.get('action')
-
         if accion == 'Registrar':
             
             campos = ['numero_documento', 'nombre_usuario', 'apellido_usuario', 'tipo_documento_usuario', 'correo_electronico_usuario', 'telefono', 'id_rol', 'contrasena']
@@ -48,16 +47,14 @@ def registro_usuarios():
 def listar_usuarios():
     conn = obtener_conexion()
     cur = conn.cursor(pymysql.cursors.DictCursor)
-    cur.execute('''
-    SELECT u.numero_documento, u.nombre_usuario, u.apellido_usuario, 
-        u.tipo_documento_usuario, u.correo_electronico_usuario, 
-        u.telefono, r.nombre_rol
-    FROM usuarios u
-    JOIN rol r ON u.id_rol = r.id_rol
-    ''') # Crear una vista usuario * rol
+    cur.execute('SELECT * FROM usuarios_por_rol')
     usuarios = cur.fetchall()
     
-    return render_template('crud_usuarios/listar_usuarios.html', usuarios=usuarios)
+    text = request.args.get('text')
+    textM = request.args.get('textM')
+    textE = request.args.get('textE')
+    return render_template('crud_usuarios/listar_usuarios.html', usuarios=usuarios, text=text, textM=textM, textE=textE)
+
 
 
 @rutas_usuarios.route('/modificar_usuarios/<int:numero_documento>', methods=['GET', 'POST'])
@@ -82,24 +79,24 @@ def modificar_usuarios(numero_documento):
         ''', (nombre, apellido, correo, telefono, numero_documento))
         conn.commit()
         cur.close()
-        return redirect('/listar_usuarios')
+        return redirect('/listar_usuarios?textM=Usuario+modificado+exitosamente')
 
     cur.execute('SELECT * FROM usuarios WHERE numero_documento = %s', (numero_documento,))
     usuario = cur.fetchone()
     cur.close()
 
     if usuario:
-        return render_template('crud_usuarios/modificar_usuarios.html', text=text, usuario=usuario)
+        text = 'Usuario modificado exitosamente'
+        return render_template('crud_usuarios/modificar_usuarios.html',usuario=usuario, text=text)
     else:
         text = 'Usuario no encontrado'
         
 
 @rutas_usuarios.route('/eliminar_usuarios/<int:numero_documento>', methods=['GET'])
 def eliminar_usuarios(numero_documento):
-    
     conn = obtener_conexion()
     cur = conn.cursor(pymysql.cursors.DictCursor)
     cur.execute('DELETE FROM usuarios WHERE numero_documento = %s', (numero_documento,))
     conn.commit()
     cur.close()
-    return render_template('crud_usuarios/eliminar_usuarios.html')
+    return redirect('/listar_usuarios?textE=Usuario+eliminado+exitosamente')

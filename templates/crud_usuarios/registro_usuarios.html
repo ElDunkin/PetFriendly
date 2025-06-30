@@ -25,48 +25,49 @@
     </header>
 
     <h1>Registro Nuevo usuario</h1>
+    {% if text %}
+    <div class="alert alert-info">{{ text }}</div>
+    {% endif %}
 
     <form action="/registro_usuarios" method="POST">
     
-    <label>Nombres completos</label>
-    <input type="text" name="nombre_usuario">
-    <label>Apellidos completos</label>
-    <input type="text" name="apellido_usuario">
-    <br>
-    <label>Tipo de documento</label>
-    <select id="documento" name="tipo_documento_usuario">
-        <option value="">---- Seleccione uno ----</option>
-        <option value="CC">Cedula de Ciudadania</option>
-        <option value="CE">Cedula de Extranjeria</option>
-        <option value="PASAPORTE">Pasaporte</option>
-        <option value="PPT">PPT</option>
-    </select>
-    <label>Número de Documento</label>
-    <input type="text" name="numero_documento">
-    <br> 
-    <label>Correo electronico</label>
-    <input type="email" name="correo_electronico_usuario">
-    <br>
-    <label>Celular</label>
-    <input type="text" name="telefono">
-    <label>Rol</label>
-    <select name="id_rol" id="_id_rol">
-        <option value="">---- Seleccione uno ----</option>
-        <option value="1">Administrador</option>
-        <option value="2">Medico Veterinario</option>
-        <option value="3">Cliente</option>
-    </select>
-    <br>
-    <label>Contraseña</label>
-    <input type="password" name="contrasena">
-    <br>
-    <br>
-    <input type="submit" value="Registrar" name="action" class="btn btn-success">
-    <br>
-    <input type="submit" value="Ver lista de usuarios" name="action" class="btn btn-primary">
+        <label>Nombres completos</label>
+        <input type="text" name="nombre_usuario">
+        <label>Apellidos completos</label>
+        <input type="text" name="apellido_usuario">
+        <br>
+        <label>Tipo de documento</label>
+        <select id="documento" name="tipo_documento_usuario">
+            <option value="">---- Seleccione uno ----</option>
+            <option value="CC">Cedula de Ciudadania</option>
+            <option value="CE">Cedula de Extranjeria</option>
+            <option value="PASAPORTE">Pasaporte</option>
+            <option value="PPT">PPT</option>
+        </select>
+        <label>Número de Documento</label>
+        <input type="text" name="numero_documento">
+        <br> 
+        <label>Correo electronico</label>
+        <input type="email" name="correo_electronico_usuario">
+        <br>
+        <label>Celular</label>
+        <input type="text" name="telefono">
+        <label>Rol</label>
+        <select name="id_rol" id="_id_rol">
+            <option value="">---- Seleccione uno ----</option>
+            <option value="1">Administrador</option>
+            <option value="2">Medico Veterinario</option>
+            <option value="3">Cliente</option>
+        </select>
+        <br>
+        <label>Contraseña</label>
+        <input type="password" name="contrasena">
+        <br>
+        <br>
+        <input type="submit" value="Registrar" name="action" class="btn btn-success">
+        <br>
+        <input type="submit" value="Ver lista de usuarios" name="action" class="btn btn-primary">
     </form>
-
-<h1>{{text}}</h1>
 
 
     <footer>

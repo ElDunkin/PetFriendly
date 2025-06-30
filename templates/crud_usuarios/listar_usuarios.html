@@ -6,6 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/generic.css">
     <link rel="stylesheet" href="/static/css/listar_usuarios.css">
+    
 </head>
 <body>
     <header>
@@ -23,6 +24,15 @@
         </nav>
     </header>
     <h1>Usuarios Registrados</h1>
+    {% if textM %}
+        <div class="alert alert-warning">{{ textM }}</div>
+    {% endif %}
+    {% if text %}
+        <div class="alert alert-success">{{ text }}</div>
+    {% endif %}
+    {% if textE %}
+        <div class="alert alert-danger">{{ textE }}</div>
+    {% endif %}
     <main>
         <table>
             <thead>

@@ -16,13 +16,17 @@ def dashboard_administrador():
     # Total de usuarios
     cur.execute("SELECT COUNT(*) AS total_usuarios FROM usuarios")
     total_usuarios = cur.fetchone()['total_usuarios']
+    
+    cur.execute("SELECT COUNT(*) AS total_animales FROM paciente_animal")
+    total_animales = cur.fetchone()['total_animales']
 
     cur.close()
 
     return render_template('dashboard_administrador.html',
                         nombre=session.get('nombre'),
                         rol=session.get('rol'),
-                        total_usuarios=total_usuarios)
+                        total_usuarios=total_usuarios,
+                        total_animales=total_animales)
 
 
 @rutas_dashboard.route('/dashboard_medico')

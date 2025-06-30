@@ -36,6 +36,33 @@ CREATE TABLE `paciente_animal` (
     FOREIGN KEY (`numero_documento`) REFERENCES `usuarios`(`numero_documento`)
 );
 
+CREATE VIEW usuarios_por_rol AS 
+SELECT u.numero_documento, 
+        u.nombre_usuario, 
+        u.apellido_usuario,
+        u.tipo_documento_usuario, 
+        u.correo_electronico_usuario,
+        u.telefono, 
+        r.nombre_rol
+    FROM usuarios u
+    JOIN rol r ON u.id_rol = r.id_rol;
+
+CREATE VIEW paciente_por_usuario AS 
+SELECT  pa.id_paciente, 
+        pa.nombre_paciente, 
+        pa.especie_paciente, 
+        pa.raza_paciente, 
+        pa.sexo_paciente, 
+        pa.peso_paciente, 
+        pa.color_pelaje_paciente, 
+        pa.fecha_nacimiento_paciente, 
+        pa.edad_estimada_paciente, 
+        pa.rescatado, pa.adoptado, 
+        u.nombre_usuario, 
+        u.apellido_usuario
+FROM paciente_animal pa
+JOIN usuarios u ON u.numero_documento = pa.numero_documento;
+
 INSERT INTO `rol` (`nombre_rol`) VALUES ('Administrador'),('Medico_Veterinario'),('Cliente');
 
 INSERT INTO `usuarios` (`numero_documento`, `nombre_usuario`, `apellido_usuario`, `tipo_documento_usuario`, `correo_electronico_usuario`, `telefono`, `id_rol`, `contrasena`) 

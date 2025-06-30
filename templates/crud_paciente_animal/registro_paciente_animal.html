@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/generic.css">
-        <link rel="stylesheet" href="/static/css/registro_usuarios.css">
+    <link rel="stylesheet" href="/static/css/registro_usuarios.css">
+    <link rel="stylesheet" href="/static/css/registro_pacientes.css">
     <title>Registro Paciente</title>
 </head>
 <body>
@@ -25,6 +26,10 @@
     </header>
 
     <h1>Registro Nuevo paciente</h1>
+    
+    {% if text %}
+        <div class="alert alert-info">{{ text }}</div>
+    {% endif %}
 
     <form action="/registro_paciente_animal" method="POST" enctype="multipart/form-data">
         <label>Nombre del paciente</label>
@@ -48,7 +53,7 @@
         </select>
 
         <label>Peso del paciente (KG)</label>
-        <input type="number" step="0.01" name="peso_paciente" required>
+        <input type="text" name="peso_paciente" required>
 
         <label>Color del pelaje</label>
         <input type="text" name="color_pelaje_paciente" required>
@@ -78,16 +83,12 @@
 
         <label>Foto del paciente</label>
         <input type="file" name="foto_paciente" accept="image/*">
-
-        <br><br>
-        <input type="submit" name="action" value="Registrar" class="btn btn-success">
         <br>
-        <input type="submit" value="Ver lista de pacientes" name="action" class="btn btn-primary">
-    </form>
+        <input type="submit" value="Registrar Paciente" name="action" class="btn btn-success">
+            <br>
+        <a href="/listar_paciente_animal" class="btn btn-primary">Ver lista de pacientes</a>
 
-    {% if text %}
-    <div class="alert alert-info">{{ text }}</div>
-    {% endif %}
+    </form>
 
     <footer>
         <div>
