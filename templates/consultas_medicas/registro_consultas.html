@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Consulta</title>
+    
+    <link rel="stylesheet" href="/static/css/consultas.css">
+    <link rel="stylesheet" href="/static/css/generic.css">
+</head>
+<body>
+<header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+                <li><a href="/seleccionar_paciente_consulta">Registrar Consulta</a></li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+<main>
+    <h2>Registrar Consulta Médica</h2>
+    <form action="/registro_consulta/{{ paciente.id_paciente }}" method="POST" enctype="multipart/form-data">
+        <label for="id_paciente">Paciente:</label>
+        <select name="id_paciente" id="id_paciente" required>
+            <option value="">Seleccione un paciente</option>
+            {% for paciente in pacientes %}
+                <option value="{{ paciente.id_paciente }}">{{ paciente.nombre_paciente }} - {{ paciente.numero_documento }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="fecha_consulta">Fecha de atención:</label>
+        <input type="date" name="fecha_consulta" id="fecha_consulta" required>
+
+        <label for="hora_consulta">Hora de atención:</label>
+        <input type="time" name="hora_consulta" id="hora_consulta" required>
+
+        <label for="motivo_consulta">Motivo de consulta:</label>
+        <textarea name="motivo_consulta" id="motivo_consulta" required></textarea>
+
+        <label for="diagnostico">Diagnóstico:</label>
+        <textarea name="diagnostico" id="diagnostico" required></textarea>
+
+        <label for="tratamientos">Tratamientos recomendados:</label>
+        <textarea name="tratamientos" id="tratamientos"></textarea>
+
+        <label for="medicamentos">Medicamentos recetados:</label>
+        <textarea name="medicamentos" id="medicamentos"></textarea>
+
+        <label for="observaciones">Observaciones adicionales:</label>
+        <textarea name="observaciones" id="observaciones"></textarea>
+
+        <label for="firma_veterinario">Firma del veterinario:</label>
+        <input type="text" name="firma_veterinario" id="firma_veterinario" placeholder="Nombre del médico" required>
+
+        <label for="archivos_consulta">Adjuntar documentos o imágenes (máx. 3 archivos):</label>
+        <input type="file" name="archivos_consulta" id="archivos_consulta" multiple accept=".jpg,.jpeg,.png,.pdf">
+
+        <br><br>
+        <input type="submit" value="Registrar Consulta">
+    </form>
+</main>
+
+<footer>
+    <div>© 2025 Trio Imperial Co. | Powered by PetFriendly</div>
+</footer>
+
+<script src="/static/js/registro_consulta.js"></script>
+</body>
+</html>

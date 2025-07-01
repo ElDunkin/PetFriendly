@@ -36,6 +36,32 @@ CREATE TABLE `paciente_animal` (
     FOREIGN KEY (`numero_documento`) REFERENCES `usuarios`(`numero_documento`)
 );
 
+INSERT INTO `rol` (`nombre_rol`) VALUES ('Administrador'),('Medico_Veterinario'),('Cliente');
+
+
+CREATE TABLE `consultas` (
+    `id_consulta` INT AUTO_INCREMENT PRIMARY KEY,
+    `id_paciente` INT,
+    `fecha_consulta` DATE NOT NULL,
+    `hora_consulta` TIME NOT NULL,
+    `motivo_consulta` TEXT NOT NULL,
+    `diagnostico` TEXT NOT NULL,
+    `tratamiento` TEXT,
+    `medicamentos` TEXT,
+    `observaciones` TEXT,
+    `firma` VARCHAR(255) NOT NULL,
+    `numero_documento` INT,
+    FOREIGN KEY (`id_paciente`) REFERENCES `paciente_animal`(`id_paciente`),
+    FOREIGN KEY (`numero_documento`) REFERENCES `usuarios`(`numero_documento`)
+);
+
+CREATE TABLE `archivos_consulta` (
+    `id_archivo` INT AUTO_INCREMENT PRIMARY KEY,
+    `id_consulta` INT,
+    `nombre_archivo` VARCHAR(255),
+    FOREIGN KEY (`id_consulta`) REFERENCES `consultas`(`id_consulta`)
+);
+
 CREATE VIEW usuarios_por_rol AS 
 SELECT u.numero_documento, 
         u.nombre_usuario, 
@@ -63,7 +89,6 @@ SELECT  pa.id_paciente,
 FROM paciente_animal pa
 JOIN usuarios u ON u.numero_documento = pa.numero_documento;
 
-INSERT INTO `rol` (`nombre_rol`) VALUES ('Administrador'),('Medico_Veterinario'),('Cliente');
 
 INSERT INTO `usuarios` (`numero_documento`, `nombre_usuario`, `apellido_usuario`, `tipo_documento_usuario`, `correo_electronico_usuario`, `telefono`, `id_rol`, `contrasena`) 
 VALUES

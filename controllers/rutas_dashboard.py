@@ -32,9 +32,9 @@ def dashboard_administrador():
 @rutas_dashboard.route('/dashboard_medico')
 def dashboard_medico():
     if session.get('rol') != 'Medico_Veterinario':
-        return redirect(url_for('rutas_login.login_empleados'))
-    return render_template('dashboard_medico.html')
+        return redirect('/login')  # Seguridad: solo médicos
 
+    return render_template('dashboard_medico.html')
 
 @rutas_dashboard.route('/dashboard_cliente')
 def dashboard_cliente():

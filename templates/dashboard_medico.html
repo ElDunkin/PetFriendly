@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <title>Dashboard | {{ session['rol'] }}</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+                <li><a href="/seleccionar_paciente_consulta">Registrar Consulta</a></li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+    <div class="mensaje-bienvenida">
+            <h1>Bienvenido, {{ session['nombre'] }} {{ session['apellido'] }} </h1>
+            <h2>Panel de Administración</h2>
+        
+    </div>
+
+    <footer>
+        <div>© 2025 Trio Imperial Co. | Powered by PetFriendly</div>
+    </footer>
+</body>
+</html>
