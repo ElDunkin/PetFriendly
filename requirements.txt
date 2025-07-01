@@ -1,3 +1,0 @@
-Flask
-Flask-MySQLdb
-Flask_SQLAlchemy
