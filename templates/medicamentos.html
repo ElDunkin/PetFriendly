@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2 class="text-center mt-4">Gestion de medicamentos</h2>
+    <div class="row">
+        <!-- Registro nuevo medicamento -->
+        <div class="col-md-5">
+            <form id="formMedicamento">
+                <h4>Registrar nuevo medicamento</h4>
+                <input type="text" class="form-control my-2" name="nombre" placeholder="Nombre comercial *" required>
+                <input type="text" class="form-control my-2" name="principio_activo" placeholder="Principio activo *" required>
+                <input type="text" class="form-control my-2" name="presentacion" placeholder="Presentación *" required>
+                <input type="text" class="form-control my-2" name="lote" placeholder="Lote *" required>
+                <input type="text" class="form-control my-2" name="concentracion" placeholder="Concentración *" required>
+                <input type="date" class="form-control my-2" name="fecha_vencimiento" required>
+                <input type="number" class="form-control my-2" name="cantidad_inicial" placeholder="Cantidad inicial *" required>
+                <input type="text" class="form-control my-2" name="proveedor" placeholder="Proveedor">
+                <input type="text" class="form-control my-2" name="observaciones" placeholder="Observaciones">
+                <button type="submit" class="btn btn-primary w-100">Registrar</button>
+            </form>
+        </div>
+        <!-- Tabla medicamentos -->
+        <div class="col-md-7">
+            <h4>&nbsp;</h4>
+            <div class="mb-2">
+                <input type="text" id="search" class="form-control" placeholder="Buscar">
+            </div>
+            <table class="table table-striped" id="tablaMedicamentos">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Existencia</th>
+                        <th>Estado</th>
+                        <th>Vencimiento</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="paginacion"></div>
+        </div>
+    </div>
+</div>
+{% include 'modals.html' %}
+<script src="{{ url_for('static', filename='js/medicamentos.js') }}"></script>
+{% endblock %}
