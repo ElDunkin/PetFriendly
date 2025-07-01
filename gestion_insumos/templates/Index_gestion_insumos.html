@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Insumos</title>
+    <link rel="stylesheet" href="../static/gestion_insumos.css">
+</head>
+<body>
+    <h1>Gestión de Insumos</h1>
+
+    <div class="container">
+        <div class="form-section">
+            <h2>Registrar nuevo insumo</h2>
+            <form id="nuevoInsumoForm">
+                <input name="nombre" placeholder="Nombre del insumo*" required>
+                <input type="number" name="cantidad_inicial" placeholder="Cantidad inicial*" required>
+                <input name="unidad_medida" placeholder="Unidad de medida*" required>
+                <input name="proveedor" placeholder="Proveedor*" required>
+                <input type="date" name="fecha_ingreso" placeholder="Fecha de ingreso*" required>
+                <input type="date" name="fecha_vencimiento" placeholder="Fecha de vencimiento">
+                <input name="tipo_insumo" placeholder="Tipo de insumo*" required>
+                <textarea name="observaciones" placeholder="Observaciones"></textarea>
+                <button type="submit">Registrar</button>
+            </form>
+        </div>
+        <div class="table-section">
+            <h2>Inventario de insumos</h2>
+            <table id="tablaInsumos">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Existencia actual</th>
+                        <th>Unidad</th>
+                        <th>Proveedor</th>
+                        <th>Fecha ingreso</th>
+                        <th>Fecha vencimiento</th>
+                        <th>Tipo</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button onclick="mostrarAlerta()">Ver alertas</button>
+        </div>
+    </div>
+
+    <!-- Modal de alerta -->
+    <div id="alertaModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarAlerta()">&times;</span>
+            <h2>¡Aviso!</h2>
+            <ul id="alertaLista"></ul>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

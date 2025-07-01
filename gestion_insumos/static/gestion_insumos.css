@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #FAFAFA;
+}
+.container {
+    display: flex;
+    gap: 30px;
+}
+.form-section, .table-section {
+    background: #FFF;
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 350px;
+}
+input, textarea, select {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 6px;
+}
+button {
+    background: #363A3F;
+    color: #FFF;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #DDD;
+    padding: 6px 10px;
+    text-align: left;
+}
+.modal {
+    position: fixed;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal-content {
+    background: #FFF;
+    padding: 30px;
+    border-radius: 8px;
+    min-width: 350px;
+}
+.close {
+    float: right;
+    cursor: pointer;
+    font-size: 20px;
+}
