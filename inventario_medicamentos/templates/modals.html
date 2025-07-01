@@ -1,0 +1,69 @@
+<!-- Modal Entrada/Salida -->
+<div class="modal" tabindex="-1" id="modalMovimiento">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formMovimiento">
+        <div class="modal-header">
+          <h5 class="modal-title">Registrar entrada/salida</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="medicamento_id" id="mov_medicamento_id">
+          <input type="hidden" name="tipo" id="mov_tipo">
+          <div class="mb-2">
+            <input type="text" class="form-control" name="responsable" placeholder="Responsable *" required>
+          </div>
+          <div class="mb-2">
+            <input type="number" class="form-control" name="cantidad" placeholder="Cantidad *" required>
+          </div>
+          <div class="mb-2">
+            <input type="date" class="form-control" name="fecha" required>
+          </div>
+          <div class="mb-2">
+            <select name="motivo" class="form-control" required>
+              <option value="">Motivo *</option>
+              <option value="Reposición">Reposición</option>
+              <option value="Donación">Donación</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <input type="text" class="form-control" name="observacion" placeholder="Observación">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Historial -->
+<div class="modal" tabindex="-1" id="modalHistorial">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Historial de movimientos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered" id="tablaMovimientos">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Accion</th>
+              <th>Responsable</th>
+              <th>Motivo</th>
+              <th>Cantidad</th>
+              <th>Observación</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Regresar</button>
+      </div>
+    </div>
+  </div>
+</div>
