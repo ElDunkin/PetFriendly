@@ -3,67 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Empleados</title>
-    <link rel="stylesheet" href="/static/css/generic.css">
-    <link rel="stylesheet" href="/static/css/login.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="login-container">
+        <img src="{{ url_for('static', filename='patitas2.png') }}" alt="Logo Patitas" class="logo">
+        <h1>Centro Veterinario Patitas</h1>
+        <h2>Iniciar Sesión Empleados</h2>
 
-    <header>
-        <div class="logo">
-        <nav class="menu">
-            
-            <ul>
-                <li><a href="/">Inicio</a></li>
-                <li><a href="/servicios">Servicios</a></li>
-                <li><a href="/contactenos">Contactenos</a></li>
-            </ul>
-        </nav>
-    </header>
+        <form method="POST">
+            <input type="text" name="usuario" placeholder="Correo o Usuario" required>
+            <input type="password" name="contrasena" placeholder="Contraseña" required>
 
-    <main>
-        <div class="login-container">
-            <h1>Centro Veterinario Patitas</h1>
-            <h2>Iniciar Sesión</h2>
+            <div class="extra">
+                <a href="{{ url_for('recuperar') }}">¿Olvidaste tu contraseña?</a>
+            </div>
 
-            <form method="POST" action="{{ url_for('rutas_login.login') }}">
-                <input type="text" name="correo_electronico_usuario" placeholder="Correo" required>
-                <input type="password" name="contrasena" placeholder="Contraseña" required>
-            
-                <div class="extra">
-                    <a href="{{ url_for('recuperar.recuperar') }}">¿Olvidaste tu contraseña?</a>
+            <button type="submit">Ingresar</button>
 
+            <label class="keep-session">
+                <input type="checkbox"> Mantener la sesión iniciada
+            </label>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="mensaje">
+                    {% for msg in messages %}
+                        <p>{{ msg }}</p>
+                    {% endfor %}
                 </div>
-
-                <button type="submit">Ingresar</button>
-                
-                <label class="keep-session">
-                    <input type="checkbox">
-                    <br> 
-                    Mantener la sesión iniciada
-                </label>
-            </form>
-
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="mensaje">
-                        {% for msg in messages %}
-                            <p>{{ msg }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
-        </div>
-    </main>
-    
-
-    <footer>
-        <div>
-            Copyright © 2025 Developed by Trio Imperial co.
-        </div>
-
-        <div>
-            Powered by Petfriendly
-        </div>
-    </footer>
+            {% endif %}
+        {% endwith %}
+    </div>
 </body>
 </html>
