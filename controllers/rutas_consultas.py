@@ -30,57 +30,60 @@ def seleccionar_paciente_consulta():
     cur = conn.cursor(pymysql.cursors.DictCursor)
     cur.execute("SELECT * FROM paciente_animal")
     pacientes = cur.fetchall()
+    
+    cur.execute("SELECT numero_documento, nombre_usuario, apellido_usuario FROM usuarios_por_rol WHERE nombre_rol = 'Medico_Veterinario'")
+    medicos = cur.fetchall()
+    
     cur.close()
 
-    return render_template('consultas_medicas/registro_consultas.html', pacientes=pacientes)
+    return render_template('consultas_medicas/registro_consultas.html', pacientes=pacientes, medicos=medicos)
 
-@rutas_consultas.route('/registro_consulta/<int:id_paciente>', methods=['GET', 'POST'])
-def registro_consulta(id_paciente):
-    text = ''
-
+@rutas_consultas.route('/registro_consulta', methods=['POST'])
+def registro_consulta():
     if session.get('rol') != 'Medico_Veterinario':
-        return redirect('/login')  # Redirección directa
+        return redirect('/login')
 
-    if request.method == 'POST':
-        fecha = request.form['fecha_consulta']
-        hora = request.form['hora_consulta']
-        motivo = request.form['motivo_consulta']
-        diagnostico = request.form['diagnostico']
-        tratamiento = request.form['tratamientos']
-        medicamentos = request.form.get('medicamentos')
-        observaciones = request.form.get('observaciones')
-        firma = request.form['firma']
-        archivos = request.files.getlist('adjuntos')
+    id_paciente = request.form['id_paciente']
+    fecha = request.form['fecha_consulta']
+    hora = request.form['hora_consulta']
+    motivo = request.form['motivo_consulta']
+    diagnostico = request.form['diagnostico']
+    tratamiento = request.form['tratamientos']
+    medicamentos = request.form.get('medicamentos')
+    observaciones = request.form.get('observaciones')
+    firma = request.form['firma_veterinario']
+    archivos = request.files.getlist('archivos_consulta')
 
-        validos, error = archivos_validos(archivos)
-        if not validos:
-            text = error
-            return render_template('consultas/registro_consulta.html', text=text, id_paciente=id_paciente)
+    validos, error = archivos_validos(archivos)
+    if not validos:
+        return f"<h3>Error: {error}</h3>"
 
-        conn = obtener_conexion()
-        cur = conn.cursor(pymysql.cursors.DictCursor)
+    conn = obtener_conexion()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
 
-        cur.execute("SELECT * FROM paciente_animal WHERE id_paciente = %s", (id_paciente,))
-        paciente = cur.fetchone()
-        if not paciente:
-            text = "El paciente no existe"
-            return render_template('consultas/registro_consulta.html', text=text, id_paciente=id_paciente)
+    cur.execute("SELECT * FROM paciente_animal WHERE id_paciente = %s", (id_paciente,))
+    paciente = cur.fetchone()
+    if not paciente:
+        return "<h3>Error: Paciente no encontrado</h3>"
 
-        cur.execute('''
-            INSERT INTO consultas (id_paciente, fecha_consulta, hora_consulta, motivo_consulta, diagnostico, tratamiento, medicamentos, observaciones, firma, numero_documento)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        ''', (id_paciente, fecha, hora, motivo, diagnostico, tratamiento, medicamentos, observaciones, firma, session['numero_documento']))
-        conn.commit()
-        
+    cur.execute('''
+        INSERT INTO consultas (id_paciente, fecha_consulta, hora_consulta, motivo_consulta, diagnostico, tratamiento, medicamentos, observaciones, firma, numero_documento)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    ''', (id_paciente, fecha, hora, motivo, diagnostico, tratamiento, medicamentos, observaciones, firma, session['numero_documento']))
+    conn.commit()
 
-        for archivo in archivos:
-            filename = secure_filename(archivo.filename)
-            nombre_archivo = os.path.join(UPLOAD_FOLDER, filename)
-            archivo.save(nombre_archivo)
-            cur.execute("INSERT INTO archivos_consulta (nombre_archivo) VALUES ( %s)", (nombre_archivo))
+    id_consulta = cur.lastrowid
+    for archivo in archivos:
+        filename = secure_filename(archivo.filename)
+        ruta = os.path.join(UPLOAD_FOLDER, filename)
+        archivo.save(ruta)
+        cur.execute("INSERT INTO archivos_consulta (id_consulta, nombre_archivo) VALUES (%s, %s)", (id_consulta, ruta))
 
-        conn.commit()
-        cur.close()
-        return redirect('/dashboard_medico')  # Redirección directa
+    conn.commit()
+    cur.close()
+    return redirect('/registro_consulta')
 
-    return render_template('consultas/registro_consulta.html', text=text, id_paciente=id_paciente)
+@rutas_consultas.route('/listar_consulta')
+def listar_consulta():
+    text = "Hola xd"
+    return render_template('listar_consultas.html', text = text)

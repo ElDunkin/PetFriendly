@@ -1,0 +1,36 @@
+main{
+    flex: 1;
+}
+
+.contenedor {
+    background-color: #fff;
+    padding: 2rem 2.5rem;
+    margin: 100px auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;    
+}
+h2 {
+    color: #0C254B;
+    margin-bottom: 1.5rem;
+}
+input[type="text"] {
+    padding: 0.8rem;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+.msg {
+    margin-top: 1rem;
+    color: #F41F00;
+    font-weight: bold;
+}
+a {
+    display: block;
+    margin-top: 1rem;
+    color: #0C254B;
+    text-decoration: none;
+}

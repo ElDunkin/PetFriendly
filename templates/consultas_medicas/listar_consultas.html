@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+                <li><a href="/gestion_insumos">Gestion Insumos</a></li>
+                <li><a href="/medicamento">Gestion Medicamentos</a></li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+    <h1>Pacientes Registrados</h1>
+    {% if textM %}
+        <div class="alert alert-warning">{{ textM }}</div>
+    {% endif %}
+    {% if text %}
+        <div class="alert alert-success">{{ text }}</div>
+    {% endif %}
+    {% if textE %}
+        <div class="alert alert-danger">{{ textE }}</div>
+    {% endif %}
+
+    <main>
+        
+    </main>
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+</body>
+</html>

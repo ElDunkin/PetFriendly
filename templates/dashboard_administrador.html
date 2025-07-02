@@ -17,7 +17,8 @@
                 <li><a href="/dashboard_administrador">Dashboard</a></li>
                 <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
                 <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
-                <li><a href="/seleccionar_paciente_consulta">Registrar Consulta</a></li>
+                <li><a href="/gestion_insumos">Gestion Insumos</a></li>
+                <li><a href="/medicamento">Gestion Medicamentos</a></li>
             </ul>
 
             <div class="btn-group">
@@ -47,8 +48,8 @@
             <p>{{ total_citas }}</p>
         </div>
         <div class="card">
-            <h2>📉 Stock bajo</h2>
-            <p>{{ productos_bajo_stock }}</p>
+            <h2>📉 productos a vencer</h2>
+            <p>{{ productos_alerta }}</p>
         </div>
     </div>
     </main>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Consulta</title>
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/consultas.css">
     <link rel="stylesheet" href="/static/css/generic.css">
 </head>
@@ -17,7 +17,8 @@
                 <li><a href="/dashboard_administrador">Dashboard</a></li>
                 <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
                 <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
-                <li><a href="/seleccionar_paciente_consulta">Registrar Consulta</a></li>
+                <li><a href="/gestion_insumos">Gestion Insumos</a></li>
+                <li><a href="/medicamento">Gestion Medicamentos</a></li>
             </ul>
 
             <div class="btn-group">
@@ -28,12 +29,12 @@
 
 <main>
     <h2>Registrar Consulta Médica</h2>
-    <form action="/registro_consulta/{{ paciente.id_paciente }}" method="POST" enctype="multipart/form-data">
+    <form action="/registro_consulta" method="POST" enctype="multipart/form-data">
         <label for="id_paciente">Paciente:</label>
         <select name="id_paciente" id="id_paciente" required>
             <option value="">Seleccione un paciente</option>
             {% for paciente in pacientes %}
-                <option value="{{ paciente.id_paciente }}">{{ paciente.nombre_paciente }} - {{ paciente.numero_documento }}</option>
+                <option value="{{ paciente.id_paciente }}">{{ paciente.nombre_paciente }} - {{ paciente.numero_documento}}</option>
             {% endfor %}
         </select>
 
@@ -58,20 +59,33 @@
         <label for="observaciones">Observaciones adicionales:</label>
         <textarea name="observaciones" id="observaciones"></textarea>
 
-        <label for="firma_veterinario">Firma del veterinario:</label>
-        <input type="text" name="firma_veterinario" id="firma_veterinario" placeholder="Nombre del médico" required>
+        <label for="documento">Médico a cargo:</label>
+        <select name="documento" id="documento" required>
+        <option value="">Seleccione un médico</option>
+        {% for medico in medicos %}
+        <option value="{{ medico.numero_documento }}">{{ medico.nombre_usuario }} {{ medico.apellido_usuario }}</option>
+        {% endfor %}
+        </select>
 
         <label for="archivos_consulta">Adjuntar documentos o imágenes (máx. 3 archivos):</label>
         <input type="file" name="archivos_consulta" id="archivos_consulta" multiple accept=".jpg,.jpeg,.png,.pdf">
 
-        <br><br>
-        <input type="submit" value="Registrar Consulta">
+        <br>
+        <input type="submit" value="Registrar Consulta" name="action" class="btn btn-success">
+        <br>
+        <a href="/listar_consultas" class="btn btn-primary">Ver lista de pacientes</a>
     </form>
 </main>
 
 <footer>
-    <div>© 2025 Trio Imperial Co. | Powered by PetFriendly</div>
-</footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
 
 <script src="/static/js/registro_consulta.js"></script>
 </body>

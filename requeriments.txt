@@ -5,6 +5,7 @@ pip install mysql
 pip install Flask-MySQL
 pip install PyMySQL
 pip install Flask-Mail
+pip install twilio
 
 py -3 -m venv EntornoVirtual
 EntornoVirtual\Scripts\activate

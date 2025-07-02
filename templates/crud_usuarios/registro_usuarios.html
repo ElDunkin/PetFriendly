@@ -17,8 +17,10 @@
                 <li><a href="/dashboard_administrador">Dashboard</a></li>
                 <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
                 <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
-                <li><a href="#">Gestion Consultas</a></li>
+                <li><a href="/gestion_insumos">Gestion Insumos</a></li>
+                <li><a href="/medicamento">Gestion Medicamentos</a></li>
             </ul>
+
             <div class="btn-group">
                 <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
             </div>
@@ -64,10 +66,14 @@
         <label>Contraseña</label>
         <input type="password" name="contrasena">
         <br>
+        <label>Confirmar Contraseña</label>
+        <input type="password" name="confirmar_contrasena">
+        <br>
         <br>
         <input type="submit" value="Registrar" name="action" class="btn btn-success">
         <br>
-        <input type="submit" value="Ver lista de usuarios" name="action" class="btn btn-primary">
+        <!-- <input type="submit" value="Ver lista de usuarios" name="action" class="btn btn-primary"> -->
+        <a href="/listar_usuarios/" class="btn btn-primary">Ver lista de pacientes</a>
     </form>
 
 
@@ -80,5 +86,6 @@
             Powered by Petfriendly
         </div>
     </footer>
+    <script src="/static/js/registro_usuarios.js"></script>
 </body>
 </html>

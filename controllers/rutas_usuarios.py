@@ -1,6 +1,7 @@
-from flask import Flask, Blueprint, render_template, session, request, redirect
+from flask import Blueprint, render_template, request, redirect
 from werkzeug.security import generate_password_hash
 from models.conexion import obtener_conexion
+from flask_mail import Mail, Message 
 import pymysql
 
 rutas_usuarios = Blueprint('rutas_usuarios', __name__)

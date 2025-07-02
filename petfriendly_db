@@ -62,6 +62,48 @@ CREATE TABLE `archivos_consulta` (
     FOREIGN KEY (`id_consulta`) REFERENCES `consultas`(`id_consulta`)
 );
 
+CREATE TABLE `insumo` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `nombre` VARCHAR(100) NOT NULL,
+        `cantidad_inicial` INT NOT NULL,
+        `unidad_medida` VARCHAR(50) NOT NULL,
+        `proveedor` VARCHAR(100) NOT NULL,
+        `fecha_ingreso` DATE NOT NULL,
+        `fecha_vencimiento` DATE,
+        `tipo_insumo` VARCHAR(50) NOT NULL,
+        `observaciones` TEXT
+    );
+
+    CREATE TABLE `movimiento_insumo` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `insumo_id` INT NOT NULL,
+        `tipo_movimiento` ENUM('entrada','salida') NOT NULL,
+        `responsable` VARCHAR(100),
+        `cantidad` INT NOT NULL,
+        `fecha` DATE NOT NULL,
+        `motivo` VARCHAR(100),
+        `observacion` TEXT,
+        FOREIGN KEY (`insumo_id`) REFERENCES insumo(`id`)
+    );
+
+CREATE TABLE `citas` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `nombre_dueno` VARCHAR(100),
+    `nombre_mascota` VARCHAR(100),
+    `fecha` DATE,
+    `hora` TIME,
+    `motivo` TEXT
+);
+
+CREATE TABLE `jornadas` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `nombre_evento` VARCHAR(100) NOT NULL,
+    `fecha` DATE NOT NULL,
+    `lugar` VARCHAR(100) NOT NULL,
+    `descripcion` TEXT
+);
+
+
 CREATE VIEW usuarios_por_rol AS 
 SELECT u.numero_documento, 
         u.nombre_usuario, 

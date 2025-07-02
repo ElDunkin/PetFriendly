@@ -55,21 +55,6 @@ textarea {
     min-height: 80px;
 }
 
-input[type="submit"] {
-    margin-top: 25px;
-    padding: 12px;
-    background-color: #0C254B;
-    color: #fff;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-input[type="submit"]:hover {
-    background-color: #04172f;
-}
 
 /* Responsive */
 @media screen and (max-width: 600px) {

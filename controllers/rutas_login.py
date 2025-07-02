@@ -40,10 +40,11 @@ def login():
                 flash('Rol no reconocido')
                 return redirect(url_for('rutas_login.login'))
         else:
-            flash('Correo o contraseña incorrectos')
-            return redirect(url_for('rutas_login.login'))
-
-    return render_template('login.html')
+            
+            return redirect(url_for('rutas_login.login', textf='Correo o contraseña incorrectos'))
+    text = request.args.get('text')
+    textf = request.args.get('textf')
+    return render_template('login.html', text=text, textf = textf)
 
 @rutas_login.route('/logout')
 def logout():
