@@ -1,0 +1,67 @@
+
+/* ========= Header Navegación ========= */
+header {
+    background-color: #ffffff;
+    color: #243238;
+    padding: 5px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    background-image: url('/static/img/patitas3.png');
+    background-repeat: no-repeat;
+    background-position: left;
+    background-size: 85px;
+    width: 100px;
+    height: 85px;
+    margin-left: 10px;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+nav {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px 0;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+nav li {
+    font-weight: bold;
+    font-size: 22px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #0C254B;
+    padding: 5px 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+nav a:hover {
+    color: #009bf4;
+    border-bottom: 2px solid #009bf4;
+}
+
+/* ========= Footer ========= */
+footer {
+    display: flex;
+    justify-content: space-around;
+    background-color: white;
+    padding: 50px 0 30px;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: auto;
+}
