@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/recuperar.css') }}">
+<div class="contenedor">
+    <img src="{{ url_for('static', filename='img/patitas2.png') }}" alt="Logo Patitas" class="logo">
+    <h2>Recuperar Contraseña</h2>
+    <form method="POST">
+        <input type="email" name="usuario" placeholder="Ingresa tu correo" required>
+        <button type="submit">Enviar código</button>
+    </form>
+    <a href="{{ url_for('rutas_login.login') }}">← Volver al Login</a>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p class="msg">{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>

@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fafafa;
+    color: #243238;
+    line-height: 1.6;
+}
+h1{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: 50px ;
+}
+
+.titulo-servicio{
+    background-color:#f5f5f5;
+}
+.nuestros-servicios{
+    margin-bottom   : 5px;
+    background-color:#f5f5f5;
+    width: 100%;
+    height: 800px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    box-shadow: 0 400px -50px rgba(0, 0, 0, 0.102);
+}
+
+.nuestros-servicios h1{
+    text-align: center;
+    justify-items: center;
+}
+
+.caja-principal{
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+}
+#caja-servicios{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+#servicio-uno{
+    background-image: url('/static/img/Consulta_veterinaria.png') ;
+    background-repeat:no-repeat;
+    background-position: top;
+    background-size: 500px;
+    width: 350px;
+    height: 350px;
+    margin-right: 25px;
+}
+
+#servicio-uno h2{
+    padding-top: 300px;
+}
+#servicio-dos{
+    background-image: url('/static/img/Esterilización.png') ;
+    background-repeat:no-repeat;
+    background-position: top;
+    background-size: 350px;
+    width: 350px;
+    height: 350px;
+    margin-right: 25px;
+}
+
+#servicio-dos h2{
+    padding-top: 300px;
+}
+
+#servicio-tres{
+    background-image: url('/static/img/vacunacion.png') ;
+    background-repeat:no-repeat;
+    background-position: top;
+    background-size: 400px;
+    width: 350px;
+    height: 350px;
+    
+}
+
+#servicio-tres h2{
+    padding-top: 300px;
+}
+
+#servicio-cuatro{
+    background-image: url('/static/img/desparasitacion.png') ;
+    background-repeat:no-repeat;
+    background-position: top;
+    background-size: 500px;
+    width: 350px;
+    height: 350px;
+    margin-right: 25px;
+}
+
+#servicio-cuatro h2{
+    padding-top: 300px;
+}
+
+#servicio-cinco{
+    background-image: url('/static/img/adopcion.png') ;
+    background-repeat:no-repeat;
+    background-position: top;
+    background-size: 400px;
+    width: 350px;
+    height: 350px;
+    margin-right: 25px;
+}
+
+#servicio-cinco h2{
+    padding-top: 300px;
+}
+
+.contactar{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 1000px;
+    padding: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*boton*/
+.contactar a{
+    display: inline-block;
+    background-color: #009bf4;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    max-width: 150px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 30px;
+    padding: 20px 35px;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.contactar a:hover{
+    background-color: #44ace9;
+}
+
+.contactar p{
+    font-size: 1.4rem;
+}
