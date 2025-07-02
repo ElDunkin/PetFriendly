@@ -1,5 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
+
+<!-- Header Navegación -->
+<header>
+    <div class="logo"></div>
+    <nav class="menu">
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/servicios">Servicios</a></li>
+            <li><a href="/contactenos">Contáctenos</a></li>
+            <li><a href="/logout">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+</header>
+
 <div class="container">
     <h2 class="text-center mt-4">Gestion de medicamentos</h2>
     <div class="row">
@@ -43,4 +57,15 @@
 </div>
 {% include 'modals.html' %}
 <script src="{{ url_for('static', filename='js/medicamentos.js') }}"></script>
+
+<!-- Footer -->
+<footer>
+    <div>
+        Copyright © 2025 Developed by Trio Imperial co.
+    </div>
+    <div>
+        Powered by Petfriendly
+    </div>
+</footer>
+
 {% endblock %}
