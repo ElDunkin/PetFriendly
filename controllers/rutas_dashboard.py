@@ -20,7 +20,7 @@ def dashboard_administrador():
     cur.execute("SELECT COUNT(*) AS total_animales FROM paciente_animal")
     total_animales = cur.fetchone()['total_animales']
     
-    cur.execute("SELECT nombre, cantidad_inicial, fecha_vencimiento FROM insumo WHERE cantidad_inicial < 10 OR (fecha_vencimiento IS NOT NULL AND fecha_vencimiento <= DATE_ADD(CURDATE(), INTERVAL 15 DAY))")
+    cur.execute("SELECT nombre_insumo, cantidad_inicial, fecha_vencimiento FROM insumo WHERE cantidad_inicial < 10 OR (fecha_vencimiento IS NOT NULL AND fecha_vencimiento <= DATE_ADD(CURDATE(), INTERVAL 15 DAY))")
     productos_alerta = cur.fetchall()
 
     cur.close()

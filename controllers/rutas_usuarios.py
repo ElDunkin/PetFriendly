@@ -88,7 +88,7 @@ def modificar_usuarios(numero_documento):
 
     if usuario:
         text = 'Usuario modificado exitosamente'
-        return render_template('crud_usuarios/modificar_usuarios.html',usuario=usuario, text=text)
+        return render_template('crud_usuarios/modals/modificar_usuarios.html',usuario=usuario, text=text)
     else:
         text = 'Usuario no encontrado'
         

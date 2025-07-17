@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, session
+import pymysql.cursors
 from werkzeug.utils import secure_filename
 from models.conexion import obtener_conexion
 import os, pymysql
@@ -85,5 +86,61 @@ def registro_consulta():
 
 @rutas_consultas.route('/listar_consulta')
 def listar_consulta():
-    text = "Hola xd"
-    return render_template('listar_consultas.html', text = text)
+    conn = obtener_conexion()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+    cur.execute('SELECT * FROM consultas')
+    consultas = cur.fetchall()
+    
+    text = request.args.get('text')
+    textM = request.args.get('textM')
+    textE = request.args.get('textE')
+    return render_template('consultas_medicas/listar_consultas.html', consultas=consultas, text=text, textM=textM, textE=textE)
+
+@rutas_consultas.route('/modificar_consultas/<int:id_consulta>', methods=['GET','POST'])
+def modificar_consulta(id_consulta):
+    text = ''
+    
+    conn = obtener_conexion()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+    
+    if request.method == 'POST':
+        motivo = request.form['motivo_consulta']
+        diagnostico = request.form['diagnostico']
+        tratamiento = request.form['tratamientos']
+        medicamentos = request.form.get('medicamentos')
+        observaciones = request.form.get('observaciones')
+        
+        cur.execute('''
+                    UPDATE consultas
+                    SET motivo_consulta = %s,
+                    diagnostico = %s,
+                    tratamiento = %s,
+                    medicamentos = %s,
+                    observaciones = %s
+                    WHERE id_consulta = %s
+                    ''',(motivo,diagnostico,tratamiento,medicamentos,observaciones,id_consulta))
+        conn.commit()
+        cur.close()
+        return redirect('/listar_consulta?textM=Consulta+modificada+exitosamente')
+    
+    cur.execute('SELECT * FROM consultas WHERE id_consulta = %s',(id_consulta))
+    consulta = cur.fetchone()
+    cur.close()
+    
+    if consulta:
+        text = 'Usuario modificado exitosamente'
+        return render_template('consultas_medicas/modificar_consulta.html', consulta=consulta,text=text)
+    else:
+        text = 'Consulta no encontrada'
+
+@rutas_consultas.route('/eliminar_consulta/<int:id_consulta>',methods=['GET'])
+def eliminar_consulta(id_consulta):
+    conn = obtener_conexion()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+    cur.execute('''
+                DELETE FROM consultas WHERE id_consulta
+                ''', (id_consulta))
+    conn.commit()
+    cur.close()
+    return redirect('/listar_consulta?textE=Consulta+eliminada+exitosamente')
+        

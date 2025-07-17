@@ -24,7 +24,8 @@ def listar_insumos():
     conn = obtener_conexion()
     cur = conn.cursor()
     cur.execute('SELECT * FROM insumo')
-    insumos = cur.fetchall()
+    columnas = [desc[0] for desc in cur.description]
+    insumos = [dict(zip(columnas, fila)) for fila in cur.fetchall()]
     return jsonify(insumos)
 
 @rutas_insumos.route('/api/movimiento', methods=['POST'])

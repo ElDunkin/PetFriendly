@@ -1,5 +1,4 @@
 pip install Flask
-pip install flask-sqlalchemy mysql-connector-python
 pip install Flask-Ext
 pip install mysql
 pip install Flask-MySQL
@@ -7,6 +6,10 @@ pip install PyMySQL
 pip install Flask-Mail
 pip install twilio
 
+
+
 py -3 -m venv EntornoVirtual
 EntornoVirtual\Scripts\activate
 py main.py run
+flask --app main run
+mysql -h localhost -u root -p

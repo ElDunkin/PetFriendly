@@ -93,6 +93,10 @@ h1, h2 {
     max-width: 550px;
 }
 
+.table-section {
+    max-width: 1000px;
+}
+
 input, textarea, button {
     display: block;
     width: 100%;

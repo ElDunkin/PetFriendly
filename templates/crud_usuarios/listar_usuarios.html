@@ -6,6 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/generic.css">
     <link rel="stylesheet" href="/static/css/listar_usuarios.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modals.css') }}">
     
 </head>
 <body>
@@ -61,10 +62,19 @@
                     <td>{{ usuario.telefono }}</td>
                     <td>{{ usuario.nombre_rol }}</td>
                     <td>
-                        <a href="/modificar_usuarios/{{ usuario.numero_documento }}" class="btn btn-success">Editar</a>
-                        <a href="/eliminar_usuarios/{{ usuario.numero_documento }}" class="btn btn-danger">Eliminar</a>
+                        <a href="#" class="btn btn-success btn-editar"
+                                    data-numero="{{ usuario.numero_documento }}"
+                                    data-nombre="{{ usuario.nombre_usuario }}"
+                                    data-apellido="{{ usuario.apellido_usuario }}"
+                                    data-correo="{{ usuario.correo_electronico_usuario }}"
+                                    data-telefono="{{ usuario.telefono }}">Editar</a>
+
+                        <a onclick="confirmarEliminacion('{{ usuario.nombre_usuario }} {{ usuario.apellido_usuario }}', '/eliminar_usuarios/{{ usuario.numero_documento }}')" class="btn btn-danger">Eliminar</a>
+
                     </td>
                 </tr>
+                    {% include 'modals/eliminar_usuarios.html' %}
+                    {% include 'modals/modificar_usuarios.html' %}
                 {% endfor %}
             </tbody>
         </table>
@@ -79,5 +89,9 @@
             Powered by Petfriendly
         </div>
     </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/modificar_usuarios.js"></script>
+    <script src="../static/js/eliminar_usuarios.js"></script> 
 </body>
 </html>

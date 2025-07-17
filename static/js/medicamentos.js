@@ -45,7 +45,7 @@ async function cargarMedicamentos() {
     meds.forEach(m => {
         let tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${m.nombre}</td>
+            <td>${m.nombre_medicamento}</td>
             <td>${m.existencia}</td>
             <td>${m.estado}</td>
             <td>${m.fecha_vencimiento}</td>

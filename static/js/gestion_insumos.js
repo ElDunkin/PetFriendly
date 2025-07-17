@@ -24,7 +24,7 @@ async function cargarInsumos() {
     insumos.forEach(ins => {
         tbody.innerHTML += `
             <tr>
-                <td>${ins.nombre}</td>
+                <td>${ins.nombre_insumo}</td>
                 <td>${ins.cantidad_inicial}</td>
                 <td>${ins.unidad_medida}</td>
                 <td>${ins.proveedor}</td>
@@ -37,7 +37,7 @@ async function cargarInsumos() {
 cargarInsumos();
 
 // Mostrar alerta de stock mínimo o vencimiento
-async function mostrarAlerta() {
+async function mostrarAlerta() {    
     const res = await fetch('/api/alertas');
     const alertas = await res.json();
     let lista = document.getElementById('alertaLista');
@@ -46,7 +46,7 @@ async function mostrarAlerta() {
         lista.innerHTML = '<li>No hay alertas.</li>';
     } else {
         alertas.forEach(a => {
-            lista.innerHTML += `<li>${a.nombre} - Stock: ${a.cantidad_inicial} - Vence: ${a.fecha_vencimiento || 'N/A'}</li>`;
+            lista.innerHTML += `<li>${a.nombre_insumo} - Stock: ${a.cantidad_inicial} - Vence: ${a.fecha_vencimiento || 'N/A'}</li>`;
         });
     }
     document.getElementById('alertaModal').style.display = 'flex';

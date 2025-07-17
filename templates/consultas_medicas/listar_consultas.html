@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/listar_usuarios.css">
     <title>Document</title>
 </head>
 <body>
@@ -35,7 +38,39 @@
     {% endif %}
 
     <main>
-        
+        <table>
+            <thead>
+                <tr>
+                    <th>fecha_consulta</th>
+                    <th>hora_consulta</th>
+                    <th>motivo_consulta</th>
+                    <th>diagnostico</th>
+                    <th>tratamiento</th>
+                    <th>medicamentos</th>
+                    <th>observaciones</th>
+                    <th>firma</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consulta in consultas %}
+                <tr>
+                    <td>{{ consulta.fecha_consulta }}</td>
+                    <td>{{ consulta.hora_consulta }}</td>
+                    <td>{{ consulta.motivo_consulta }}</td>
+                    <td>{{ consulta.diagnostico }}</td>
+                    <td>{{ consulta.tratamiento }}</td>
+                    <td>{{ consulta.medicamentos }}</td>
+                    <td>{{ consulta.observaciones }}</td>
+                    <td>{{ consulta.firma }}</td>
+                    <td>
+                        <a href="/modificar_consultas/{{ consulta.id_consulta }}" class="btn btn-success">Editar</a>
+                        <a href="/eliminar_consulta/{{ consulta.id_consulta }}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </main>
 
     <footer>
