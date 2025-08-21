@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Adopciones</title>
+</head>
+<body>
+    <h2>Registro de adopciones</h2>
+    <form method="POST" enctype="multipart/form-data" action="/registrar_adopcion">
+        <label>Nombres del adoptante:* <input type="text" name="nombre_adoptante" required></label><br>
+        <label>Tipo de documento:* 
+            <select name="tipo_documento" required>
+                <option value="">Seleccione</option>
+                <option value="CC">Cédula</option>
+                <option value="CE">Cédula Extranjera</option>
+            </select>
+        </label><br>
+        <label>Número de identificación:* <input type="text" name="identificacion" required></label><br>
+        <label>Dirección:* <input type="text" name="direccion" required></label><br>
+        <label>Número de contacto:* <input type="text" name="numero_contacto" required></label><br>
+        <label>Correo electrónico:* <input type="email" name="correo" required></label><br>
+        <label>Fecha de adopción:* <input type="date" name="fecha_adopcion" required></label><br>
+        <label>Animal adoptado:* 
+            <select name="animal_id" required>
+                {% for animal in animales %}
+                    <option value="{{ animal.id }}">{{ animal.nombre }}</option>
+                {% endfor %}
+            </select>
+        </label><br>
+        <label>Contrato de adopción (PDF, máx 5MB):* <input type="file" name="contrato" accept="application/pdf" required></label><br>
+        <button type="submit">Registrar</button>
+    </form>
+    {% if error %}
+        <div style="color: red;">{{ error }}</div>
+    {% endif %}
+</body>
+</html>
