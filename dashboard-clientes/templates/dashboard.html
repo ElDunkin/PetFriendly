@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Veterinaria</title>
+    <link rel="stylesheet" href="../static/css/dashboard_clientes.css">
+</head>
+<body>
+
+    <!-- Header Navegación -->
+    <header>
+        <div class="logo"></div>
+        <nav class="menu">
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/contactenos">Contáctenos</a></li>
+                <li><a href="/logout">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Header Usuario -->
+    <header class="header-usuario">
+        <div class="saludo">
+            <h2>¡Hola, {{ data.user.nombre }}!</h2>
+        </div>
+        <div class="avatar">
+            <img src="/dashboard-clientes/static/img/Avatar cliente.png" alt="Avatar">
+        </div>
+    </header>
+
+    <!-- Grid Principal -->
+    <main>
+        <h3 style="margin: 20px;">Mascotas registradas</h3>
+        <div class="grid-container">
+
+            <!-- Contenedor 1: Mascotas Grupo A -->
+            <div class="card-container">
+                <h3>Mascotas Grupo A</h3>
+                <div class="pet-list">
+                    {% for pet in data.pets[::2] %}
+                    <div class="pet-card">
+                        <img src="/dashboard-clientes/static/img/Labrador 3 años.avif" alt="Mascota">
+                        <div class="pet-info">
+                            <h4>{{ pet.nombre }} ({{ pet.edad }} años)</h4>
+                            <p>{{ pet.especie }} / {{ pet.raza }}</p>
+                            <div class="pet-footer">
+                                <span class="estado">{{ pet.estado_salud }}</span>
+                                <button onclick="showPetHistory('{{pet.id}}')">Ver historial</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Contenedor 2: Mascotas Grupo B -->
+            <div class="card-container">
+                <h3>Mascotas Grupo B</h3>
+                <div class="pet-list">
+                    {% for pet in data.pets[1::2] %}
+                    <div class="pet-card">
+                        <img src="/dashboard-clientes/static/img/Gato mestizo.jpeg" alt="Mascota">
+                        <div class="pet-info">
+                            <h4>{{ pet.nombre }} ({{ pet.edad }} años)</h4>
+                            <p>{{ pet.especie }} / {{ pet.raza }}</p>
+                            <div class="pet-footer">
+                                <span class="estado">{{ pet.estado_salud }}</span>
+                                <button onclick="showPetHistory('{{pet.id}}')">Ver historial</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Contenedor 3: Próximas citas -->
+            <div class="card-container">
+                <h3 style="color: #43b047;">Próximas Citas</h3>
+                <p>No tienes citas pendientes.</p>
+                <button id="btn-agendar" style="background: #43b047; color: #fff; width:100%; border-radius:12px; font-size:1.1em; padding:10px 0; border:none; cursor:pointer;" onclick="openModal('modalEnDesarrollo')">Agendar cita</button>
+            </div>
+
+            <!-- Contenedor 4: Promociones -->
+            <div class="card-container">
+                <h3>Promociones</h3>
+                <p>🎉 20% de descuento en vacunas durante junio.</p>
+                <p>🦴 Descuento en desparasitación y grooming.</p>
+            </div>
+        </div>
+
+        <!-- Modal Historial -->
+        <div id="modalPetHistory" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('modalPetHistory')">&times;</span>
+                <h2>Historial Médico</h2>
+                <div id="petHistoryContent"></div>
+            </div>
+        </div>
+
+        <!-- Modal Función en Desarrollo -->
+        <div id="modalEnDesarrollo" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('modalEnDesarrollo')">&times;</span>
+                <h2>Función en desarrollo</h2>
+                <p>Esta funcionalidad estará disponible próximamente.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+
+    <script src="../static/js/dashboard.js"></script>
+</body>
+</html>
