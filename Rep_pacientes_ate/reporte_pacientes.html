@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reportes de pacientes - Patitas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+    <!-- inicio de patitas -->
+            <!--  -->
+
+    <div class="main-box">
+        <h3 class="text-center mb-4">Reportes de pacientes</h3>
+        <form id="filtros-form" class="filtro-caja row g-2 align-items-end">
+            <div class="col-md-3">
+                <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
+                <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio">
+            </div>
+            <div class="col-md-3">
+                <label for="fecha_fin" class="form-label">Fecha de fin</label>
+                <input type="date" class="form-control" name="fecha_fin" id="fecha_fin">
+            </div>
+            <div class="col-md-3">
+                <label for="tipo_servicio" class="form-label">Tipo de servicio</label>
+                <select class="form-select" name="tipo_servicio" id="tipo_servicio">
+                    <option value="">Seleccionar</option>
+                    {% for tipo in tipos_servicio %}
+                        <option value="{{ tipo }}">{{ tipo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-dark w-100">Generar</button>
+            </div>
+            <div id="error-filtros" class="text-danger mt-2"></div>
+        </form>
+        <h4>Paciente</h4>
+        <div class="table-responsive">
+            <table id="tabla-pacientes" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Propietario</th>
+                        <th>Fecha de consulta</th>
+                        <th>Medico de atencion</th>
+                        <th>Tipo de servicio</th>
+                        <th>Diagnostico</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="row row-btns">
+            <div class="col d-flex justify-content-end">
+                <button id="btn-pdf" class="btn btn-dark me-3" disabled>Exportar a CSV</button>
+                <button id="btn-excel" class="btn btn-dark" disabled>Exportar a Excel</button>
+            </div>
+        </div>
+    </div>
+    <footer class="text-center pt-2 pb-2 copyright-footer">
+        Copyright©2025 | Política de Privacidad
+    </footer>
+    <script>
+        const tiposServicio = {{ tipos_servicio | tojson }} };
+    </script>
+    <script src="{{ url_for('static', filename='reportes.js') }}"></script>
+</body>
+</html>

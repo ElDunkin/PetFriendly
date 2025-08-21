@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.fecha_recepcion.label }}<br>
+        {{ form.fecha_recepcion(size=32) }}<br>
+        {% for error in form.fecha_recepcion.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.nombre_donante.label }}<br>
+        {{ form.nombre_donante(size=32) }}<br>
+    </p>
+    <p>
+        {{ form.tipo_alimento.label }}<br>
+        {{ form.tipo_alimento() }}<br>
+        {% for error in form.tipo_alimento.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.cantidad.label }}<br>
+        {{ form.cantidad(size=32) }}<br>
+        {% for error in form.cantidad.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.unidad.label }}<br>
+        {{ form.unidad() }}<br>
+        {% for error in form.unidad.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.fecha_vencimiento.label }}<br>
+        {{ form.fecha_vencimiento(size=32) }}<br>
+    </p>
+    <p>
+        {{ form.destino.label }}<br>
+        {{ form.destino() }}<br>
+        {% for error in form.destino.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.caso_especifico.label }}<br>
+        {{ form.caso_especifico(size=32) }}<br>
+    </p>
+    <p>
+        {{ form.observaciones.label }}<br>
+        {{ form.observaciones(cols=32, rows=4) }}<br>
+    </p>
+    <p>
+        {{ form.submit() }}
+    </p>
+</form>
+{% endblock %}

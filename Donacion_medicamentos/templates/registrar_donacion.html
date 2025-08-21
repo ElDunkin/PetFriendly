@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Donación de Medicamento</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+    <h1>Registrar Donación de Medicamento</h1>
+
+    <form id="form-donacion">
+        <label for="fecha_donacion">Fecha de la Donación:</label>
+        <input type="date" id="fecha_donacion" name="fecha_donacion" required>
+
+        <label for="nombre_donante">Nombre del Donante:</label>
+        <input type="text" id="nombre_donante" name="nombre_donante">
+
+        <button type="submit">Guardar Donación</button>
+    </form>
+
+    <script>
+        document.getElementById('form-donacion').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Recolectar datos del formulario
+            const formData = new FormData(e.target);
+            const datos = Object.fromEntries(formData.entries());
+
+            // Mostrar modal de confirmación
+            if (confirm("¿Está seguro de registrar esta donación?")) {
+                try {
+                    const response = await fetch('/registrar_donacion', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(datos)
+                    });
+
+                    const resultado = await response.json();
+                    
+                    if (response.ok) {
+                        alert(resultado.mensaje); // Notificación de éxito
+                        e.target.reset(); // Limpiar formulario
+                    } else {
+                        alert(`Error: ${resultado.error}`); // Notificación de error
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al conectar con el servidor.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

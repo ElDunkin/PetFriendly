@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Historial de Donaciones</h2>
+<table>
+    <tr>
+        <th>Fecha de Recepción</th>
+        <th>Nombre del Donante</th>
+        <th>Tipo de Alimento</th>
+        <th>Cantidad</th>
+        <th>Unidad</th>
+        <th>Fecha de Vencimiento</th>
+        <th>Destino</th>
+        <th>Caso Específico</th>
+        <th>Observaciones</th>
+    </tr>
+    {% for donacion in donaciones %}
+    <tr>
+        <td>{{ donacion.fecha_recepcion }}</td>
+        <td>{{ donacion.nombre_donante }}</td>
+        <td>{{ donacion.tipo_alimento }}</td>
+        <td>{{ donacion.cantidad }}</td>
+        <td>{{ donacion.unidad }}</td>
+        <td>{{ donacion.fecha_vencimiento }}</td>
+        <td>{{ donacion.destino }}</td>
+        <td>{{ donacion.caso_especifico }}</td>
+        <td>{{ donacion.observaciones }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
