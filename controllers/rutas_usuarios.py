@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash
 from models.conexion import obtener_conexion
 from flask_mail import Mail, Message 
@@ -9,6 +9,8 @@ rutas_usuarios = Blueprint('rutas_usuarios', __name__)
 @rutas_usuarios.route('/registro_usuarios', methods=['GET','POST'])
 def registro_usuarios():
     text = ''
+    if session.get('rol') not in ['Administrador']:
+        return redirect('/login')
     if request.method == 'POST':
         accion = request.form.get('action')
         if accion == 'Registrar':
@@ -41,7 +43,7 @@ def registro_usuarios():
 
         elif accion == 'Ver lista de usuarios':
             return redirect('/listar_usuarios')  # Asegúrate de tener esta ruta creada
-
+        
     return render_template('crud_usuarios/registro_usuarios.html', text=text)
 
 @rutas_usuarios.route('/listar_usuarios/')

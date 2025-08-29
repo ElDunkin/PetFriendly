@@ -4,6 +4,11 @@
     padding: 0;
 }
 
+main{
+    flex: 1;
+}
+
+
 html, body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f5f5;
@@ -78,4 +83,8 @@ footer{
     padding-top: 50px;
     font-weight: bold;
     font-size: 15px;
+}
+
+.row{
+    margin: -16px auto -16px auto;
 }

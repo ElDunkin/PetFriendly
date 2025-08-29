@@ -1,3 +1,4 @@
+DROP DATABASE `petfriendly_db`;
 CREATE DATABASE `petfriendly_db`;
 
 USE `petfriendly_db`;
@@ -47,9 +48,22 @@ CREATE TABLE `consultas` (
     `medicamentos` TEXT,
     `observaciones` TEXT,
     `firma` VARCHAR(255) NOT NULL,
+    `estado_consulta` ENUM('Activa','Cerrada','Cancelada') DEFAULT 'Activa',
     `numero_documento` INT,
     FOREIGN KEY (`id_paciente`) REFERENCES `paciente_animal`(`id_paciente`),
     FOREIGN KEY (`numero_documento`) REFERENCES `usuarios`(`numero_documento`)
+);
+
+CREATE TABLE `consultas_canceladas` (
+    `id_cancelacion` INT AUTO_INCREMENT PRIMARY KEY,
+    `id_consulta` INT NOT NULL,
+    `motivo` VARCHAR(100) NOT NULL,
+    `observacion` VARCHAR(300),
+    `fecha_cancelacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `numero_documento` INT,
+    FOREIGN KEY (`id_consulta`) REFERENCES `consultas`(`id_consulta`),
+    FOREIGN KEY (`numero_documento`) REFERENCES `usuarios`(`numero_documento`)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE `archivos_consulta` (
@@ -132,24 +146,69 @@ CREATE TABLE `movimiento`(
 );
 
 CREATE TABLE `animales_rescatados` (
-    `id_rescatado` INT PRIMARY KEY AUTO_INCREMENT,
-    `nombre_provicional` VARCHAR(100),
-    `fecha_ingreso` DATE,
-    `estado_salud` VARCHAR(100),
-    `tratamiento` TEXT,
-    `estado` ENUM('En tratamiento','disponible','adoptado') DEFAULT 'En tratamiento',
-    `foto_url` VARCHAR(255)
+    `id_rescatado` INT AUTO_INCREMENT PRIMARY KEY,
+    `codigo` VARCHAR(20) UNIQUE NOT NULL,                  
+    `fecha_ingreso` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+    `ubicacion_rescate` VARCHAR(255) NOT NULL,            
+    `condicion_fisica` ENUM('Lesionado','Desnutrido','Saludable') NOT NULL,
+    `observaciones` TEXT,                          
+    `nombre_temporal` VARCHAR(100) NOT NULL,               
+    `sexo` ENUM('Macho','Hembra','No determinado') NOT NULL,
+    `edad` INT NOT NULL,                           
+    `tamanio` ENUM('Pequeño','Mediano','Grande') NOT NULL,
+    `especie` ENUM('Perro','Gato','Otro') NOT NULL,
+    `raza` VARCHAR(100) DEFAULT 'No determinada',
+    `rescatista_nombre` VARCHAR(100),                      
+    `rescatista_contacto` VARCHAR(100),                    
+    `foto_url` VARCHAR(255) NOT NULL,               
+    `estado` ENUM('En permanencia','Adoptado','Trasladado','Fallecido') DEFAULT 'En permanencia'                      
 );
 
-CREATE TABLE `adopciones` (
-    `id_adopcion` INT PRIMARY KEY AUTO_INCREMENT,
-    `id_rescatado` INT,
-    `numero_documento` INT,
-    `fecha_adopcion` DATE,
-    `certificado_url` VARCHAR(255),
-    FOREIGN KEY (id_rescatado) REFERENCES animales_rescatados(id_rescatado),
-    FOREIGN KEY (numero_documento) REFERENCES usuarios(numero_documento)
+CREATE TABLE permanencia_animal (
+    `id_permanencia` INT AUTO_INCREMENT PRIMARY KEY,
+    `id_rescatado` INT NOT NULL,
+    `fecha_control` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `estado_salud` ENUM('Saludable','En tratamiento','Grave') NOT NULL,
+    `estado_emocional` ENUM('Tranquilo','Ansioso','Agresivo','Miedoso','Estable') NOT NULL,
+    `observaciones` TEXT NOT NULL,
+    `medicamentos` TEXT, -- OJO: puedes enlazar con la tabla medicamento si lo quieres relacional
+    `imagen_url` VARCHAR(255),
+    `numero_documento` INT NOT NULL, -- responsable (admin o veterinario)
+    FOREIGN KEY (`id_rescatado`) REFERENCES animales_rescatados(`id_rescatado`),
+    FOREIGN KEY (`numero_documento`) REFERENCES usuarios(`numero_documento`)
 );
+
+CREATE TABLE salidas_animales (
+    `id_salida` INT AUTO_INCREMENT PRIMARY KEY,
+    `id_rescatado` INT NOT NULL,
+    `fecha_salida` DATE NOT NULL,
+    `motivo` ENUM('Adopción', 'Traslado', 'Fallecimiento') NOT NULL,
+    `nombre_receptor` VARCHAR(255),
+    `documento_receptor` VARCHAR(50),
+    `observaciones` TEXT,
+    `acta_salida` VARCHAR(255),
+    `registrado_por` INT NOT NULL,
+    FOREIGN KEY (`id_rescatado`) REFERENCES animales_rescatados(`id_rescatado`),
+    FOREIGN KEY (`registrado_por`) REFERENCES usuarios(`numero_documento`)
+);
+
+CREATE TABLE donaciones (
+    `id_donacion` INT AUTO_INCREMENT PRIMARY KEY,
+    `fecha_donacion` DATE NOT NULL,
+    `nombre_donante` VARCHAR(255) NOT NULL,
+    `contacto_donante` VARCHAR(255),
+    `nombre_medicamento` VARCHAR(255) NOT NULL,
+    `presentacion` VARCHAR(100) NOT NULL,
+    `cantidad` INT NOT NULL,
+    `unidad_medida` VARCHAR(50) NOT NULL,
+    `lote` VARCHAR(100),
+    `fecha_vencimiento` DATE,
+    `observaciones` TEXT,
+    `estado` ENUM('en revision', 'trasladado', 'descartado') NOT NULL DEFAULT 'en revision',
+    `numero_documento` INT NOT NULL,
+    FOREIGN KEY (`numero_documento`) REFERENCES usuarios(`numero_documento`)
+);
+
 
 -- VISTAS
 
@@ -197,20 +256,6 @@ FROM paciente_animal pa
 JOIN consultas c ON pa.id_paciente = c.id_paciente
 JOIN usuarios u ON u.numero_documento = c.numero_documento;
 
-CREATE VIEW resumen_adopciones AS
-SELECT 
-    ar.id_rescatado,
-    ar.nombre_provicional,
-    ar.fecha_ingreso,
-    ar.estado_salud,
-    ar.estado,
-    a.fecha_adopcion,
-    u.nombre_usuario AS adoptante_nombre,
-    u.apellido_usuario AS adoptante_apellido
-FROM animales_rescatados ar
-LEFT JOIN adopciones a ON ar.id_rescatado = a.id_rescatado
-LEFT JOIN usuarios u ON a.numero_documento = u.numero_documento;
-
 CREATE VIEW medicamentos_por_vencer AS
 SELECT 
     id_medicamento,
@@ -243,6 +288,24 @@ SELECT
 FROM insumo
 WHERE fecha_vencimiento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY);
 
+SELECT c.*, cc.motivo, cc.fecha_cancelacion
+FROM consultas c
+LEFT JOIN consultas_canceladas cc ON c.id_consulta = cc.id_consulta;
+
+CREATE VIEW resumen_adopciones AS
+SELECT 
+    ar.id_rescatado,
+    ar.nombre_provicional,
+    ar.fecha_ingreso,
+    ar.estado_salud,
+    ar.estado,
+    a.fecha_adopcion,
+    u.nombre_usuario AS adoptante_nombre,
+    u.apellido_usuario AS adoptante_apellido
+FROM animales_rescatados ar
+LEFT JOIN adopciones a ON ar.id_rescatado = a.id_rescatado
+LEFT JOIN usuarios u ON a.numero_documento = u.numero_documento;
+
 -- PROCEDIMIENTOS
 DELIMITER //
 CREATE PROCEDURE registrar_movimiento_insumo (
@@ -266,19 +329,20 @@ DELIMITER ;
 
 -- DATOS DE PRUEBA
 
-INSERT INTO `usuarios` (`numero_documento`, `nombre_usuario`, `apellido_usuario`, `tipo_documento_usuario`, `correo_electronico_usuario`, `telefono`, `id_rol`, `contrasena`) 
-VALUES
-(1001, 'Ana', 'Pérez', 'CC', 'ana.perez@example.com', '3001234567', 1, SHA2('Ana123', 256)),
-(1002, 'Carlos', 'Gómez', 'CE', 'carlos.gomez@example.com', '3002345678', 2, SHA2('CarlosVet', 256)),
-(1003, 'Laura', 'Martínez', 'PPT', 'laura.m@example.com', '3013456789', 3, SHA2('Laura123', 256)),
-(1004, 'Diego', 'Ramírez', 'CC', 'diego.ram@example.com', '3024567890', 3, SHA2('Diego321', 256)),
-(1005, 'Juliana', 'López', 'PASAPORTE', 'juliana.l@example.com', '3035678901', 2, SHA2('JuliVet', 256));
-
 INSERT INTO `rol` (`nombre_rol`) 
 VALUES 
 ('Administrador'),
 ('Medico_Veterinario'),
 ('Cliente');
+
+INSERT INTO `usuarios` (`numero_documento`, `nombre_usuario`, `apellido_usuario`, `tipo_documento_usuario`, `correo_electronico_usuario`, `telefono`, `id_rol`, `contrasena`) 
+VALUES
+(1016102401, 'Duncan Nicolás', 'Hernández Rodríguez', 'CC', 'dnicolas.hr.98@gmail.com', '3144902872', 1, SHA2('123456', 256)),
+(1001, 'Ana', 'Pérez', 'CC', 'ana.perez@example.com', '3144902872', 1, SHA2('Ana123', 256)),
+(1002, 'Carlos', 'Gómez', 'CE', 'carlos.gomez@example.com', '3144902872', 2, SHA2('CarlosVet', 256)),
+(1003, 'Laura', 'Martínez', 'PPT', 'laura.m@example.com', '3144902872', 3, SHA2('Laura123', 256)),
+(1004, 'Diego', 'Ramírez', 'CC', 'diego.ram@example.com', '3144902872', 3, SHA2('Diego321', 256)),
+(1005, 'Juliana', 'López', 'PASAPORTE', 'juliana.l@example.com', '3144902872', 2, SHA2('JuliVet', 256));
 
 INSERT INTO `paciente_animal` (`nombre_paciente`, `especie_paciente`, `raza_paciente`, `sexo_paciente`, `peso_paciente`,`color_pelaje_paciente`, `fecha_nacimiento_paciente`, `edad_estimada_paciente`,`rescatado`, `adoptado`, `numero_documento`) 
 VALUES
@@ -288,13 +352,13 @@ VALUES
 ('Luna', 'Gato', 'Angora', 'Hembra', 3.9, 'Negro', NULL, 2, TRUE, TRUE, 1004),
 ('Simba', 'Perro', 'Pug', 'Macho', 8.0, 'Beige', '2021-11-20', NULL, FALSE, FALSE, 1003);
 
-INSERT INTO `consultas` (`id_paciente`, `fecha_consulta`, `hora_consulta`, `motivo_consulta`, `diagnostico`,`tratamiento`, `medicamentos`, `observaciones`, `firma`, `numero_documento`) 
+INSERT INTO `consultas` (`id_paciente`, `fecha_consulta`, `hora_consulta`, `motivo_consulta`, `diagnostico`,`tratamiento`, `medicamentos`, `observaciones`, `firma`, `estado_consulta`, `numero_documento`) 
 VALUES
-(1, '2025-07-01', '10:00:00', 'Revisión general', 'Buena salud', 'Vitamina C', 'Complejo B', 'Sin novedades', 'firma1.jpg', 1002),
-(2, '2025-07-02', '11:30:00', 'Vacunación', 'Sin fiebre', 'Vacuna triple felina', 'Trivac', 'Paciente tranquilo', 'firma2.jpg', 1005),
-(3, '2025-07-03', '09:45:00', 'Herida en pata', 'Corte superficial', 'Limpieza y vendaje', 'Antibióticos tópicos', 'Revisión en 7 días', 'firma3.jpg', 1005),
-(4, '2025-07-04', '14:00:00', 'Seguimiento posquirúrgico', 'Estable', 'Reposo', NULL, 'Buena evolución', 'firma4.jpg', 1002),
-(5, '2025-07-05', '15:15:00', 'Diarrea', 'Gastroenteritis', 'Dieta especial', 'Omeprazol', 'Posible alergia alimentaria', 'firma5.jpg', 1005);
+(1, '2025-08-20', '10:30:00', 'Revisión general', 'Animal en buen estado','No requiere tratamiento', 'N/A', 'Paciente tranquilo durante la consulta', 'Dr. Juan Pérez', 'Activa', 1001),
+(2, '2025-08-18', '15:00:00', 'Pérdida de apetito', 'Gastritis leve','Dieta blanda por 5 días','Omeprazol veterinario', 'Se recomienda seguimiento en una semana', 'Dra. María López', 'Cerrada', 1002),
+(3, '2025-08-15', '09:00:00', 'Vacunación programada', 'N/A', 'N/A', 'N/A', 'El propietario no asistió','Dr. Carlos Ramírez', 'Cancelada', 1003),
+(1, '2025-08-25', '11:45:00', 'Dificultad para caminar', 'Lesión en la pata trasera derecha','Reposo y antiinflamatorio', 'Carprofeno', 'Se aplicó vendaje temporal', 'Dra. Andrea Torres', 'Activa', 1001),
+(2, '2025-08-10', '14:20:00', 'Esterilización', 'Cirugía realizada con éxito','Antibiótico por 7 días', 'Amoxicilina + Clavulánico', 'Control post-operatorio en 10 días', 'Dr. Felipe Gómez', 'Cerrada', 1002);
 
 INSERT INTO `archivos_consulta` (`id_consulta`, `nombre_archivo`) 
 VALUES
@@ -352,17 +416,33 @@ VALUES
 (4, 4, '2025-07-04', 'Ana', 10, 'Salida', 'Tratamiento paciente', NULL),
 (5, 5, '2025-07-05', 'Diego', 10, 'Entrada', 'Compra adicional', NULL);
 
-INSERT INTO `animales_rescatados` (`id_rescatado`,`nombre_provicional`,`fecha_ingreso`,`estado_salud`,`tratamiento`,`estado`,`foto_url`)
+INSERT INTO `animales_rescatados` (`codigo`, `fecha_ingreso`, `ubicacion_rescate`, `condicion_fisica`, `observaciones`,`nombre_temporal`, `sexo`, `edad`, `tamanio`, `especie`, `raza`,`rescatista_nombre`, `rescatista_contacto`, `foto_url`, `estado`)
 VALUES
-(1, 'Firulais', '2025-06-01', 'Desnutrición leve', 'Alimentación y descanso', 'disponible', 'firulais.jpg'),
-(2, 'Pelusa', '2025-06-05', 'Herida en pata', 'Curaciones diarias', 'En tratamiento', 'pelusa.jpg'),
-(3, 'Toby', '2025-06-10', 'Sano', NULL, 'adoptado', 'toby.jpg'),
-(4, 'Manchas', '2025-06-15', 'Parásitos', 'Desparasitación', 'disponible', 'manchas.jpg'),
-(5, 'Nina', '2025-06-20', 'Anemia', 'Suplementación', 'En tratamiento', 'nina.jpg');
+('RES-001', NOW(), 'Parque Central', 'Lesionado', 'Fractura en pata trasera, requiere tratamiento','Firulais', 'Macho', 3, 'Mediano', 'Perro', 'Mestizo','Juan Pérez', '3124567890', 'img/uploads/firulais.jpg', 'En permanencia'),
+('RES-002', NOW(), 'Barrio Las Flores', 'Desnutrido', 'Muy delgado, necesita recuperación alimenticia','Mishi', 'Hembra', 2, 'Pequeño', 'Gato', 'Criollo','Laura Gómez', '3109876543', 'img/uploads/mishi.jpg', 'En permanencia'),
+('RES-003', NOW(), 'Avenida Siempre Viva', 'Saludable', 'Se encontró perdido pero en buen estado','Rex', 'Macho', 5, 'Grande', 'Perro', 'Pastor Alemán','Carlos Torres', '3011122334', 'img/uploads/rex.jpg', 'En permanencia'),
+('RES-004', NOW(), 'Calle 123', 'Lesionado', 'Murió a los dos días por complicaciones','Luna', 'Hembra', 1, 'Pequeño', 'Gato', 'Siamesa','Ana Martínez', '3004455667', 'img/uploads/luna.jpg', 'Fallecido'),
+('RES-005', NOW(), 'Zona Industrial', 'Desnutrido', 'Ya recuperado y en nuevo hogar','Rocky', 'Macho', 4, 'Grande', 'Perro', 'Labrador','David Ramírez', '3112233445', 'img/uploads/rocky.jpg', 'Adoptado'),
+('RES-006', NOW(), 'Colegio San Martín', 'Saludable', 'Conejo encontrado en el patio escolar','Bunny', 'No determinado', 1, 'Pequeño', 'Otro', 'Conejo enano','Paula Díaz', '3156677889', 'img/uploads/bunny.jpg', 'Trasladado');
 
-INSERT INTO `adopciones` (`id_adopcion`,`id_rescatado`,`numero_documento`,`fecha_adopcion`,`certificado_url`)
+INSERT INTO `permanencia_animal` 
+(`id_rescatado`, `estado_salud`, `estado_emocional`, `observaciones`, `medicamentos`, `imagen_url`, `numero_documento`) 
 VALUES
-(1, 3, 1003, '2025-07-01', 'certificado_toby.pdf');
+(1, 'En tratamiento', 'Ansioso', 'Herida en pata trasera, se aplicó limpieza y vendaje.', 'Antibiótico - Amoxicilina 250mg', 'imagenes/control1_res1.jpg', 1001),
+(1, 'Saludable', 'Tranquilo', 'La herida cicatrizó, se retiraron los puntos.', 'Analgesia - Meloxicam', 'imagenes/control2_res1.jpg', 1002),
+(2, 'Grave', 'Miedoso', 'Desnutrición severa y pulgas. Se inicia protocolo de recuperación.', 'Vitaminas + Suero', 'imagenes/control1_res2.jpg', 1001),
+(2, 'En tratamiento', 'Estable', 'Gana peso, mejor apetito, se redujo infestación de pulgas.', 'Antiparasitario + Vitaminas', 'imagenes/control2_res2.jpg', 1002),
+(3, 'Saludable', 'Agresivo', 'Animal sin signos de enfermedad, pero muestra conducta agresiva.', 'Ninguno', 'imagenes/control1_res3.jpg', 1001);
+
+INSERT INTO `donaciones`
+(`fecha_donacion`, `nombre_donante`, `contacto_donante`, `nombre_medicamento`, `presentacion`, `cantidad`, `unidad_medida`, `lote`, `fecha_vencimiento`, `observaciones`, `estado`, `numero_documento`)
+VALUES
+('2025-07-15', 'Carlos Gómez', '3109988776', 'Amoxicilina', 'Tabletas', 50, 'mg', 'L-AXC123', '2026-07-15', 'Donación para uso veterinario', 'en revision', 1002),
+('2025-07-18', 'Laura Martínez', '3201122334', 'Ivermectina', 'Inyectable', 20, 'ml', 'IVM-788', '2027-01-30', 'Para tratamiento antiparasitario', 'trasladado', 1003),
+('2025-07-20', 'Ana Pérez', '3015566778', 'Enrofloxacina', 'Suspensión oral', 10, 'ml', 'ENR-451', '2025-12-10', 'Medicamento donado para infecciones graves', 'en revision', 1001),
+('2025-07-23', 'Diego Ramírez', '3112233445', 'Ketamina', 'Frasco', 3, 'ml', 'KET-963', '2026-04-11', 'Donación de anestésico para cirugías', 'descartado', 1004),
+('2025-07-30', 'Juliana López', '3003344556', 'Prednisolona', 'Tabletas', 25, 'mg', 'PRD-785', '2026-11-20', 'Para tratamientos de inflamaciones', 'en revision', 1005);
+
 
 -- CONSULTAS
 

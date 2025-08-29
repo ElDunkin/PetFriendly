@@ -14,9 +14,9 @@
         <nav class="menu">
             
             <ul>
-                <li><a href="/dashboard_administrador">Dashboard</a></li>
-                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/dashboard_medico">Dashboard</a></li>
                 <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+                <li><a href="/seleccionar_paciente_consulta">Gestion Consulta</a></li>
                 <li><a href="/gestion_insumos">Gestion Insumos</a></li>
                 <li><a href="/medicamento">Gestion Medicamentos</a></li>
             </ul>
@@ -59,8 +59,14 @@
         <label for="observaciones">Observaciones adicionales:</label>
         <textarea name="observaciones" id="observaciones"></textarea>
 
+        <label for="estado_consulta">Estado de la Consulta:</label>
+        <select name="estado_consulta" required>
+            <option value="Activa">Activa</option>
+            <option value="Cerrada">Cerrada</option>
+        </select>
+
         <label for="documento">Médico a cargo:</label>
-        <select name="documento" id="documento" required>
+        <select name="firma_veterinario" id="firma_veterinario" required>
         <option value="">Seleccione un médico</option>
         {% for medico in medicos %}
         <option value="{{ medico.numero_documento }}">{{ medico.nombre_usuario }} {{ medico.apellido_usuario }}</option>
@@ -75,6 +81,7 @@
         <br>
         <a href="/listar_consulta" class="btn btn-primary">Ver lista de pacientes</a>
     </form>
+    {% include 'modals/errorModal.html' %}
 </main>
 
 <footer>

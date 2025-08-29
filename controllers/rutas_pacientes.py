@@ -1,5 +1,4 @@
-import uuid
-from flask import Blueprint, render_template, request, redirect,url_for
+from flask import Blueprint, render_template, request, redirect
 import pymysql.cursors
 import pymysql
 import os
@@ -9,6 +8,9 @@ from models.conexion import obtener_conexion
 
 rutas_pacientes = Blueprint('rutas_pacientes', __name__)
 UPLOAD_FOLDER = 'static/img/carga_imagenes'
+ALLOWED_EXTENSIONS = {'png','jpg','jpeg','pdf'}
+
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 
 @rutas_pacientes.route('/registro_paciente_animal', methods=['GET', 'POST'])
 def registro_pacientes():

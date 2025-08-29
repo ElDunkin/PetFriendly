@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, session, request, redirect, url_for, flash
-from werkzeug.security import  check_password_hash
+# from werkzeug.security import  check_password_hash
+import hashlib
 from models.conexion import obtener_conexion
 import pymysql
 
@@ -9,9 +10,11 @@ rutas_login = Blueprint('rutas_login', __name__)
 @rutas_login.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        
         correo_electronico_usuario = request.form['correo_electronico_usuario']
         contrasena = request.form['contrasena']        
-
+        contrasena_hash = hashlib.sha256(contrasena.encode()).hexdigest()
+        
         conn = obtener_conexion()
         cur = conn.cursor(pymysql.cursors.DictCursor)
         cur.execute('''
@@ -22,10 +25,10 @@ def login():
         ''', (correo_electronico_usuario,))
         usuario = cur.fetchone()
 
-        if usuario and check_password_hash(usuario['contrasena'], contrasena):
+        if usuario and usuario['contrasena'] == contrasena_hash:
             # Guardamos en sesión los datos necesarios
             session['rol'] = usuario['nombre_rol']
-            session['documento'] = usuario['numero_documento']
+            session['numero_documento'] = usuario['numero_documento']
             session['nombre'] = usuario['nombre_usuario']
             session['apellido'] = usuario['apellido_usuario']
 

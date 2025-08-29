@@ -33,21 +33,26 @@
         <h1>Modificar Usuario</h1>
         <form action="/modificar_consultas/{{ consulta.id_consulta }}" method="POST">
         <label for="motivo_consulta">Motivo de consulta:</label>
-        <textarea name="motivo_consulta" id="motivo_consulta"  value="{{ consulta.motivo_consulta }}" required></textarea>
-
+        <input type="text" name="motivo_consulta" id="motivo_consulta"  value="{{ consulta.motivo_consulta }}" required>
         <label for="diagnostico">Diagnóstico:</label>
-        <textarea name="diagnostico" id="diagnostico"  value="{{ consulta.diagnostico }}" required></textarea>
+        <input type="text"name="diagnostico" id="diagnostico"  value="{{ consulta.diagnostico }}" required>
 
         <label for="tratamientos">Tratamientos recomendados:</label>
-        <textarea name="tratamientos" id="tratamientos" value="{{ consulta.tratamiento }}" ></textarea>
+        <input type="text" name="tratamientos" id="tratamientos" value="{{ consulta.tratamiento }}" >
 
         <label for="medicamentos">Medicamentos recetados:</label>
-        <textarea name="medicamentos" id="medicamentos" value="{{ consulta.medicamentos }}" ></textarea>
+        <input type="text" name="medicamentos" id="medicamentos" value="{{ consulta.medicamentos }}" >
 
         <label for="observaciones">Observaciones adicionales:</label>
-        <textarea name="observaciones" id="observaciones" value="{{ consulta.observaciones }}" ></textarea>
+        <input type="text" name="observaciones" id="observaciones" value="{{ consulta.observaciones }}" >
+
+        <label for="estado_consulta">Estado de la Consulta:</label>
+        <select name="estado_consulta" required>
+            <option value="Activa">Activa</option>
+            <option value="Cerrada">Cerrada</option>
+        </select>
         
-        <a href="/listar_usuarios" class="btn btn-warning">Volver</a>
+        <a href="/listar_consulta" class="btn btn-warning">Volver</a>
         <button type="submit" class="btn btn-success">Modificar</button>
 
         </form>
@@ -63,5 +68,6 @@
             Powered by Petfriendly
         </div>
     </footer>
+    <script src="/static/js/error.js"></script>
 </body>
 </html>
