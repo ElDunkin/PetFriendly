@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agendar Cita Veterinaria</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/citas.css') }}">
+
+</head>
+<body>
+    <div class="container-cita">
+        <h2>Agendar Cita Veterinaria</h2>
+            <div class="banner-cita"></div>
+
+        <form method="POST">
+            <input type="text" name="nombre_dueno" placeholder="Nombre del dueño" required>
+            <input type="text" name="nombre_mascota" placeholder="Nombre de la mascota" required>
+            <input type="date" name="fecha para agendar su cita" required>
+            <input type="time" name="hora" required>
+            <textarea name="motivo" placeholder="Motivo de la cita" required></textarea>
+            <button type="submit" class="btn-agendar">Agendar</button>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="success-message">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

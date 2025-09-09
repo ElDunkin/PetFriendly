@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Procedimientos Quirúrgicos</title>
+</head>
+<body>
+    <h2>Registrar Procedimiento Quirúrgico</h2>
+    <form action="/registrar_procedimiento" method="POST">
+        <label>Nombre de la Mascota:</label><br>
+        <input type="text" name="nombre_mascota" required><br>
+
+        <label>Tipo de Procedimiento:</label><br>
+        <input type="text" name="tipo_procedimiento" required><br>
+
+        <label>Fecha:</label><br>
+        <input type="date" name="fecha" required><br>
+
+        <label>Observaciones:</label><br>
+        <textarea name="observaciones"></textarea><br>
+
+        <button type="submit">Registrar</button>
+    </form>
+
+    <hr>
+
+    <h2>Procedimientos Registrados</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nombre Mascota</th>
+                <th>Tipo</th>
+                <th>Fecha</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in procedimientos %}
+            <tr>
+                <td>{{ p[1] }}</td>
+                <td>{{ p[2] }}</td>
+                <td>{{ p[3] }}</td>
+                <td>{{ p[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

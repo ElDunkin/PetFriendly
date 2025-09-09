@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | {{ session['rol'] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="mensaje-bienvenida">
+            <h1>Bienvenido, {{ session['nombre'] }} {{ session['apellido'] }} </h1>
+            <h2>Panel de Administración</h2>
+        </div>
+        
+
+        <div class="resumen">
+            <div class="card">
+                <div class="imagen-usuarios">
+                <h2>Usuarios registrados</h2>
+                <p>{{ total_usuarios }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+    <h2>Jornada de Vacunación</h2>
+    <a class="btn-panel" href="{{ url_for('rutas_jornada.jornada') }}">Registrar Jornada</a>
+</div>
+
+<div class="card">
+    <h3>Procedimientos</h3>
+    <a href="{{ url_for('rutas_procedimientos.listar_procedimientos') }}">
+        <button>Registrar Procedimiento</button>
+    </a>
+</div>
+
+<div class="card">
+    <h3>Carne vacunas</h3>
+<a href="{{ url_for('rutas_carne_vacunas.carne_vacunas', nombre_mascota='Firulais') }}" class="btn btn-success">
+
+    <button>Carnet de vacunas</button>
+</a>
+</div>
+
+
+
+
+        
+<div class="card">
+    <img src="{{ url_for('static', filename='img/cita_veterinaria.png') }}" alt="Cita Veterinaria">
+    <h2>Agendar Cita Veterinaria</h2>
+    <a href="{{ url_for('citas_bp.citas') }}" class="btn-panel">Ir al formulario</a>
+</div>
+
+    </main>
+    
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+</body>
+    </html>

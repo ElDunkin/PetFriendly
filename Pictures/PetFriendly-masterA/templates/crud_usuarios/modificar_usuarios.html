@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/registro_usuarios.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <div class="container">
+        <h1>Modificar Usuario</h1>
+        <form action="/modificar_usuarios/{{ usuario.numero_documento }}    " method="POST">
+            <label for="nombre_usuario">Nombre:</label>
+            <input type="text" id="nombre_usuario" name="nombre_usuario" value="{{ usuario.nombre_usuario }}">
+            <br>
+            <label for="apellido_usuario">Apellido:</label>
+            <input type="text" id="apellido_usuario" name="apellido_usuario" value="{{ usuario.apellido_usuario }}">
+            <br>
+            <label for="correo_electronico_usuario">Correo:</label>
+            <input type="email" id="correo_electronico_usuario" name="correo_electronico_usuario" value="{{ usuario.correo_electronico_usuario }}">
+            <br>
+            <label for="telefono">Telefono:</label>
+            <input type="text" id="telefono" name="telefono" value="{{ usuario.telefono }}">
+            <br>
+            <br>
+            <a href="/listar_usuarios" class="btn btn-warning">Volver</a>
+            <button type="submit" class="btn btn-success">Modificar</button>
+        </form>
+    </div>
+
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+</body>
+</html>

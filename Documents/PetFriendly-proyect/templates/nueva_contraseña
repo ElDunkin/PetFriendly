@@ -1,0 +1,7 @@
+<div class="contenedor">
+    <h2>Nueva Contraseña</h2>
+    <form method="POST">
+        <input type="password" name="nueva" placeholder="Nueva contraseña" required>
+        <button type="submit">Actualizar</button>
+    </form>
+</div>

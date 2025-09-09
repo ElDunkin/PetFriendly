@@ -1,0 +1,63 @@
+/* static/css/citas.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 0;
+}
+
+.container-cita {
+    max-width: 500px;
+    margin: 60px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.container-cita h1 {
+    color: #0C254B;
+    margin-bottom: 25px;
+}
+
+form input, form select, form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+form textarea {
+    resize: vertical;
+}
+
+.btn-agendar {
+    background-color: #0C254B;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-agendar:hover {
+    background-color: #F41F00;
+}
+
+.success-message {
+    color: green;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-weight: bold;
+}

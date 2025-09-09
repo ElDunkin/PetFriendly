@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Seleccionar Mascota</title>
+</head>
+<body>
+    <h1>Selecciona una mascota</h1>
+    <form action="{{ url_for('rutas_carne_vacunas.carne_vacunas_redirect') }}" method="POST">
+        <select name="nombre_mascota" required>
+            {% for m in mascotas %}
+                <option value="{{ m.nombre_mascota }}">{{ m.nombre_mascota }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Ver Carné</button>
+    </form>
+</body>
+</html>

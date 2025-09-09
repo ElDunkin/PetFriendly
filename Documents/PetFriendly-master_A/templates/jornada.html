@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Jornada de Vacunación</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jornada.css') }}">
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Jornada de Vacunación Antirrábica</h1>
+        <img src="{{ url_for('static', filename='img/vacunacion jornada.png') }}" alt="Jornada de vacunación" class="img-jornada">
+
+        <form method="POST">
+            <input type="text" name="nombre_evento" placeholder="Nombre del evento" required>
+            <input type="date" name="fecha" required>
+            <input type="text" name="lugar" placeholder="Lugar" required>
+            <textarea name="descripcion" placeholder="Descripción del evento" required></textarea>
+            <button type="submit">Registrar jornada</button>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="mensaje">
+                {% for msg in messages %}
+                    <p>{{ msg }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

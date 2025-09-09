@@ -1,0 +1,74 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #e8f5e9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.recuperar-container {
+    background-color: #ffffff;
+    border: 2px solid #2e7d32;
+    padding: 30px;
+    width: 360px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.logo {
+    width: 90px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    color: #1b5e20;
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+
+h2 {
+    color: #2e7d32;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+form input {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #a5d6a7;
+    border-radius: 5px;
+}
+
+form button {
+    background-color: #388e3c;
+    color: white;
+    border: none;
+    padding: 10px 0;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #2e7d32;
+}
+
+.mensaje {
+    margin-top: 15px;
+    background-color: #f1f8e9;
+    border: 1px solid #aed581;
+    color: #33691e;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+a.volver {
+    display: block;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #1b5e20;
+    text-decoration: none;
+}

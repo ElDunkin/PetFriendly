@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Procedimientos Quirúrgicos</title>
+
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f1f5f9;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .card {
+      border-radius: 1rem;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    .form-control, textarea {
+      border-radius: 0.5rem;
+    }
+
+    .form-control:focus, textarea:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+    }
+
+    .btn {
+      border-radius: 0.5rem;
+      font-weight: 500;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: #e9f5ff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container d-flex align-items-center justify-content-center flex-column" style="min-height: 100vh;">
+    <div class="row w-100 justify-content-center mb-4">
+      <div class="col-md-6">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-header bg-primary text-white text-center rounded-top-4">
+            <h3 class="mb-0">🩺 Registrar Procedimiento Quirúrgico</h3>
+          </div>
+          <div class="card-body p-4">
+            <form action="/registrar_procedimiento" method="POST">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">🐶 Nombre de la Mascota</label>
+                <input type="text" name="nombre_mascota" class="form-control" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">🔧 Tipo de Procedimiento</label>
+                <input type="text" name="tipo_procedimiento" class="form-control" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">📅 Fecha</label>
+                <input type="date" name="fecha" class="form-control" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">📝 Observaciones</label>
+                <textarea name="observaciones" class="form-control" rows="3"></textarea>
+              </div>
+
+              <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success px-5 py-2 fs-5">
+                  ✅ Registrar
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="card-footer text-center text-muted small">
+            © 2025 Mi Veterinaria
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de procedimientos -->
+    <div class="row w-100 justify-content-center">
+      <div class="col-md-10">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-header bg-primary text-white text-center rounded-top-4">
+            <h3 class="mb-0">📋 Procedimientos Registrados</h3>
+          </div>
+          <div class="card-body p-4">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle text-center">
+                <thead class="table-primary">
+                  <tr>
+                    <th>Nombre Mascota</th>
+                    <th>Tipo</th>
+                    <th>Fecha</th>
+                    <th>Observaciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for p in procedimientos %}
+                  <tr>
+                    <td>{{ p[1] }}</td>
+                    <td>{{ p[2] }}</td>
+                    <td>{{ p[3] }}</td>
+                    <td>{{ p[4] }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer text-center text-muted small">
+            © 2025 Mi Veterinaria
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS (opcional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

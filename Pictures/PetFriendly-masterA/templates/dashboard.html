@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Patita</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <img src="{{ url_for('static', filename='patitas2.png') }}" alt="Logo Patitas" class="logo">
+        <h1>Bienvenido al Centro Veterinario Patitas</h1>
+        <div class="btn-group">
+            <a href="{{ url_for('jornada') }}" class="btn-cambios">📅 Jornada de Vacunación</a>
+            <a href="{{ url_for('login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+        </div>
+    </div>
+</body>
+</html>

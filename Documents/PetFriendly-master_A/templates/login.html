@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Empleados</title>
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/contactenos">Contactenos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <h1>Centro Veterinario Patitas</h1>
+            <h2>Iniciar Sesión</h2>
+
+            <form method="POST" action="{{ url_for('rutas_login.login') }}">
+                <input type="text" name="correo_electronico_usuario" placeholder="Correo" required>
+                <input type="password" name="contrasena" placeholder="Contraseña" required>
+            
+                <div class="extra">
+                    <a href="{{ url_for('recuperar.recuperar') }}">¿Olvidaste tu contraseña?</a>
+
+                </div>
+
+                <button type="submit">Ingresar</button>
+                
+                <label class="keep-session">
+                    <input type="checkbox">
+                    <br> 
+                    Mantener la sesión iniciada
+                </label>
+            </form>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="mensaje">
+                        {% for msg in messages %}
+                            <p>{{ msg }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </main>
+    
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+</body>
+</html>

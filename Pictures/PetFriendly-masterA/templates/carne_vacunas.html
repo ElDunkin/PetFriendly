@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Carné de Vacunas</title>
+</head>
+<body>
+    <h1>Carné de Vacunas - {{ nombre_mascota }}</h1>
+
+    {% if vacunas %}
+        <table border="1" cellpadding="10">
+            <thead>
+                <tr>
+                    <th>Vacuna</th>
+                    <th>Fecha de aplicación</th>
+                    <th>Próxima dosis</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in vacunas %}
+                    <tr>
+                        <td>{{ v.nombre_vacuna }}</td>
+                        <td>{{ v.fecha_aplicacion }}</td>
+                        <td>{{ v.proxima_dosis }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay vacunas registradas para esta mascota.</p>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('rutas_principales.index') }}">Volver</a>
+
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recuperar Contraseña</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='recuperar.css') }}">
+</head>
+<body>
+    <div class="recuperar-container">
+        <img src="{{ url_for('static', filename='patitas2.png') }}" class="logo" alt="Logo Patitas">
+        <h1>Centro Veterinario Patitas</h1>
+        <h2>Recuperar Contraseña</h2>
+
+        <form method="POST">
+            <input type="text" name="usuario" placeholder="Correo o Usuario" required>
+            <input type="password" name="nueva_contrasena" placeholder="Nueva Contraseña" required>
+            <button type="submit">Actualizar Contraseña</button>
+            <a href="{{ url_for('rutas_login.login') }}" class="volver">← Volver al Login</a>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="mensaje">
+                    {% for msg in messages %}
+                        <p>{{ msg }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
