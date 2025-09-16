@@ -9,14 +9,14 @@ rutas_donacion = Blueprint('rutas_donacion', __name__)
 
 @rutas_donacion.route('/registrar_donacion', methods=['GET'])
 def formulario_donacion():
-    ruta_html = os.path.join('templates', 'crud donacion medicamentos')
+    ruta_html = os.path.join('templates', 'crud_donacion_medicamentos')
     return send_from_directory(ruta_html, 'registrar_donacion.html')
 
 
 @rutas_donacion.route('/registrar_donacion', methods=['POST'])
 def registrar_donacion():
     datos = request.get_json(force=True)
-    print("📌 Datos recibidos:", datos) 
+    print("Datos recibidos:", datos) 
 
     # ✅ Fecha del sistema
     fecha_donacion = date.today().isoformat()
@@ -103,17 +103,17 @@ def registrar_donacion():
             datos.get('fecha_vencimiento'),
             datos.get('observaciones'),
             datos.get('estado'),
-            session.get('numero_documento')  # 🚨 usa .get() para evitar error si no existe
+            session.get('numero_documento') 
         )
         
-        print("📌 Valores para la DB:", valores)
+        print("Valores para la DB:", valores)
 
         cursor.execute(sql, valores)
         conn.commit()
         return jsonify({"mensaje": "Donación registrada con éxito"}), 200
 
     except Exception as e:
-        print("❌ Error en registrar_donacion:", str(e))  # 👈 VER EL ERROR REAL AQUÍ
+        print("Error en registrar_donacion:", str(e)) 
         return jsonify({"error": str(e)}), 500
 
     finally:

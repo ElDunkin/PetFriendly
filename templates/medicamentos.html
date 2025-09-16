@@ -2,37 +2,66 @@
 {% block content %}
 <link rel="stylesheet" href="/static/css/generic.css">
 <header>
-        <div class="logo">
-        <nav class="menu">
-            
-            <ul>
-                <li><a href="/dashboard_administrador">Dashboard</a></li>
-                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
-                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
-                <li><a href="/gestion_insumos">Gestion Insumos</a></li>
-                <li><a href="/medicamento">Gestion Medicamentos</a></li>
-            </ul>
+    <div class="logo">
+    <nav class="menu">
+        <ul>
+            <li><a href="/dashboard_administrador">Dashboard</a></li>
 
-            <div class="btn-group">
-                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
-            </div>
-        </nav>
-    </header>
-<div class="container">
+            <!-- Gestión (submenú) -->
+            <li class="dropdown">
+                <a href="#">Gestión ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registro_usuarios">Usuarios</a></li>
+                    <li><a href="/registro_paciente_animal">Pacientes</a></li>
+                    <li><a href="/gestion_insumos">Insumos</a></li>
+                    <li><a href="/medicamento">Medicamentos</a></li>
+                    <li><a href="/registrar_animal_rescatado">Animales Rescatados</a></li>
+                </ul>
+            </li>
+
+            <!-- Animales -->
+            
+
+            <!-- Donaciones (submenú) -->
+            <li class="dropdown">
+                <a href="#">Donaciones ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registrar_donacion">Medicamentos</a></li>
+                    <li><a href="/donaciones_alimentos">Alimentos</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="btn-group">
+            <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+        </div>
+    </nav>
+</header>
+<main>
+    <div class="container">
     <h2 class="text-center mt-4">Gestion de medicamentos</h2>
     <div class="row">
         <!-- Registro nuevo medicamento -->
         <div class="col-md-5">
             <form id="formMedicamento">
                 <h4>Registrar nuevo medicamento</h4>
+                <label for="">Nombre Medicamento</label>
                 <input type="text" class="form-control my-2" name="nombre_medicamento" placeholder="Nombre comercial *" required>
+                <label for="">Principio Activo</label>
                 <input type="text" class="form-control my-2" name="principio_activo" placeholder="Principio activo *" required>
+                <label for="">Presentacion</label>
                 <input type="text" class="form-control my-2" name="presentacion" placeholder="Presentación *" required>
+                <label for="">Lote</label>
                 <input type="text" class="form-control my-2" name="lote" placeholder="Lote *" required>
+                <label for="">Concetracion</label>
                 <input type="text" class="form-control my-2" name="concentracion" placeholder="Concentración *" required>
+                <label for="">Fecha Vencimiento</label>
                 <input type="date" class="form-control my-2" name="fecha_vencimiento" required>
+                <label for="">Cantidad</label>
                 <input type="number" class="form-control my-2" name="cantidad_inicial" placeholder="Cantidad inicial *" required>
+                <label for="">Proveedor</label>
                 <input type="text" class="form-control my-2" name="proveedor" placeholder="Proveedor">
+                <label for="">Observación</label>
                 <input type="text" class="form-control my-2" name="observaciones" placeholder="Observaciones">
                 <button type="submit" class="btn btn-primary w-100">Registrar</button>
             </form>
@@ -59,7 +88,9 @@
         </div>
     </div>
 </div>
+</main>
 
-{% include 'modals.html' %}
+
+{% include 'modals/modals.html' %}
 <script src="{{ url_for('static', filename='js/medicamentos.js') }}"></script>
 {% endblock %}

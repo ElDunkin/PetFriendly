@@ -143,3 +143,8 @@ def eliminar_paciente(id_paciente):
     cur.close()
     return redirect('/listar_paciente_animal?textE=Paciente+eliminado+exitosamente')    
 
+@rutas_pacientes.route('/ver_pacientes/<int:id_paciente>')
+def ver_paciente(id_paciente):
+    # Aquí puedes traer los datos de la mascota desde la base de datos
+    # Por ahora solo mando el id para probar
+    return render_template("mascotas/ver_mascota.html", id_paciente=id_paciente)

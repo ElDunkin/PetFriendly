@@ -16,6 +16,4 @@ def registro_foto_des_adopcion():
     text = ''
     if session.get('rol') != 'Administrador':
         return redirect('/login')
-    
-    if request.method == 'POST':
         

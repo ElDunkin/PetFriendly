@@ -5,6 +5,7 @@ pip install Flask-MySQL
 pip install PyMySQL
 pip install Flask-Mail
 pip install twilio
+pip install flask_wtf
 
 
 

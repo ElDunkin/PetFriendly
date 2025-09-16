@@ -12,11 +12,13 @@ from controllers.rutas_rescatados import rutas_rescatados
 from controllers.rutas_donaciones import rutas_donacion
 from controllers.rutas_permanencia import rutas_permanencia
 from controllers.rutas_salidas import rutas_salidas
-
+from controllers.rutas_alimentos import rutas_alimentos
+from controllers.rutas_citas import rutas_citas
+from controllers.rutas_carne_vacunas import rutas_carne_vacunas
+from controllers.rutas_jornada import rutas_jornada
 
 main = conexion_base_de_datos()
 main.secret_key = '1234'
-
 
 main.register_blueprint(rutas_principales)
 main.register_blueprint(rutas_usuarios)
@@ -31,8 +33,10 @@ main.register_blueprint(rutas_rescatados)
 main.register_blueprint(rutas_donacion)
 main.register_blueprint(rutas_permanencia)
 main.register_blueprint(rutas_salidas)
-
-
+main.register_blueprint(rutas_alimentos)
+main.register_blueprint(rutas_citas)
+main.register_blueprint(rutas_carne_vacunas)
+main.register_blueprint(rutas_jornada)
 
 
 if __name__ == '__main__':

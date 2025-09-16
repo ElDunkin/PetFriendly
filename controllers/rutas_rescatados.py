@@ -43,22 +43,22 @@ def registrar_animal_rescatado():
     contacto = request.form.get("rescatista_contacto", "")
 
     if not nombre_temporal or not edad or not sexo or not ubicacion or not condicion or not tamanio or not especie:
-        return render_template("animales_rescatados.html", error="Todos los campos obligatorios deben estar diligenciados.")
+        return render_template("rescatados/animales_rescatados.html", error="Todos los campos obligatorios deben estar diligenciados.")
 
     try:
         edad = int(edad)
         if edad <= 0:
-            return render_template("animales_rescatados.html", error="La edad debe ser un número positivo.")
+            return render_template("rescatados/animales_rescatados.html", error="La edad debe ser un número positivo.")
     except ValueError:
-        return render_template("animales_rescatados.html", error="La edad debe ser un número válido.")
+        return render_template("rescatados/animales_rescatados.html", error="La edad debe ser un número válido.")
 
     foto = request.files["foto"]
     if not foto or not allowed_file(foto.filename):
-        return render_template("animales_rescatados.html", error="La foto debe ser JPG o PNG.")
+        return render_template("rescatados/animales_rescatados.html", error="La foto debe ser JPG o PNG.")
 
     foto.seek(0, os.SEEK_END)
     if foto.tell() > MAX_SIZE:
-        return render_template("animales_rescatados.html", error="La foto no puede superar los 5 MB.")
+        return render_template("rescatados/animales_rescatados.html", error="La foto no puede superar los 5 MB.")
     foto.seek(0)
 
 
@@ -110,7 +110,7 @@ def listar_animal_rescatado():
             historial_por_animal[id_rescatado].append(registro)
 
         return render_template(
-            "listar_animal_rescatado.html",
+            "rescatados/listar_animal_rescatado.html",
             animales=animales,
             historial_por_animal=historial_por_animal
         )

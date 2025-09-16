@@ -21,7 +21,7 @@ CREATE TABLE `usuarios` (
 );
 
 CREATE TABLE `paciente_animal` (
-    `id_paciente` INT AUTO_INCREMENT PRIMARY KEY,
+    `id_paciente` INT AUTO_INCREMENT PRIMARY KEY,   
     `nombre_paciente` VARCHAR(100) NOT NULL,
     `especie_paciente` ENUM ('Perro','Gato') NOT NULL,
     `raza_paciente` VARCHAR(100) NOT NULL,
@@ -104,6 +104,7 @@ CREATE TABLE `citas` (
     `fecha` DATE,
     `hora` TIME,
     `motivo` TEXT,
+    `estado` ENUM('Activa','Cancelada','Atendida') DEFAULT 'Activa',
     FOREIGN KEY (`id_paciente`) REFERENCES paciente_animal(`id_paciente`),
     FOREIGN KEY (`numero_documento`) REFERENCES usuarios(`numero_documento`)
 );
@@ -209,6 +210,32 @@ CREATE TABLE donaciones (
     FOREIGN KEY (`numero_documento`) REFERENCES usuarios(`numero_documento`)
 );
 
+CREATE TABLE donaciones_alimentos (
+    `id_donacion_alimento` INT AUTO_INCREMENT PRIMARY KEY,
+    `fecha_recepcion` DATE NOT NULL,
+    `nombre_donante` VARCHAR(255) NOT NULL,
+    `tipo_alimento` ENUM('Concentrado seco para perros','Concentrado seco para gatos','Alimento húmedo enlatado para perros','Alimento húmedo enlatado para gatos','Leche para cachorros', 'Suplementos nutricionales','Otros') NOT NULL,
+    `otros` VARCHAR(255),
+    `cantidad_recibida` VARCHAR(100) NOT NULL,
+    `unidad_medida` ENUM('Kilogramos(kG)','Litros(l)','Unidades(u)') NOT NULL,
+    `fecha_vencimiento` DATE,
+    `destino` ENUM('Uso general del centro','Caso especifico') NOT NULL,
+    `caso_especifico` VARCHAR(255),
+    `observaciones` VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE vacunas (
+    `id_vacuna` INT AUTO_INCREMENT PRIMARY KEY,
+    `id_paciente` INT NOT NULL,
+    `nombre_vacuna` VARCHAR(100) NOT NULL,
+    `fecha_aplicacion` DATE NOT NULL,
+    `proxima_aplicacion` DATE,
+    `observaciones` TEXT,
+    `numero_documento` VARCHAR(100) NOT NULL,
+    FOREIGN KEY (`id_paciente`) REFERENCES mascotas(`id_paciente`),
+    FOREIGN KEY (`numero_documento`) REFERENCES usuarios(`numero_documento`)
+);
+
 
 -- VISTAS
 
@@ -233,7 +260,9 @@ SELECT  pa.id_paciente,
         pa.color_pelaje_paciente, 
         pa.fecha_nacimiento_paciente, 
         pa.edad_estimada_paciente, 
-        pa.rescatado, pa.adoptado, 
+        pa.rescatado, pa.adoptado,
+        pa.foto_paciente, 
+        u.numero_documento,
         u.nombre_usuario, 
         u.apellido_usuario
 FROM paciente_animal pa
@@ -277,6 +306,67 @@ FROM citas c
 JOIN paciente_animal p ON p.id_paciente = c.id_paciente
 JOIN usuarios u ON u.numero_documento = c.numero_documento
 ORDER BY c.fecha, c.hora;
+
+CREATE VIEW citas_por_paciente AS
+SELECT 
+    c.id_cita,
+    c.fecha,
+    c.hora,
+    c.motivo,
+    c.estado,
+    p.id_paciente,
+    p.nombre_paciente,
+    p.especie_paciente,
+    p.raza_paciente,
+    p.sexo_paciente,
+    p.peso_paciente,
+    u.numero_documento,
+    u.nombre_usuario,
+    u.apellido_usuario,
+    u.telefono AS Contacto
+FROM citas c
+INNER JOIN paciente_animal p ON c.id_paciente = p.id_paciente
+INNER JOIN usuarios u ON c.numero_documento = u.numero_documento;
+
+
+SELECT c.id_cita AS id,
+            p.nombre_paciente AS nombre_mascota,
+            c.fecha, c.hora, c.motivo, c.estado
+        FROM citas c
+        JOIN paciente_animal p ON c.id_paciente = p.id_paciente
+
+CREATE VIEW consultas_por_paciente AS
+SELECT 
+    con.id_consulta,
+    con.fecha_consulta,
+    con.hora_consulta,
+    con.motivo_consulta,
+    con.diagnostico,
+    con.tratamiento,
+    con.medicamentos,
+    con.observaciones,
+    con.firma,
+    con.estado_consulta,
+    p.id_paciente,
+    p.nombre_paciente,
+    p.especie_paciente,
+    p.raza_paciente,
+    p.sexo_paciente,
+    p.peso_paciente,
+    p.color_pelaje_paciente,
+    p.fecha_nacimiento_paciente,
+    p.edad_estimada_paciente,
+    p.foto_paciente,
+    p.rescatado,
+    p.adoptado,
+    u.numero_documento AS documento_medico,
+    u.nombre_usuario AS nombre_medico,
+    u.apellido_usuario AS apellido_medico,
+    u.correo_electronico_usuario AS correo_medico,
+    u.telefono AS telefono_medico
+FROM consultas con
+INNER JOIN paciente_animal p ON con.id_paciente = p.id_paciente
+INNER JOIN usuarios u ON con.numero_documento = u.numero_documento;
 
 CREATE VIEW insumos_por_vencer AS
 SELECT 
@@ -386,11 +476,11 @@ VALUES
 
 INSERT INTO `citas` (`id_cita`,`id_paciente`,`numero_documento`,`fecha`,`hora`,`motivo`)
 VALUES
-(1, 1, 1002, '2025-07-10', '10:00:00', 'Chequeo general'),
-(2, 2, 1005, '2025-07-10', '10:30:00', 'Vacuna'),
-(3, 3, 1005, '2025-07-11', '11:00:00', 'Revisión de herida'),
-(4, 4, 1002, '2025-07-11', '11:30:00', 'Seguimiento postcirugía'),
-(5, 5, 1005, '2025-07-12', '12:00:00', 'Digestión');
+(1, 1, 1002, '2025-07-10', '10:00:00', 'Chequeo general',"Atendida"),
+(2, 2, 1005, '2025-07-10', '10:30:00', 'Vacuna',"Atendida"),
+(3, 3, 1005, '2025-07-11', '11:00:00', 'Revisión de herida',"Cancelada"),
+(4, 4, 1002, '2025-07-11', '11:30:00', 'Seguimiento postcirugía',"Cancelada"),
+(5, 5, 1005, '2025-10-15', '12:00:00', 'Digestión',"Activa");
 
 INSERT INTO `jornadas` (`id_jornada`,`nombre_jornada`,`fecha_jornada`,`lugar_jornada`,`descripcion_jornada`)
 VALUES
@@ -418,12 +508,12 @@ VALUES
 
 INSERT INTO `animales_rescatados` (`codigo`, `fecha_ingreso`, `ubicacion_rescate`, `condicion_fisica`, `observaciones`,`nombre_temporal`, `sexo`, `edad`, `tamanio`, `especie`, `raza`,`rescatista_nombre`, `rescatista_contacto`, `foto_url`, `estado`)
 VALUES
-('RES-001', NOW(), 'Parque Central', 'Lesionado', 'Fractura en pata trasera, requiere tratamiento','Firulais', 'Macho', 3, 'Mediano', 'Perro', 'Mestizo','Juan Pérez', '3124567890', 'img/uploads/firulais.jpg', 'En permanencia'),
-('RES-002', NOW(), 'Barrio Las Flores', 'Desnutrido', 'Muy delgado, necesita recuperación alimenticia','Mishi', 'Hembra', 2, 'Pequeño', 'Gato', 'Criollo','Laura Gómez', '3109876543', 'img/uploads/mishi.jpg', 'En permanencia'),
-('RES-003', NOW(), 'Avenida Siempre Viva', 'Saludable', 'Se encontró perdido pero en buen estado','Rex', 'Macho', 5, 'Grande', 'Perro', 'Pastor Alemán','Carlos Torres', '3011122334', 'img/uploads/rex.jpg', 'En permanencia'),
-('RES-004', NOW(), 'Calle 123', 'Lesionado', 'Murió a los dos días por complicaciones','Luna', 'Hembra', 1, 'Pequeño', 'Gato', 'Siamesa','Ana Martínez', '3004455667', 'img/uploads/luna.jpg', 'Fallecido'),
-('RES-005', NOW(), 'Zona Industrial', 'Desnutrido', 'Ya recuperado y en nuevo hogar','Rocky', 'Macho', 4, 'Grande', 'Perro', 'Labrador','David Ramírez', '3112233445', 'img/uploads/rocky.jpg', 'Adoptado'),
-('RES-006', NOW(), 'Colegio San Martín', 'Saludable', 'Conejo encontrado en el patio escolar','Bunny', 'No determinado', 1, 'Pequeño', 'Otro', 'Conejo enano','Paula Díaz', '3156677889', 'img/uploads/bunny.jpg', 'Trasladado');
+('RES-001', NOW(), 'Parque Central', 'Lesionado', 'Fractura en pata trasera, requiere tratamiento','Firulais', 'Macho', 3, 'Mediano', 'Perro', 'Mestizo','Juan Pérez', '3124567890', 'firulais.jpg', 'En permanencia'),
+('RES-002', NOW(), 'Barrio Las Flores', 'Desnutrido', 'Muy delgado, necesita recuperación alimenticia','Mishi', 'Hembra', 2, 'Pequeño', 'Gato', 'Criollo','Laura Gómez', '3109876543', 'mishi.jpg', 'En permanencia'),
+('RES-003', NOW(), 'Avenida Siempre Viva', 'Saludable', 'Se encontró perdido pero en buen estado','Rex', 'Macho', 5, 'Grande', 'Perro', 'Pastor Alemán','Carlos Torres', '3011122334', 'rex.jpg', 'En permanencia'),
+('RES-004', NOW(), 'Calle 123', 'Lesionado', 'Murió a los dos días por complicaciones','Luna', 'Hembra', 1, 'Pequeño', 'Gato', 'Siamesa','Ana Martínez', '3004455667', 'luna.jpg', 'Fallecido'),
+('RES-005', NOW(), 'Zona Industrial', 'Desnutrido', 'Ya recuperado y en nuevo hogar','Rocky', 'Macho', 4, 'Grande', 'Perro', 'Labrador','David Ramírez', '3112233445', 'rocky.jpg', 'Adoptado'),
+('RES-006', NOW(), 'Colegio San Martín', 'Saludable', 'Conejo encontrado en el patio escolar','Bunny', 'No determinado', 1, 'Pequeño', 'Otro', 'Conejo enano','Paula Díaz', '3156677889', 'bunny.jpg', 'Trasladado');
 
 INSERT INTO `permanencia_animal` 
 (`id_rescatado`, `estado_salud`, `estado_emocional`, `observaciones`, `medicamentos`, `imagen_url`, `numero_documento`) 

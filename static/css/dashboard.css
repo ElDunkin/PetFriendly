@@ -8,6 +8,17 @@ background-color: #f4f6f8;
 text-align: center;
 }
 
+.avatar{
+    background-image: url("/static/img/Avatar_cliente.png");
+    background-position: center;
+    background-size: cover;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    margin-top: 5px;
+}
+
 h1 {
 color: #0C254B;
 margin: 50px;
@@ -73,9 +84,4 @@ border-radius: 10px;
 
 .btn-panel:hover {
 background-color: #F41F00;
-}
-
-footer {
-margin-top: 40px;
-color: #777;
 }
