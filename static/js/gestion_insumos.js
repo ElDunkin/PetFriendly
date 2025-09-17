@@ -1,19 +1,32 @@
 // Registrar nuevo insumo
-document.getElementById('nuevoInsumoForm').onsubmit = async function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    let data = {};
-    formData.forEach((v, k) => data[k] = v);
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById('nuevoInsumoForm');
 
-    await fetch('/api/insumos', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(data)
-    });
-    alert('¡Insumo registrado!');
-    this.reset();
+    form.onsubmit = async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        let data = {};
+        formData.forEach((v, k) => data[k] = v);
+
+        const res = await fetch('/api/insumos', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+            alert('Insumo registrado o actualizado correctamente');
+            this.reset();
+            cargarInsumos();
+        } else {
+            const error = await res.json();
+            alert('Error: ' + error.error);
+        }
+    };
+
+    // Cargar insumos al inicio
     cargarInsumos();
-};
+});
 
 // Mostrar insumos en tabla
 async function cargarInsumos() {
@@ -54,3 +67,11 @@ async function mostrarAlerta() {
 function cerrarAlerta() {
     document.getElementById('alertaModal').style.display = 'none';
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Evitar fechas anteriores a hoy
+    const hoy = new Date().toISOString().split("T")[0];
+    document.getElementById("fecha_vencimiento").setAttribute("min", hoy);
+
+    // ... tu código del form y cargarInsumos()
+});

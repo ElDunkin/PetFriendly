@@ -11,7 +11,6 @@ def citas():
     cur = conn.cursor(pymysql.cursors.DictCursor)
 
     if request.method == 'POST':
-        # Leer campos del formulario
         numero_documento = request.form.get('numero_documento')
         id_paciente = request.form.get('id_paciente')
         fecha = request.form.get('fecha')
@@ -19,14 +18,12 @@ def citas():
         motivo = request.form.get('motivo')
         estado = request.form.get('estado', 'Activa')
 
-        # Validaciones mínimas (evita inserts vacíos)
         if not (numero_documento and id_paciente and fecha and hora and motivo):
             flash("Completa todos los campos obligatorios.", "danger")
             cur.close()
             conn.close()
             return redirect(url_for('rutas_citas.citas'))
 
-        # Insertar en la misma conexión
         cur.execute("""
             INSERT INTO citas (numero_documento, id_paciente, fecha, hora, motivo, estado)
             VALUES (%s, %s, %s, %s, %s, %s)
@@ -36,17 +33,15 @@ def citas():
 
         cur.close()
         conn.close()
-        return redirect(url_for('rutas_citas.listar_citas'))
+        return redirect(url_for('rutas_citas.citas'))
 
-    # GET: traer las citas para listar
-    # Uso de la vista si existe; si no existe, puedes usar el JOIN (descomenta la alternativa)
+    # GET: listar citas
     try:
         cur.execute("SELECT * FROM citas_por_paciente ORDER BY fecha, hora")
         citas = cur.fetchall()
-    except Exception:
-        # Fallback si no hay la vista: obtener con JOIN
+    except:
         cur.execute("""
-            SELECT c.id_cita AS id, p.nombre_paciente AS nombre_paciente, c.fecha, c.hora, c.motivo, c.estado
+            SELECT c.id_cita, p.nombre_paciente, c.fecha, c.hora, c.motivo, c.estado
             FROM citas c
             LEFT JOIN paciente_animal p ON c.id_paciente = p.id_paciente
             ORDER BY c.fecha, c.hora
@@ -57,13 +52,20 @@ def citas():
     conn.close()
     return render_template('citas.html', citas=citas)
 
-@rutas_citas.route('/listar_citas')
+@rutas_citas.route('/listar_citas', methods=['GET'])
 def listar_citas():
     conn = obtener_conexion()
-    cur = conn.cursor(pymysql.cursors.DictCursor)
-    cur.execute("SELECT * FROM citas_por_paciente WHERE id_paciente")
-    citas = cur.fetchall()   
-            
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT c.id_consulta, p.nombre_paciente, c.fecha_consulta, c.hora_consulta, c.motivo_consulta, c.estado_consulta
+        FROM consultas c
+        JOIN paciente_animal p ON c.id_paciente = p.id_paciente
+        ORDER BY c.fecha_consulta ASC, c.hora_consulta ASC;
+    """)
+    citas = cursor.fetchall()
+
+    conn.close()
     return render_template('citas.html', citas=citas)
 
 @rutas_citas.route("/buscar_mascotas/<numero_documento>")

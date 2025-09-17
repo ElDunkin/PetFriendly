@@ -51,15 +51,31 @@
     <div class="container">
         <div class="form-section">
             <h2>Registrar nuevo insumo</h2>
-            <form id="nuevoInsumoForm">
-                <input name="nombre" placeholder="Nombre del insumo*" required>
-                <input type="number" name="cantidad_inicial" placeholder="Cantidad inicial*" required>
-                <input name="unidad_medida" placeholder="Unidad de medida*" required>
-                <input name="proveedor" placeholder="Proveedor*" required>
-                <input type="date" name="fecha_ingreso" placeholder="Fecha de ingreso*" required>
-                <input type="date" name="fecha_vencimiento" placeholder="Fecha de vencimiento">
-                <input name="tipo_insumo" placeholder="Tipo de insumo*" required>
+                <form id="nuevoInsumoForm">
+                <label>Nombre del insumo*</label>
+                <input name="nombre_insumo" placeholder="Nombre del insumo" required>
+
+                <label>Cantidad inicial*</label>
+                <input type="number" name="cantidad_inicial" placeholder="Cantidad inicial" required>
+
+                <label>Unidad de medida*</label>
+                <input name="unidad_medida" placeholder="Unidad de medida" required>
+
+                <label>Proveedor*</label>
+                <input name="proveedor" placeholder="Proveedor" required>
+
+                <label>Fecha de ingreso*</label>
+                <input type="date" name="fecha_ingreso" required>
+
+                <label>Fecha de vencimiento</label>
+                <input type="date" name="fecha_vencimiento">
+
+                <label>Tipo de insumo*</label>
+                <input name="tipo_insumo" placeholder="Tipo de insumo" required>
+
+                <label>Observaciones</label>
                 <textarea name="observaciones" placeholder="Observaciones"></textarea>
+
                 <button type="submit">Registrar</button>
             </form>
         </div>

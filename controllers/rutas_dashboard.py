@@ -76,10 +76,53 @@ def dashboard_administrador():
 
 @rutas_dashboard.route('/dashboard_medico')
 def dashboard_medico():
-    if session.get('rol') != 'Medico_Veterinario':
-        return redirect('/login')  # Seguridad: solo médicos
+    conn = obtener_conexion()
+    cursor = conn.cursor()
 
-    return render_template('dashboard_medico.html')
+    # 📊 Pacientes por mes
+    cursor.execute("""
+        SELECT MONTH(fecha_consulta) AS mes, COUNT(*) 
+        FROM consultas 
+        GROUP BY mes
+        ORDER BY mes;
+    """)
+    datos = cursor.fetchall()
+    meses_labels = [str(d[0]) for d in datos]
+    meses_data = [d[1] for d in datos]
+
+    # 📋 Consultas por estado
+    cursor.execute("""
+        SELECT estado_consulta, COUNT(*) 
+        FROM consultas 
+        GROUP BY estado_consulta;
+    """)
+    datos_estado = cursor.fetchall()
+    tipo_labels = [d[0] for d in datos_estado]
+    tipo_data = [d[1] for d in datos_estado]
+
+    # 📅 Próximas citas (ejemplo: las del día siguiente)
+    cursor.execute("""
+        SELECT p.nombre_paciente, c.fecha_consulta, c.hora_consulta
+        FROM consultas c
+        JOIN paciente_animal p ON c.id_paciente = p.id_paciente
+        WHERE c.fecha_consulta >= CURDATE()
+        ORDER BY c.fecha_consulta ASC, c.hora_consulta ASC
+        LIMIT 5;
+    """)
+    proximas_citas = [
+        {"nombre_paciente": d[0], "fecha": d[1], "hora": d[2]} for d in cursor.fetchall()
+    ]
+
+    conn.close()
+
+    return render_template(
+        "dashboard_medico.html",
+        meses_labels=meses_labels,
+        meses_data=meses_data,
+        tipo_labels=tipo_labels,
+        tipo_data=tipo_data,
+        proximas_citas=proximas_citas
+    )
 
 @rutas_dashboard.route('/dashboard_cliente')
 def dashboard_cliente():

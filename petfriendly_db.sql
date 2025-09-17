@@ -533,6 +533,30 @@ VALUES
 ('2025-07-23', 'Diego Ramírez', '3112233445', 'Ketamina', 'Frasco', 3, 'ml', 'KET-963', '2026-04-11', 'Donación de anestésico para cirugías', 'descartado', 1004),
 ('2025-07-30', 'Juliana López', '3003344556', 'Prednisolona', 'Tabletas', 25, 'mg', 'PRD-785', '2026-11-20', 'Para tratamientos de inflamaciones', 'en revision', 1005);
 
+INSERT INTO `citas` (`id_paciente`, `numero_documento`, `fecha`, `hora`, `motivo`, `estado`) VALUES
+(1, 1003, '2025-09-20', '09:00:00', 'Vacunación anual', 'Activa'),
+(2, 1004, '2025-09-20', '10:30:00', 'Consulta por pérdida de apetito', 'Activa'),
+(3, 1003, '2025-09-21', '11:00:00', 'Revisión post operatoria', 'Activa'),
+(4, 1004, '2025-09-21', '14:00:00', 'Control de esterilización', 'Activa'),
+(5, 1003, '2025-09-21', '15:30:00', 'Chequeo respiratorio', 'Cancelada'),
+
+(1, 1003, '2025-09-22', '08:45:00', 'Desparasitación', 'Atendida'),
+(2, 1004, '2025-09-22', '09:30:00', 'Vacunación refuerzo', 'Atendida'),
+(3, 1003, '2025-09-22', '10:15:00', 'Revisión de piel', 'Atendida'),
+(4, 1004, '2025-09-23', '13:00:00', 'Chequeo dental', 'Atendida'),
+(5, 1003, '2025-09-23', '16:30:00', 'Revisión general', 'Cancelada'),
+
+(1, 1003, '2025-09-24', '09:15:00', 'Dolor en pata trasera', 'Activa'),
+(2, 1004, '2025-09-24', '10:00:00', 'Caída de pelo', 'Activa'),
+(3, 1003, '2025-09-24', '11:30:00', 'Revisión por diarrea', 'Activa'),
+(4, 1004, '2025-09-25', '12:00:00', 'Control nutricional', 'Activa'),
+(5, 1003, '2025-09-25', '15:00:00', 'Chequeo de vacunas', 'Activa'),
+
+(1, 1003, '2025-09-26', '08:30:00', 'Chequeo de oído', 'Atendida'),
+(2, 1004, '2025-09-26', '09:45:00', 'Control de crecimiento', 'Atendida'),
+(3, 1003, '2025-09-27', '10:00:00', 'Infección cutánea', 'Atendida'),
+(4, 1004, '2025-09-27', '11:15:00', 'Chequeo ocular', 'Atendida'),
+(5, 1003, '2025-09-27', '13:00:00', 'Chequeo general pre-adopción', 'Cancelada');
 
 -- CONSULTAS
 
