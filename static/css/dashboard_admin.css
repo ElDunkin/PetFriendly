@@ -110,6 +110,15 @@ header h1 {
   color: #2c7a7b;
 }
 
+.card-body {
+  width: 580px;
+}
+
+.grafica-dashboard{
+   width: 580px;
+}
+
+
 canvas {
   background: #fff;
   padding: 15px;

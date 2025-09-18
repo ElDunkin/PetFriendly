@@ -81,6 +81,10 @@
             <h3>Insumos por vencer</h3>
             <canvas id="insumos"></canvas>
             </div>
+            <div>
+            <h3>Medicamentos por Vencer (30 días)</h3>
+            <canvas id="chartMedicamentosVencer"></canvas>
+            </div>
         </div>
     </main>
         
@@ -133,6 +137,39 @@
         },
         options: {
             indexAxis: 'y'
+        }
+    });
+
+    const ctxMed = document.getElementById('chartMedicamentosVencer').getContext('2d');
+    new Chart(ctxMed, {
+        type: 'bar',
+        data: {
+        labels: {{ medicamentos_labels|safe }},
+        datasets: [{
+            label: 'Existencia',
+            data: {{ medicamentos_data|safe }},
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+        },
+        options: {
+        indexAxis: 'y', // 👈 esto lo hace HORIZONTAL
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'top' },
+            title: {
+            display: true,
+            text: 'Medicamentos próximos a vencer'
+            }
+        },
+        scales: {
+            x: {
+            beginAtZero: true,
+            ticks: { stepSize: 5 }
+            }
+        }
         }
     });
 </script>

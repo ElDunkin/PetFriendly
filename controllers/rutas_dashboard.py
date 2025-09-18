@@ -47,8 +47,8 @@ def dashboard_administrador():
 
     # ⚠️ Insumos por vencer
     cur.execute("""
-        SELECT nombre_insumo, fecha_vencimiento, cantidad_inicial
-        FROM insumo
+        SELECT *
+        FROM insumos_por_vencer
         WHERE fecha_vencimiento IS NOT NULL
         AND fecha_vencimiento <= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
         ORDER BY fecha_vencimiento ASC;
@@ -56,6 +56,18 @@ def dashboard_administrador():
     productos_alerta = cur.fetchall()
     insumos_labels = [p['nombre_insumo'] for p in productos_alerta]
     insumos_data = [p['cantidad_inicial'] for p in productos_alerta]
+    
+        # 💊 Medicamentos por vencer
+    cur.execute("""
+        SELECT nombre_medicamento, fecha_vencimiento, existencia
+        FROM medicamento
+        WHERE fecha_vencimiento IS NOT NULL
+        AND fecha_vencimiento <= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+        ORDER BY fecha_vencimiento ASC;
+    """)
+    medicamentos_alerta = cur.fetchall()
+    medicamentos_labels = [m['nombre_medicamento'] for m in medicamentos_alerta]
+    medicamentos_data = [m['existencia'] for m in medicamentos_alerta]
 
     cur.close()
     conn.close()
@@ -71,11 +83,17 @@ def dashboard_administrador():
                             donaciones_data=json.dumps(donaciones_data),
                             insumos_labels=json.dumps(insumos_labels),
                             insumos_data=json.dumps(insumos_data),
-                            productos_alerta=productos_alerta)
+                            productos_alerta=productos_alerta,
+                            medicamentos_labels=json.dumps(medicamentos_labels),
+                            medicamentos_data=json.dumps(medicamentos_data),
+                            medicamentos_alerta=medicamentos_alerta)
 
 
 @rutas_dashboard.route('/dashboard_medico')
 def dashboard_medico():
+    if session.get('rol') != 'Medico_Veterinario':
+        return redirect(url_for('rutas_login.login'))
+    
     conn = obtener_conexion()
     cursor = conn.cursor()
 

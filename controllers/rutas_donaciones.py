@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, Response, json, request, jsonify, session, send_from_directory
+from flask import Blueprint, Response, json, render_template, request, jsonify, session, send_from_directory
 from models.conexion import obtener_conexion
 import pymysql
 from datetime import date
@@ -9,8 +9,7 @@ rutas_donacion = Blueprint('rutas_donacion', __name__)
 
 @rutas_donacion.route('/registrar_donacion', methods=['GET'])
 def formulario_donacion():
-    ruta_html = os.path.join('templates', 'crud_donacion_medicamentos')
-    return send_from_directory(ruta_html, 'registrar_donacion.html')
+    return render_template('crud_donacion_medicamentos/registrar_donacion.html')
 
 
 @rutas_donacion.route('/registrar_donacion', methods=['POST'])
@@ -124,24 +123,62 @@ def registrar_donacion():
 
 @rutas_donacion.route('/consultar_donaciones', methods=['GET'])
 def consultar_donaciones():
-    return jsonify({'mensaje': 'Función en construcción'})
+    conn = obtener_conexion()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM medicamento_recibido_usuario ORDER BY fecha_donacion DESC")
+    donaciones = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(donaciones)
 
 
-@rutas_donacion.route('/revisar_donacion/<int:donacion_id>', methods=['POST'])
-def revisar_donacion(donacion_id):
+@rutas_donacion.route('/revisar_donacion/<int:id_donacion>', methods=['POST'])
+def revisar_donacion(id_donacion):
     datos = request.json
     accion = datos.get('accion')
+    conn = obtener_conexion()
+    cursor = conn.cursor()
 
     if accion == 'aprobar':
-        # TODO: Cambiar estado a trasladado y actualizar inventario
-        pass
-    elif accion == 'descartar':
-        justificacion = datos.get('justificacion')
-        if not justificacion:
-            return jsonify({'error': 'La justificación es obligatoria para descartar'}), 400
-        # TODO: Cambiar estado a descartado con justificación
-        pass
+        # Cambiar estado a trasladado
+        cursor.execute("UPDATE donaciones SET estado='trasladado' WHERE id_donacion=%s", (id_donacion,))
+
+        # Actualizar inventario medicamentos
+        cursor.execute("""
+            SELECT nombre_medicamento, presentacion, cantidad, unidad_medida, lote, fecha_vencimiento
+            FROM donaciones WHERE id_donacion=%s
+        """, (id_donacion,))
+        donacion = cursor.fetchone()
+
+        # Insertar o actualizar en medicamento
+        cursor.execute("""
+            SELECT id_medicamento, existencia FROM medicamento
+            WHERE nombre_medicamento=%s AND fecha_vencimiento=%s
+        """, (donacion[0], donacion[5]))
+        existe = cursor.fetchone()
+
+        if existe:
+            id_medicamento, existencia = existe
+            nueva_existencia = existencia + donacion[2]
+            cursor.execute("UPDATE medicamento SET existencia=%s WHERE id_medicamento=%s", (nueva_existencia, id_medicamento))
+        else:
+            cursor.execute("""
+                INSERT INTO medicamento (nombre_medicamento, principio_activo, presentacion, lote, concentracion,
+                fecha_vencimiento, cantidad_inicial, existencia, proveedor, observaciones, estado)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (donacion[0], "", donacion[1], donacion[3], "", donacion[5],
+                  donacion[2], donacion[2], "Donación", "Ingreso por donación", "Trasladado_inventario"))
+
+    elif accion == 'rechazar':
+        justificacion = datos.get('justificacion', '')
+        cursor.execute("UPDATE donaciones SET estado='descartado', justificacion_rechazo=%s WHERE id_donacion=%s",
+                       (justificacion, id_donacion))
     else:
+        cursor.close()
+        conn.close()
         return jsonify({'error': 'Acción no válida'}), 400
 
-    return jsonify({'mensaje': f'Donación {accion} exitosamente'}), 200
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({'mensaje': f'Donación {accion} exitosamente'})

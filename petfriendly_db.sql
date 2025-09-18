@@ -21,7 +21,7 @@ CREATE TABLE `usuarios` (
 );
 
 CREATE TABLE `paciente_animal` (
-    `id_paciente` INT AUTO_INCREMENT PRIMARY KEY,   
+    `id_paciente` INT AUTO_INCREMENT PRIMARY KEY,
     `nombre_paciente` VARCHAR(100) NOT NULL,
     `especie_paciente` ENUM ('Perro','Gato') NOT NULL,
     `raza_paciente` VARCHAR(100) NOT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE `medicamento` (
     `existencia` INT NOT NULL,
     `proveedor` VARCHAR(100),
     `observaciones` VARCHAR(255),
-    `estado` VARCHAR(20) NOT NULL
+    `estado` ENUM('En_revision', 'Trasladado_inventario', 'Descartado')
 );
 
 CREATE TABLE `movimiento`(
@@ -148,21 +148,21 @@ CREATE TABLE `movimiento`(
 
 CREATE TABLE `animales_rescatados` (
     `id_rescatado` INT AUTO_INCREMENT PRIMARY KEY,
-    `codigo` VARCHAR(20) UNIQUE NOT NULL,                  
-    `fecha_ingreso` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
-    `ubicacion_rescate` VARCHAR(255) NOT NULL,            
+    `codigo` VARCHAR(20) UNIQUE NOT NULL,
+    `fecha_ingreso` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `ubicacion_rescate` VARCHAR(255) NOT NULL,
     `condicion_fisica` ENUM('Lesionado','Desnutrido','Saludable') NOT NULL,
-    `observaciones` TEXT,                          
-    `nombre_temporal` VARCHAR(100) NOT NULL,               
+    `observaciones` TEXT,
+    `nombre_temporal` VARCHAR(100) NOT NULL,
     `sexo` ENUM('Macho','Hembra','No determinado') NOT NULL,
-    `edad` INT NOT NULL,                           
+    `edad` INT NOT NULL,
     `tamanio` ENUM('Pequeño','Mediano','Grande') NOT NULL,
     `especie` ENUM('Perro','Gato','Otro') NOT NULL,
     `raza` VARCHAR(100) DEFAULT 'No determinada',
-    `rescatista_nombre` VARCHAR(100),                      
-    `rescatista_contacto` VARCHAR(100),                    
-    `foto_url` VARCHAR(255) NOT NULL,               
-    `estado` ENUM('En permanencia','Adoptado','Trasladado','Fallecido') DEFAULT 'En permanencia'                      
+    `rescatista_nombre` VARCHAR(100),
+    `rescatista_contacto` VARCHAR(100),
+    `foto_url` VARCHAR(255) NOT NULL,
+    `estado` ENUM('En permanencia','Adoptado','Trasladado','Fallecido') DEFAULT 'En permanencia'
 );
 
 CREATE TABLE permanencia_animal (
@@ -206,6 +206,7 @@ CREATE TABLE donaciones (
     `fecha_vencimiento` DATE,
     `observaciones` TEXT,
     `estado` ENUM('en revision', 'trasladado', 'descartado') NOT NULL DEFAULT 'en revision',
+    `justificacion_rechazo` TEXT NULL,
     `numero_documento` INT NOT NULL,
     FOREIGN KEY (`numero_documento`) REFERENCES usuarios(`numero_documento`)
 );
@@ -231,45 +232,47 @@ CREATE TABLE vacunas (
     `fecha_aplicacion` DATE NOT NULL,
     `proxima_aplicacion` DATE,
     `observaciones` TEXT,
-    `numero_documento` VARCHAR(100) NOT NULL,
-    FOREIGN KEY (`id_paciente`) REFERENCES mascotas(`id_paciente`),
+    `numero_documento` INT NOT NULL,
+    FOREIGN KEY (`id_paciente`) REFERENCES paciente_animal(`id_paciente`),
     FOREIGN KEY (`numero_documento`) REFERENCES usuarios(`numero_documento`)
 );
 
 
+
+
 -- VISTAS
 
-CREATE VIEW usuarios_por_rol AS 
-SELECT u.numero_documento, 
-        u.nombre_usuario, 
+CREATE VIEW usuarios_por_rol AS
+SELECT u.numero_documento,
+        u.nombre_usuario,
         u.apellido_usuario,
-        u.tipo_documento_usuario, 
+        u.tipo_documento_usuario,
         u.correo_electronico_usuario,
-        u.telefono, 
+        u.telefono,
         r.nombre_rol
     FROM usuarios u
     JOIN rol r ON u.id_rol = r.id_rol;
 
-CREATE VIEW paciente_por_usuario AS 
-SELECT  pa.id_paciente, 
-        pa.nombre_paciente, 
-        pa.especie_paciente, 
-        pa.raza_paciente, 
-        pa.sexo_paciente, 
-        pa.peso_paciente, 
-        pa.color_pelaje_paciente, 
-        pa.fecha_nacimiento_paciente, 
-        pa.edad_estimada_paciente, 
+CREATE VIEW paciente_por_usuario AS
+SELECT  pa.id_paciente,
+        pa.nombre_paciente,
+        pa.especie_paciente,
+        pa.raza_paciente,
+        pa.sexo_paciente,
+        pa.peso_paciente,
+        pa.color_pelaje_paciente,
+        pa.fecha_nacimiento_paciente,
+        pa.edad_estimada_paciente,
         pa.rescatado, pa.adoptado,
-        pa.foto_paciente, 
+        pa.foto_paciente,
         u.numero_documento,
-        u.nombre_usuario, 
+        u.nombre_usuario,
         u.apellido_usuario
 FROM paciente_animal pa
 JOIN usuarios u ON u.numero_documento = pa.numero_documento;
 
 CREATE VIEW historial_clinico_por_paciente AS
-SELECT 
+SELECT
     pa.id_paciente,
     pa.nombre_paciente,
     c.id_consulta,
@@ -286,7 +289,7 @@ JOIN consultas c ON pa.id_paciente = c.id_paciente
 JOIN usuarios u ON u.numero_documento = c.numero_documento;
 
 CREATE VIEW medicamentos_por_vencer AS
-SELECT 
+SELECT
     id_medicamento,
     nombre_medicamento,
     fecha_vencimiento,
@@ -296,7 +299,7 @@ FROM medicamento
 WHERE fecha_vencimiento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY);
 
 CREATE VIEW citas_por_dia_medico AS
-SELECT 
+SELECT
     c.fecha,
     c.hora,
     p.nombre_paciente,
@@ -308,7 +311,7 @@ JOIN usuarios u ON u.numero_documento = c.numero_documento
 ORDER BY c.fecha, c.hora;
 
 CREATE VIEW citas_por_paciente AS
-SELECT 
+SELECT
     c.id_cita,
     c.fecha,
     c.hora,
@@ -329,14 +332,16 @@ INNER JOIN paciente_animal p ON c.id_paciente = p.id_paciente
 INNER JOIN usuarios u ON c.numero_documento = u.numero_documento;
 
 
-SELECT c.id_cita AS id,
-            p.nombre_paciente AS nombre_mascota,
-            c.fecha, c.hora, c.motivo, c.estado
-        FROM citas c
-        JOIN paciente_animal p ON c.id_paciente = p.id_paciente
+
+
+CREATE VIEW medicamento_recibido_usuario AS
+SELECT d.id_donacion, d.fecha_donacion, d.nombre_medicamento, d.cantidad, d.presentacion, d.estado,
+       u.nombre_usuario, u.apellido_usuario
+FROM donaciones d
+JOIN usuarios u ON d.numero_documento = u.numero_documento;
 
 CREATE VIEW consultas_por_paciente AS
-SELECT 
+SELECT
     con.id_consulta,
     con.fecha_consulta,
     con.hora_consulta,
@@ -369,7 +374,7 @@ INNER JOIN paciente_animal p ON con.id_paciente = p.id_paciente
 INNER JOIN usuarios u ON con.numero_documento = u.numero_documento;
 
 CREATE VIEW insumos_por_vencer AS
-SELECT 
+SELECT
     id_insumo,
     nombre_insumo,
     fecha_vencimiento,
@@ -378,23 +383,29 @@ SELECT
 FROM insumo
 WHERE fecha_vencimiento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY);
 
-SELECT c.*, cc.motivo, cc.fecha_cancelacion
-FROM consultas c
-LEFT JOIN consultas_canceladas cc ON c.id_consulta = cc.id_consulta;
+-- SELECT c.*, cc.motivo, cc.fecha_cancelacion
+-- FROM consultas c
+-- LEFT JOIN consultas_canceladas cc ON c.id_consulta = cc.id_consulta;
 
-CREATE VIEW resumen_adopciones AS
-SELECT 
-    ar.id_rescatado,
-    ar.nombre_provicional,
-    ar.fecha_ingreso,
-    ar.estado_salud,
-    ar.estado,
-    a.fecha_adopcion,
-    u.nombre_usuario AS adoptante_nombre,
-    u.apellido_usuario AS adoptante_apellido
-FROM animales_rescatados ar
-LEFT JOIN adopciones a ON ar.id_rescatado = a.id_rescatado
-LEFT JOIN usuarios u ON a.numero_documento = u.numero_documento;
+-- CREATE VIEW resumen_adopciones AS
+-- SELECT
+--     ar.id_rescatado,
+--     ar.nombre_provicional,
+--     ar.fecha_ingreso,
+--     ar.estado_salud,
+--     ar.estado,
+--     a.fecha_adopcion,
+--     u.nombre_usuario AS adoptante_nombre,
+--     u.apellido_usuario AS adoptante_apellido
+-- FROM animales_rescatados ar
+-- LEFT JOIN adopciones a ON ar.id_rescatado = a.id_rescatado
+-- LEFT JOIN usuarios u ON a.numero_documento = u.numero_documento;
+
+-- SELECT c.id_cita AS id,
+--             p.nombre_paciente AS nombre_mascota,
+--             c.fecha, c.hora, c.motivo, c.estado
+--         FROM citas c
+--         JOIN paciente_animal p ON c.id_paciente = p.id_paciente
 
 -- PROCEDIMIENTOS
 DELIMITER //
@@ -419,13 +430,13 @@ DELIMITER ;
 
 -- DATOS DE PRUEBA
 
-INSERT INTO `rol` (`nombre_rol`) 
-VALUES 
+INSERT INTO `rol` (`nombre_rol`)
+VALUES
 ('Administrador'),
 ('Medico_Veterinario'),
 ('Cliente');
 
-INSERT INTO `usuarios` (`numero_documento`, `nombre_usuario`, `apellido_usuario`, `tipo_documento_usuario`, `correo_electronico_usuario`, `telefono`, `id_rol`, `contrasena`) 
+INSERT INTO `usuarios` (`numero_documento`, `nombre_usuario`, `apellido_usuario`, `tipo_documento_usuario`, `correo_electronico_usuario`, `telefono`, `id_rol`, `contrasena`)
 VALUES
 (1016102401, 'Duncan Nicolás', 'Hernández Rodríguez', 'CC', 'dnicolas.hr.98@gmail.com', '3144902872', 1, SHA2('123456', 256)),
 (1001, 'Ana', 'Pérez', 'CC', 'ana.perez@example.com', '3144902872', 1, SHA2('Ana123', 256)),
@@ -434,7 +445,7 @@ VALUES
 (1004, 'Diego', 'Ramírez', 'CC', 'diego.ram@example.com', '3144902872', 3, SHA2('Diego321', 256)),
 (1005, 'Juliana', 'López', 'PASAPORTE', 'juliana.l@example.com', '3144902872', 2, SHA2('JuliVet', 256));
 
-INSERT INTO `paciente_animal` (`nombre_paciente`, `especie_paciente`, `raza_paciente`, `sexo_paciente`, `peso_paciente`,`color_pelaje_paciente`, `fecha_nacimiento_paciente`, `edad_estimada_paciente`,`rescatado`, `adoptado`, `numero_documento`) 
+INSERT INTO `paciente_animal` (`nombre_paciente`, `especie_paciente`, `raza_paciente`, `sexo_paciente`, `peso_paciente`,`color_pelaje_paciente`, `fecha_nacimiento_paciente`, `edad_estimada_paciente`,`rescatado`, `adoptado`, `numero_documento`)
 VALUES
 ('Max', 'Perro', 'Labrador', 'Macho', 25.5, 'Dorado', '2020-05-10', NULL, FALSE, FALSE, 1003),
 ('Mia', 'Gato', 'Siamés', 'Hembra', 4.2, 'Blanco', '2022-03-15', NULL, FALSE, FALSE, 1004),
@@ -442,7 +453,7 @@ VALUES
 ('Luna', 'Gato', 'Angora', 'Hembra', 3.9, 'Negro', NULL, 2, TRUE, TRUE, 1004),
 ('Simba', 'Perro', 'Pug', 'Macho', 8.0, 'Beige', '2021-11-20', NULL, FALSE, FALSE, 1003);
 
-INSERT INTO `consultas` (`id_paciente`, `fecha_consulta`, `hora_consulta`, `motivo_consulta`, `diagnostico`,`tratamiento`, `medicamentos`, `observaciones`, `firma`, `estado_consulta`, `numero_documento`) 
+INSERT INTO `consultas` (`id_paciente`, `fecha_consulta`, `hora_consulta`, `motivo_consulta`, `diagnostico`,`tratamiento`, `medicamentos`, `observaciones`, `firma`, `estado_consulta`, `numero_documento`)
 VALUES
 (1, '2025-08-20', '10:30:00', 'Revisión general', 'Animal en buen estado','No requiere tratamiento', 'N/A', 'Paciente tranquilo durante la consulta', 'Dr. Juan Pérez', 'Activa', 1001),
 (2, '2025-08-18', '15:00:00', 'Pérdida de apetito', 'Gastritis leve','Dieta blanda por 5 días','Omeprazol veterinario', 'Se recomienda seguimiento en una semana', 'Dra. María López', 'Cerrada', 1002),
@@ -450,7 +461,7 @@ VALUES
 (1, '2025-08-25', '11:45:00', 'Dificultad para caminar', 'Lesión en la pata trasera derecha','Reposo y antiinflamatorio', 'Carprofeno', 'Se aplicó vendaje temporal', 'Dra. Andrea Torres', 'Activa', 1001),
 (2, '2025-08-10', '14:20:00', 'Esterilización', 'Cirugía realizada con éxito','Antibiótico por 7 días', 'Amoxicilina + Clavulánico', 'Control post-operatorio en 10 días', 'Dr. Felipe Gómez', 'Cerrada', 1002);
 
-INSERT INTO `archivos_consulta` (`id_consulta`, `nombre_archivo`) 
+INSERT INTO `archivos_consulta` (`id_consulta`, `nombre_archivo`)
 VALUES
 (1, 'max_examen1.pdf'),
 (2, 'mia_vacuna.jpg'),
@@ -464,7 +475,18 @@ VALUES
 (2, 'Alcohol', 50, 'Litros', 'BioVet', '2025-06-05', '2027-01-01', 'Desinfección', NULL),
 (3, 'Guantes', 500, 'Unidades', 'VetWear', '2025-06-10', NULL, 'Medico', NULL),
 (4, 'Gasas', 300, 'Unidades', 'VetPro', '2025-07-01', NULL, 'Medico', NULL),
-(5, 'Catéteres', 100, 'Unidades', 'InsumoMed', '2025-07-05', '2026-07-05', 'Medico', NULL);
+(5, 'Catéteres', 100, 'Unidades', 'InsumoMed', '2025-07-05', '2026-07-05', 'Medico', NULL),
+(6, 'Jeringas 5ml', 200, 'Unidades', 'Proveedor Médico Vetcol', '2025-09-01', '2025-09-25', 'Material médico', 'Cajas selladas'),
+(7, 'Guantes quirúrgicos', 500, 'Unidades', 'Suministros Salud Animal', '2025-08-15', '2025-10-10', 'Material médico', 'Tallas variadas'),
+(8, 'Alcohol 70%', 50, 'Litros', 'Farmacéutica Andina', '2025-07-20', '2025-09-28', 'Desinfectante', 'Para limpieza general'),
+(9, 'Gasas estériles', 300, 'Unidades', 'Insumos Clínicos S.A.', '2025-09-05', '2025-09-30', 'Material médico', 'Paquetes de 10 unidades'),
+(10, 'Antibiótico Amoxicilina', 100, 'Unidades', 'Laboratorio VetPharma', '2025-08-25', '2025-09-22', 'Medicamento', 'Tabletas 500mg'),
+(11, 'Sueros fisiológicos 500ml', 40, 'Unidades', 'Distribuidora Salud y Vida', '2025-09-02', '2025-10-20', 'Medicamento', 'Bolsas selladas'),
+(12, 'Desparasitante Canino', 75, 'Unidades', 'Agrovet Suministros', '2025-07-30', '2025-12-15', 'Medicamento', 'Uso oral'),
+(13, 'Desinfectante Veterinario', 25, 'Litros', 'Químicos LimpVet', '2025-08-18', '2025-09-21', 'Desinfectante', 'Uso en quirófano'),
+(14, 'Suturas absorbibles', 150, 'Unidades', 'Medical Supplies Bogotá', '2025-09-01', '2026-01-10', 'Material quirúrgico', 'Hilos estériles'),
+(15, 'Vitaminas inyectables', 60, 'Unidades', 'VetFarm Ltda.', '2025-08-28', '2025-09-24', 'Medicamento', 'Complejo B12');
+
 
 INSERT INTO `movimiento_insumo` (`id_movimiento_insumo`,`id_insumo`,`tipo_movimiento`,`responsable`,`cantidad`,`fecha`,`motivo`,`observacion`)
 VALUES
@@ -473,14 +495,6 @@ VALUES
 (3, 3, 'Salida', 'Laura', 50, '2025-07-03', 'Uso en cirugía', NULL),
 (4, 4, 'Salida', 'Diego', 30, '2025-07-04', 'Atención consulta', NULL),
 (5, 5, 'Entrada', 'Juliana', 50, '2025-07-05', 'Donación', NULL);
-
-INSERT INTO `citas` (`id_cita`,`id_paciente`,`numero_documento`,`fecha`,`hora`,`motivo`)
-VALUES
-(1, 1, 1002, '2025-07-10', '10:00:00', 'Chequeo general',"Atendida"),
-(2, 2, 1005, '2025-07-10', '10:30:00', 'Vacuna',"Atendida"),
-(3, 3, 1005, '2025-07-11', '11:00:00', 'Revisión de herida',"Cancelada"),
-(4, 4, 1002, '2025-07-11', '11:30:00', 'Seguimiento postcirugía',"Cancelada"),
-(5, 5, 1005, '2025-10-15', '12:00:00', 'Digestión',"Activa");
 
 INSERT INTO `jornadas` (`id_jornada`,`nombre_jornada`,`fecha_jornada`,`lugar_jornada`,`descripcion_jornada`)
 VALUES
@@ -496,7 +510,18 @@ VALUES
 (2, 'Ivermectina', 'Ivermectina', 'Solución oral', 'L124', '10ml', '2026-01-01', 50, 45, 'VetFarm', NULL, 'Activo'),
 (3, 'Ketoprofeno', 'Ketoprofeno', 'Inyectable', 'L125', '5mg/ml', '2026-06-01', 30, 25, 'MedVet', NULL, 'Activo'),
 (4, 'Metronidazol', 'Metronidazol', 'Tabletas', 'L126', '250mg', '2025-11-01', 200, 150, 'BioVet', NULL, 'Activo'),
-(5, 'Omeprazol', 'Omeprazol', 'Cápsulas', 'L127', '20mg', '2026-03-01', 100, 90, 'PharmaPet', NULL, 'Activo');
+(5, 'Omeprazol', 'Omeprazol', 'Cápsulas', 'L127', '20mg', '2026-03-01', 100, 90, 'PharmaPet', NULL, 'Activo'),
+(6, 'Amoxicilina', 'Amoxicilina', 'Tabletas', 'L001', '500mg', '2025-09-25', 100, 80, 'VetPharma Ltda.', 'Antibiótico de amplio espectro', 'Activo'),
+(7, 'Enrofloxacina', 'Enrofloxacina', 'Solución inyectable', 'E2025A', '10%', '2025-09-28', 50, 45, 'Farmavet SAS', 'Mantener en refrigeración', 'Activo'),
+(8, 'Ketoprofeno', 'Ketoprofeno', 'Ampollas', 'K2509', '100mg/2ml', '2025-09-22', 30, 25, 'Laboratorio VetAndes', 'Analgésico y antiinflamatorio', 'Activo'),
+(9, 'Ivermectina', 'Ivermectina', 'Frasco 50ml', 'IVM123', '1%', '2025-09-30', 20, 18, 'Agrovet Ltda.', 'Antiparasitario', 'Activo'),
+(10, 'Prednisolona', 'Prednisolona', 'Tabletas', 'PRED2025', '20mg', '2025-10-15', 60, 55, 'Distribuidora Salud Animal', 'Corticoide', 'Activo'),
+(11, 'Metronidazol', 'Metronidazol', 'Tabletas', 'MZ100', '250mg', '2025-09-24', 120, 110, 'PharmaVet', 'Antiprotozoario', 'Activo'),
+(12, 'Doxiciclina', 'Doxiciclina', 'Cápsulas', 'DOX567', '100mg', '2025-11-20', 90, 85, 'VetFarm', 'Antibiótico tetraciclina', 'Activo'),
+(13, 'Meloxicam', 'Meloxicam', 'Suspensión oral', 'MELX200', '1.5mg/ml', '2025-09-21', 40, 35, 'Laboratorios AnimalCare', 'Analgésico', 'Activo'),
+(14, 'Clorfenamina', 'Clorfenamina', 'Ampollas', 'CLF2025', '10mg/ml', '2025-12-05', 70, 70, 'VetLife SAS', 'Antihistamínico', 'Activo'),
+(15, 'Sulfadiazina', 'Sulfadiazina', 'Tabletas', 'SLF250', '500mg', '2026-01-15', 50, 48, 'Farmacológicos del Quindío', 'Antibacteriano', 'Activo');
+
 
 INSERT INTO `movimiento` (`id_movimiento`,`id_medicamento`,`fecha_movimiento`,`responsable_movieminto`,`cantidad`,`tipo_movimiento`,`motivo_moviemiento`,`observacion_observación`)
 VALUES
@@ -515,8 +540,8 @@ VALUES
 ('RES-005', NOW(), 'Zona Industrial', 'Desnutrido', 'Ya recuperado y en nuevo hogar','Rocky', 'Macho', 4, 'Grande', 'Perro', 'Labrador','David Ramírez', '3112233445', 'rocky.jpg', 'Adoptado'),
 ('RES-006', NOW(), 'Colegio San Martín', 'Saludable', 'Conejo encontrado en el patio escolar','Bunny', 'No determinado', 1, 'Pequeño', 'Otro', 'Conejo enano','Paula Díaz', '3156677889', 'bunny.jpg', 'Trasladado');
 
-INSERT INTO `permanencia_animal` 
-(`id_rescatado`, `estado_salud`, `estado_emocional`, `observaciones`, `medicamentos`, `imagen_url`, `numero_documento`) 
+INSERT INTO `permanencia_animal`
+(`id_rescatado`, `estado_salud`, `estado_emocional`, `observaciones`, `medicamentos`, `imagen_url`, `numero_documento`)
 VALUES
 (1, 'En tratamiento', 'Ansioso', 'Herida en pata trasera, se aplicó limpieza y vendaje.', 'Antibiótico - Amoxicilina 250mg', 'imagenes/control1_res1.jpg', 1001),
 (1, 'Saludable', 'Tranquilo', 'La herida cicatrizó, se retiraron los puntos.', 'Analgesia - Meloxicam', 'imagenes/control2_res1.jpg', 1002),
@@ -525,13 +550,13 @@ VALUES
 (3, 'Saludable', 'Agresivo', 'Animal sin signos de enfermedad, pero muestra conducta agresiva.', 'Ninguno', 'imagenes/control1_res3.jpg', 1001);
 
 INSERT INTO `donaciones`
-(`fecha_donacion`, `nombre_donante`, `contacto_donante`, `nombre_medicamento`, `presentacion`, `cantidad`, `unidad_medida`, `lote`, `fecha_vencimiento`, `observaciones`, `estado`, `numero_documento`)
+(`fecha_donacion`, `nombre_donante`, `contacto_donante`, `nombre_medicamento`, `presentacion`, `cantidad`, `unidad_medida`, `lote`, `fecha_vencimiento`, `observaciones`, `estado`,`justificacion_rechazo`, `numero_documento`)
 VALUES
-('2025-07-15', 'Carlos Gómez', '3109988776', 'Amoxicilina', 'Tabletas', 50, 'mg', 'L-AXC123', '2026-07-15', 'Donación para uso veterinario', 'en revision', 1002),
-('2025-07-18', 'Laura Martínez', '3201122334', 'Ivermectina', 'Inyectable', 20, 'ml', 'IVM-788', '2027-01-30', 'Para tratamiento antiparasitario', 'trasladado', 1003),
-('2025-07-20', 'Ana Pérez', '3015566778', 'Enrofloxacina', 'Suspensión oral', 10, 'ml', 'ENR-451', '2025-12-10', 'Medicamento donado para infecciones graves', 'en revision', 1001),
-('2025-07-23', 'Diego Ramírez', '3112233445', 'Ketamina', 'Frasco', 3, 'ml', 'KET-963', '2026-04-11', 'Donación de anestésico para cirugías', 'descartado', 1004),
-('2025-07-30', 'Juliana López', '3003344556', 'Prednisolona', 'Tabletas', 25, 'mg', 'PRD-785', '2026-11-20', 'Para tratamientos de inflamaciones', 'en revision', 1005);
+('2025-07-15', 'Carlos Gómez', '3109988776', 'Amoxicilina', 'Tabletas', 50, 'mg', 'L-AXC123', '2026-07-15', 'Donación para uso veterinario', 'en revision', NULL, 1002),
+('2025-07-18', 'Laura Martínez', '3201122334', 'Ivermectina', 'Inyectable', 20, 'ml', 'IVM-788', '2027-01-30', 'Para tratamiento antiparasitario', 'trasladado', NULL, 1003),
+('2025-07-20', 'Ana Pérez', '3015566778', 'Enrofloxacina', 'Suspensión oral', 10, 'ml', 'ENR-451', '2025-12-10', 'Medicamento donado para infecciones graves', 'en revision', NULL, 1001),
+('2025-07-23', 'Diego Ramírez', '3112233445', 'Ketamina', 'Frasco', 3, 'ml', 'KET-963', '2026-04-11', 'Donación de anestésico para cirugías', 'descartado', 'No cumple condiciones de almacenamiento', 1003),
+('2025-07-30', 'Juliana López', '3003344556', 'Prednisolona', 'Tabletas', 25, 'mg', 'PRD-785', '2026-11-20', 'Para tratamientos de inflamaciones', 'en revision', NULL, 1016102401);
 
 INSERT INTO `citas` (`id_paciente`, `numero_documento`, `fecha`, `hora`, `motivo`, `estado`) VALUES
 (1, 1003, '2025-09-20', '09:00:00', 'Vacunación anual', 'Activa'),
@@ -558,6 +583,24 @@ INSERT INTO `citas` (`id_paciente`, `numero_documento`, `fecha`, `hora`, `motivo
 (4, 1004, '2025-09-27', '11:15:00', 'Chequeo ocular', 'Atendida'),
 (5, 1003, '2025-09-27', '13:00:00', 'Chequeo general pre-adopción', 'Cancelada');
 
+INSERT INTO `donaciones_alimentos` (`fecha_recepcion`, `nombre_donante`, `tipo_alimento`, `otros`, `cantidad_recibida`, `unidad_medida`, `fecha_vencimiento`, `destino`, `caso_especifico`, `observaciones`) VALUES
+('2025-09-01', 'Fundación Huellitas', 'Concentrado seco para perros', NULL, '50', 'Kilogramos(kG)', '2026-01-15', 'Uso general del centro', NULL, 'Donación en buen estado'),
+('2025-09-02', 'Pet Shop La Amistad', 'Concentrado seco para gatos', NULL, '20', 'Kilogramos(kG)', '2026-02-10', 'Caso especifico', 'Gatitos rescatados zona norte', 'Alimento premium'),
+('2025-09-03', 'Juan Pérez', 'Alimento húmedo enlatado para perros', NULL, '30', 'Unidades(u)', '2026-03-05', 'Uso general del centro', NULL, 'Latas sin abolladuras'),
+('2025-09-04', 'Ana López', 'Leche para cachorros', NULL, '10', 'Litros(l)', '2025-11-20', 'Caso especifico', 'Cachorros camada rescatada', 'Producto cerrado de fábrica'),
+('2025-09-05', 'Clínica VetAndes', 'Suplementos nutricionales', NULL, '5', 'Unidades(u)', '2026-05-10', 'Uso general del centro', NULL, 'Vitaminas multiespecie'),
+('2025-09-06', 'Colegio Los Robles', 'Otros', 'Galletas caninas', '15', 'Unidades(u)', '2026-01-30', 'Uso general del centro', NULL, 'Donación estudiantil'),
+('2025-09-07', 'María Gómez', 'Concentrado seco para perros', NULL, '25', 'Kilogramos(kG)', '2026-04-12', 'Caso especifico', 'Perros grandes rescatados', 'Alimento de alta energía'),
+('2025-09-08', 'Supermercado El Ahorro', 'Alimento húmedo enlatado para gatos', NULL, '40', 'Unidades(u)', '2026-02-25', 'Uso general del centro', NULL, 'Producto en promoción'),
+('2025-09-09', 'Carlos Ramírez', 'Concentrado seco para gatos', NULL, '12', 'Kilogramos(kG)', '2026-03-18', 'Uso general del centro', NULL, 'Sacos sellados'),
+('2025-09-10', 'Veterinaria San Francisco', 'Leche para cachorros', NULL, '8', 'Litros(l)', '2025-12-05', 'Caso especifico', 'Camada de 4 cachorros recién nacidos', 'Entrega urgente'),
+('2025-09-11', 'Grupo Scouts 103', 'Otros', 'Snacks felinos', '25', 'Unidades(u)', '2026-01-10', 'Uso general del centro', NULL, 'Snacks variados'),
+('2025-09-12', 'Diana Martínez', 'Concentrado seco para perros', NULL, '40', 'Kilogramos(kG)', '2026-06-01', 'Uso general del centro', NULL, 'Donación familiar'),
+('2025-09-13', 'Almacén AgroCan', 'Suplementos nutricionales', NULL, '10', 'Unidades(u)', '2026-07-22', 'Caso especifico', 'Perro en recuperación postquirúrgica', 'Condroprotectores'),
+('2025-09-14', 'Banco de Alimentos Armenia', 'Concentrado seco para gatos', NULL, '30', 'Kilogramos(kG)', '2026-05-16', 'Uso general del centro', NULL, 'Revisión previa de calidad'),
+('2025-09-15', 'Lucía Torres', 'Alimento húmedo enlatado para perros', NULL, '18', 'Unidades(u)', '2026-04-08', 'Caso especifico', 'Perro senior en tratamiento', 'Sin colorantes artificiales');
+
+
 -- CONSULTAS
 
 SELECT * FROM usuarios;
@@ -572,14 +615,14 @@ SELECT * FROM jornadas;
 SELECT * FROM medicamento;
 SELECT * FROM movimiento;
 SELECT * FROM animales_rescatados;
-SELECT * FROM adopciones;
+-- SELECT * FROM adopciones;
 
 -- CONSULTAS VISTAS
 
 SELECT * FROM usuarios_por_rol;
 SELECT * FROM paciente_por_usuario;
 SELECT * FROM historial_clinico_por_paciente;
-SELECT * FROM resumen_adopciones;
+-- SELECT * FROM resumen_adopciones;
 SELECT * FROM medicamentos_por_vencer;
 SELECT * FROM citas_por_dia_medico;
 SELECT * FROM insumos_por_vencer;

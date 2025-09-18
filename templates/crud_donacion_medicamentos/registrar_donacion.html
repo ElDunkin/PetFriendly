@@ -58,8 +58,12 @@
         <label for="">Recibido Por</label>
         <input type="text" name="numero_documento" placeholder="Número de documento" required>
         <button type="submit" class="btn btn-success">Registrar Donación</button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSolicitudes">
+        📋 Ver Solicitudes
+        </button>
+        
 </form>
-
+    {% include 'modals/modal_solicitudes.html' %}
     <footer>
         <div>
             Copyright © 2025 Developed by Trio Imperial co.
@@ -69,6 +73,8 @@
             Powered by Petfriendly
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <script>
         document.getElementById("formDonacion").addEventListener("submit", async (e) => {
