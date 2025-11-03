@@ -20,15 +20,26 @@ def generar_codigo():
         with conn.cursor(pymysql.cursors.DictCursor) as cur:
             cur.execute("SELECT codigo FROM animales_rescatados ORDER BY id_rescatado DESC LIMIT 1")
             ultimo = cur.fetchone()
-            if not ultimo:
+            # Si no hay registros previos o el formato no es válido, empezar desde RES-001
+            if not ultimo or not ultimo.get("codigo"):
                 return "RES-001"
-            numero = int(ultimo["codigo"].split("-")[1]) + 1
+            codigo = str(ultimo["codigo"]).strip()
+            try:
+                pref, num = codigo.split("-", 1)
+                numero = int(num) + 1
+            except Exception:
+                # Si el formato no es RES-###, reiniciar
+                return "RES-001"
             return f"RES-{numero:03d}"
     finally:
         conn.close()
         
-@rutas_rescatados.route("/registrar_animal_rescatado", methods=["POST","GET"])
+@rutas_rescatados.route("/registrar_animal_rescatado", methods=["GET", "POST"])
 def registrar_animal_rescatado():
+    if request.method == "GET":
+        return render_template("rescatados/animales_rescatados.html")
+
+    # POST
     codigo = generar_codigo()
     nombre_temporal = request.form.get("nombre_temporal")
     edad = request.form.get("edad")
@@ -52,34 +63,55 @@ def registrar_animal_rescatado():
     except ValueError:
         return render_template("rescatados/animales_rescatados.html", error="La edad debe ser un número válido.")
 
-    foto = request.files["foto"]
+    foto = request.files.get("foto")
     if not foto or not allowed_file(foto.filename):
         return render_template("rescatados/animales_rescatados.html", error="La foto debe ser JPG o PNG.")
 
+    # Validación de tamaño
     foto.seek(0, os.SEEK_END)
     if foto.tell() > MAX_SIZE:
         return render_template("rescatados/animales_rescatados.html", error="La foto no puede superar los 5 MB.")
     foto.seek(0)
 
-
+    # Asegurar carpeta de uploads y nombre seguro
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     extension = foto.filename.rsplit(".", 1)[1].lower()
-    filename = f"{codigo}.{extension}"
+    filename = secure_filename(f"{codigo}.{extension}")
     foto.save(os.path.join(UPLOAD_FOLDER, filename))
-
 
     conn = obtener_conexion()
     try:
         with conn.cursor() as cursor:
-            sql = """
-                    INSERT INTO animales_rescatados (codigo, ubicacion_rescate, condicion_fisica, 
-                    observaciones, nombre_temporal, sexo, edad, tamanio, especie, raza, 
-                    rescatista_nombre, rescatista_contacto, foto_url, estado) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-            """
-            cursor.execute(sql, (codigo, ubicacion, condicion, observaciones,
-                    nombre_temporal, sexo, edad, tamanio, especie, raza,
-                    rescatista, contacto, filename, "En permanencia"))
+            sql = (
+                """
+                INSERT INTO animales_rescatados (
+                    codigo, ubicacion_rescate, condicion_fisica,
+                    observaciones, nombre_temporal, sexo, edad, tamanio, especie, raza,
+                    rescatista_nombre, rescatista_contacto, foto_url, estado
+                ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                """
+            )
+            cursor.execute(
+                sql,
+                (
+                    codigo,
+                    ubicacion,
+                    condicion,
+                    observaciones,
+                    nombre_temporal,
+                    sexo,
+                    edad,
+                    tamanio,
+                    especie,
+                    raza,
+                    rescatista,
+                    contacto,
+                    filename,
+                    "En permanencia",
+                ),
+            )
             conn.commit()
-        return render_template("animales_rescatados.html", success="Animal rescatado registrado exitosamente.")
+        return render_template("rescatados/animales_rescatados.html", success="Animal rescatado registrado exitosamente.")
     finally:
         conn.close()
 
@@ -93,12 +125,14 @@ def listar_animal_rescatado():
             animales = cur.fetchall()
 
             # 2. Traer historial de permanencia con el nombre del responsable
-            cur.execute("""
-                SELECT pa.*, u.nombre_usuario AS responsable
+            cur.execute(
+                """
+                SELECT pa.*, CONCAT(u.nombre_usuario, ' ', u.apellido_usuario) AS responsable
                 FROM permanencia_animal pa
-                INNER JOIN usuarios u ON pa.numero_documento = u.numero_documento
+                INNER JOIN usuarios u ON pa.numero_documento = u.numero_documento 
                 ORDER BY pa.fecha_control DESC
-            """)
+                """
+            )
             historial = cur.fetchall()
 
         # 3. Agrupar el historial por cada animal
@@ -112,7 +146,7 @@ def listar_animal_rescatado():
         return render_template(
             "rescatados/listar_animal_rescatado.html",
             animales=animales,
-            historial_por_animal=historial_por_animal
+            historial_por_animal=historial_por_animal,
         )
     finally:
         conn.close()
