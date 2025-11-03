@@ -99,7 +99,30 @@ def modificar_usuarios(numero_documento):
 def eliminar_usuarios(numero_documento):
     conn = obtener_conexion()
     cur = conn.cursor(pymysql.cursors.DictCursor)
-    cur.execute('DELETE FROM usuarios WHERE numero_documento = %s', (numero_documento,))
-    conn.commit()
-    cur.close()
-    return redirect('/listar_usuarios?textE=Usuario+eliminado+exitosamente')
+    try:
+        # Verificar dependencias en tablas relacionadas antes de borrar
+        # 1) Citas
+        cur.execute('SELECT COUNT(*) AS total FROM citas WHERE numero_documento = %s', (numero_documento,))
+        dep_citas = cur.fetchone()
+        if dep_citas and dep_citas.get('total', 0) > 0:
+            cur.close()
+            return redirect('/listar_usuarios?textE=No+se+puede+eliminar:+tiene+citas+asociadas')
+
+        # Agregar más validaciones aquí si existen otras tablas dependientes
+        cur.execute('SELECT COUNT(*) AS total FROM permanencia_animal WHERE numero_documento = %s', (numero_documento,))
+        dep_perm = cur.fetchone()
+        if dep_perm and dep_perm.get('total', 0) > 0:
+             cur.close()
+             return redirect('/listar_usuarios?textE=No+se+puede+eliminar:+tiene+permanencias+asociadas')
+
+        # Si no hay dependencias, proceder con el borrado
+        cur.execute('DELETE FROM usuarios WHERE numero_documento = %s', (numero_documento,))
+        conn.commit()
+        cur.close()
+        return redirect('/listar_usuarios?textE=Usuario+eliminado+exitosamente')
+    except pymysql.err.IntegrityError:
+        # En caso de que otra relación aparezca entre la verificación y el delete
+        cur.close()
+        return redirect('/listar_usuarios?textE=No+se+puede+eliminar:+tiene+registros+relacionados')
+    finally:
+        conn.close()
