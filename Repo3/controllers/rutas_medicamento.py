@@ -35,41 +35,55 @@ def medicamentos():
 
     # POST → registrar medicamento
     data = request.json
+
+    # Normalizar nombre (trim y mayúsculas) para evitar duplicados por formato
+    nombre_norm = data['nombre_medicamento'].strip().upper()
+    data['nombre_medicamento'] = nombre_norm
+
     fecha_venc = datetime.strptime(data['fecha_vencimiento'], '%Y-%m-%d').date()
     estado = "Vigente" if fecha_venc >= datetime.now().date() else "Vencido"
 
-    cur.execute("""
+    # Buscar medicamento solo por nombre normalizado (independiente de fecha de vencimiento)
+    cur.execute(
+        """
         SELECT id_medicamento, existencia
         FROM medicamento
-        WHERE nombre_medicamento = %s AND fecha_vencimiento = %s
-    """, (data['nombre_medicamento'], fecha_venc))
+        WHERE UPPER(TRIM(nombre_medicamento)) = %s
+        """,
+        (nombre_norm,)
+    )
     existe = cur.fetchone()
 
     if existe:
         id_medicamento, existencia_actual = existe
         nueva_existencia = existencia_actual + int(data['cantidad_inicial'])
-        cur.execute("UPDATE medicamento SET existencia=%s WHERE id_medicamento=%s",
-                    (nueva_existencia, id_medicamento))
+        cur.execute(
+            "UPDATE medicamento SET existencia=%s WHERE id_medicamento=%s",
+            (nueva_existencia, id_medicamento),
+        )
         mensaje = "Stock actualizado"
     else:
-        cur.execute("""
+        cur.execute(
+            """
             INSERT INTO medicamento (
                 nombre_medicamento, principio_activo, presentacion, lote, concentracion,
                 fecha_vencimiento, cantidad_inicial, existencia, proveedor, observaciones, estado
             ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        """, (
-            data['nombre_medicamento'],
-            data['principio_activo'],
-            data['presentacion'],
-            data['lote'],
-            data['concentracion'],
-            fecha_venc,
-            data['cantidad_inicial'],
-            data['cantidad_inicial'],
-            data.get('proveedor',''),
-            data.get('observaciones',''),
-            estado
-        ))
+            """,
+            (
+                nombre_norm,
+                data['principio_activo'],
+                data['presentacion'],
+                data['lote'],
+                data['concentracion'],
+                fecha_venc,
+                data['cantidad_inicial'],
+                data['cantidad_inicial'],
+                data.get('proveedor', ''),
+                data.get('observaciones', ''),
+                estado,
+            ),
+        )
         id_medicamento = cur.lastrowid
         mensaje = "Medicamento registrado"
 
@@ -113,7 +127,7 @@ def registrar_movimiento():
     if not usuario:
         cur.close()
         conn.close()
-        return jsonify({'error': 'Documento de responsable no encontrado'}), 400
+        return jsonify({'error': 'Documento de responsable no encontrado verifica por favor'}), 400
     responsable_nombre = f"{usuario[0]} {usuario[1]}"
 
     # Calcular nueva existencia
