@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Revisar Medicamento Donado</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+    <h1>Revisión de Medicamento Donado</h1>
+
+    <div id="info-donacion">
+        </div>
+
+    <div class="acciones-revision">
+        <button id="btn-aprobar">Aprobar y trasladar al inventario</button>
+        
+        <label for="justificacion_rechazo">Justificación de rechazo:</label>
+        <input type="text" id="justificacion_rechazo">
+        <button id="btn-descartar">Descartar</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const donacionId = window.location.pathname.split('/').pop();
+            const infoDiv = document.getElementById('info-donacion');
+            const btnAprobar = document.getElementById('btn-aprobar');
+            const btnDescartar = document.getElementById('btn-descartar');
+            const justificacionInput = document.getElementById('justificacion_rechazo');
+
+            // 1. Cargar la información de la donación específica
+            try {
+                const response = await fetch(`/donacion/${donacionId}`);
+                if (!response.ok) {
+                    throw new Error('Donación no encontrada.');
+                }
+                const donacion = await response.json();
+                infoDiv.innerHTML = `
+                    <p><strong>ID:</strong> ${donacion.id}</p>
+                    <p><strong>Donante:</strong> ${donacion.nombre_donante}</p>
+                    <p><strong>Medicamento:</strong> ${donacion.nombre_medicamento}</p>
+                    <p><strong>Cantidad:</strong> ${donacion.cantidad} ${donacion.unidad_medida}</p>
+                    <p><strong>Fecha de vencimiento:</strong> ${donacion.fecha_vencimiento || 'No aplica'}</p>
+                    <p><strong>Estado actual:</strong> ${donacion.estado}</p>
+                    <p><strong>Observaciones:</strong> ${donacion.observaciones || 'Ninguna'}</p>
+                `;
+            } catch (error) {
+                infoDiv.innerHTML = `<p>${error.message}</p>`;
+                return;
+            }
+
+            // 2. Lógica para aprobar la donación
+            btnAprobar.addEventListener('click', async () => {
+                const confirmacion = confirm('¿Está seguro de aprobar este medicamento para el inventario clínico?');
+                if (confirmacion) {
+                    try {
+                        const response = await fetch(`/revisar_donacion/${donacionId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ accion: 'aprobar' })
+                        });
+                        const resultado = await response.json();
+                        if (response.ok) {
+                            alert(resultado.mensaje);
+                            window.location.href = '/consultar_donaciones.html'; // Redirigir a la vista de consulta
+                        } else {
+                            alert(`Error: ${resultado.error}`);
+                        }
+                    } catch (error) {
+                        alert('Ocurrió un error al procesar la solicitud.');
+                    }
+                }
+            });
+
+            // 3. Lógica para descartar la donación
+            btnDescartar.addEventListener('click', async () => {
+                const justificacion = justificacionInput.value;
+                if (!justificacion) {
+                    alert('Debe ingresar una justificación para descartar el medicamento.');
+                    return;
+                }
+                const confirmacion = confirm('¿Está seguro de descartar este medicamento?');
+                if (confirmacion) {
+                    try {
+                        const response = await fetch(`/revisar_donacion/${donacionId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ accion: 'descartar', justificacion: justificacion })
+                        });
+                        const resultado = await response.json();
+                        if (response.ok) {
+                            alert(resultado.mensaje);
+                            window.location.href = '/consultar_donaciones.html';
+                        } else {
+                            alert(`Error: ${resultado.error}`);
+                        }
+                    } catch (error) {
+                        alert('Ocurrió un error al procesar la solicitud.');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

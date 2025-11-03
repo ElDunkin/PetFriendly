@@ -1,0 +1,64 @@
+<!-- Modal Perfil Paciente -->
+<div class="modal fade" id="modalPerfilPaciente" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0 rounded-4">
+      
+      <!-- Header -->
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h5 class="modal-title">
+          Perfil de <span id="nombre_paciente_modal"></span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body p-4">
+
+        <!-- Información del paciente -->
+        <div class="d-flex align-items-center mb-4">
+          <img id="foto_paciente_modal" src="/static/img/default_pet.png" alt="Foto Paciente"
+               class="rounded-circle border shadow-sm me-3" width="100" height="100">
+          <div>
+            <h4 id="nombre_completo_paciente" class="mb-1"></h4>
+            <p class="text-muted mb-0"><strong>Propietario:</strong> <span id="propietario_modal"></span></p>
+          </div>
+        </div>
+
+        <!-- Datos generales -->
+        <div class="row g-3">
+          <div class="col-md-6"><strong>Especie:</strong> <span id="especie_modal"></span></div>
+          <div class="col-md-6"><strong>Raza:</strong> <span id="raza_modal"></span></div>
+          <div class="col-md-6"><strong>Sexo:</strong> <span id="sexo_modal"></span></div>
+          <div class="col-md-6"><strong>Peso:</strong> <span id="peso_modal"></span> kg</div>
+          <div class="col-md-6"><strong>Color:</strong> <span id="color_modal"></span></div>
+          <div class="col-md-6"><strong>Edad:</strong> <span id="edad_modal"></span> años</div>
+        </div>
+
+        <hr>
+
+        <!-- Botones de navegación -->
+        <div class="d-flex justify-content-center mb-3">
+          <button class="btn btn-outline-primary me-2" onclick="mostrarCitas()">📅 Ver Citas</button>
+          <button class="btn btn-outline-success" onclick="mostrarConsultas()">🩺 Ver Consultas</button>
+        </div>
+
+        <!-- Contenedores dinámicos -->
+        <div id="contenedorCitas" style="display:none;">
+          <h5 class="text-primary">Citas del Paciente</h5>
+          <ul id="listaCitas" class="list-group mt-2"></ul>
+        </div>
+
+        <div id="contenedorConsultas" style="display:none;">
+          <h5 class="text-success">Consultas del Paciente</h5>
+          <ul id="listaConsultas" class="list-group mt-2"></ul>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

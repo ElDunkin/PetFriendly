@@ -1,0 +1,138 @@
+/* Reset y fuentes */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+main{
+    flex: 1;
+}
+
+html, body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;  
+    color: #243238;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Header y navegación */
+header {
+    background-color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #243238;
+    line-height: 1.6;
+    padding: 5px 0px;
+}
+
+.logo{
+    background-image: url('/static/img/patitas3.png');
+    background-repeat:no-repeat;
+    background-position: left;
+    background-size: 85px;
+    margin-left: 10px;
+}
+.menu{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.menu ul li {
+    position: relative;
+}
+
+/* Submenú oculto por defecto */
+.menu ul li .submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    list-style: none;
+    background: white;
+    opacity: 95%;
+    padding: 10px 0;
+    border: 1px solid #ccc;
+    min-width: 180px;
+    z-index: 1000;
+    border-radius: 15%;
+}
+
+/* Items del submenú */
+.menu ul li .submenu li {
+    padding: 5px 15px;
+}
+
+.menu ul li .submenu li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.menu ul li .submenu li a:hover {
+    background: #f2f2f2;
+}
+
+/* Mostrar submenú al pasar el mouse */
+.menu ul li:hover .submenu {
+    display: block;
+}
+
+nav {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+    padding: 0;
+}
+
+nav li {
+    font-weight: bold;
+    font-size: 22px;
+    padding: 0 40px 0 0;
+}
+/*boton*/
+nav a {
+    text-decoration: none;
+    color: #0C254B;
+    padding: 5px 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+nav a:hover {
+    color: #009bf4;
+    border-bottom: 2px solid #009bf4;
+}
+
+footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: white;
+    padding-bottom: 30px;
+    padding-top: 50px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.row{
+    margin: -16px auto -16px auto;
+}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/registro_usuarios.css">
+    <title>Registrar Animal Rescatado</title>
+</head>
+<body>
+    <header>
+    <div class="logo">
+    <nav class="menu">
+        <ul>
+            <li><a href="/dashboard_administrador">Dashboard</a></li>
+
+            <!-- Gestión (submenú) -->
+            <li class="dropdown">
+                <a href="#">Gestión ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registro_usuarios">Usuarios</a></li>
+                    <li><a href="/registro_paciente_animal">Pacientes</a></li>
+                    <li><a href="/gestion_insumos">Gestion Insumos</a></li>
+                    <li><a href="/medicamento">Gestion Medicamentos</a></li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a href="#">Donaciones ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registrar_donacion">Medicamentos</a></li>
+                    <li><a href="/donaciones_alimentos">Alimentos</a></li>
+                </ul>
+            </li>
+            
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Registrar Animal Rescatado</h2>
+
+      {% if text %}
+        <div class="alert alert-info">{{ text }}</div>
+        {% endif %} 
+
+        <form action="/registrar_animal_rescatado" method="POST" enctype="multipart/form-data" class="row g-3">
+
+<!-- Código único y fecha/hora se generan en backend -->
+            <div class="col-md-6">
+                <label class="form-label">Código del Animal</label>
+                <input type="text" class="form-control" value="(Se genera automáticamente)" disabled>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Fecha y Hora de Ingreso</label>
+                <input type="text" class="form-control" value="(Automático)" disabled>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label">Ubicación del Rescate</label>
+                <input type="text" name="ubicacion_rescate" class="form-control" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Condición Física</label>
+                <select name="condicion_fisica" class="form-select" required>
+                    <option value="">-- Seleccione --</option>
+                    <option value="Lesionado">Lesionado</option>
+                    <option value="Desnutrido">Desnutrido</option>
+                    <option value="Saludable">Saludable</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Observaciones Iniciales</label>
+                <textarea name="observaciones" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Nombre Temporal</label>
+                <input type="text" name="nombre_temporal" class="form-control" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Sexo</label>
+                <select name="sexo" class="form-select" required>
+                    <option value="">-- Seleccione --</option>
+                    <option value="Macho">Macho</option>
+                    <option value="Hembra">Hembra</option>
+                    <option value="No determinado">No determinado</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Edad Aproximada</label>
+                <input type="number" name="edad" min="1" class="form-control" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Tamaño</label>
+                <select name="tamanio" class="form-select" required>
+                    <option value="">-- Seleccione --</option>
+                    <option value="Pequeño">Pequeño</option>
+                    <option value="Mediano">Mediano</option>
+                    <option value="Grande">Grande</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Especie</label>
+                <select name="especie" class="form-select" required>
+                    <option value="">-- Seleccione --</option>
+                    <option value="Perro">Perro</option>
+                    <option value="Gato">Gato</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Raza</label>
+                <input type="text" name="raza" class="form-control" placeholder="Ej: Labrador o 'No determinada'">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Nombre de la persona/entidad que rescató</label>
+                <input type="text" name="rescatista_nombre" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Contacto del rescatista</label>
+                <input type="text" name="rescatista_contacto" class="form-control">
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label">Fotografía del Animal</label>
+                <input type="file" name="foto" accept=".jpg,.jpeg,.png" class="form-control" required>
+            
+            </div>
+
+            <div class="col-12 text-center mt-3">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <a href="/listar_animal_rescatado" class="btn btn-primary">Ver rescatados</a>
+            </div>
+
+        </form>
+    </div>
+    </main>
+    <br>
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+</body>
+</html>
