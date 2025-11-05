@@ -1,15 +1,18 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const inputFecha = document.querySelector('input[name="fecha_vencimiento"]');
-  
-  if (inputFecha) {
-    const hoy = new Date();
-    hoy.setDate(hoy.getDate() + 1); // no permite hoy ni fechas anteriores
+  // 📅 Fecha actual
+const hoy = new Date();
+const yyyy = hoy.getFullYear();
+const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+const dd = String(hoy.getDate()).padStart(2, '0');
+const fechaHoy = `${yyyy}-${mm}-${dd}`;
 
-    const yyyy = hoy.getFullYear();
-    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-    const dd = String(hoy.getDate()).padStart(2, '0');
+// 🔹 Fecha de donación: solo hoy o fechas pasadas
+const inputDonacion = document.getElementById('fecha_donacion');
+if (inputDonacion) {
+  inputDonacion.max = fechaHoy;
+}
 
-    const fechaMinima = `${yyyy}-${mm}-${dd}`;
-    inputFecha.min = fechaMinima;
-  }
-});
+// 🔹 Fecha de vencimiento: solo hoy o fechas futuras
+const inputVencimiento = document.getElementById('fecha_vencimiento');
+if (inputVencimiento) {
+  inputVencimiento.min = fechaHoy;
+}
