@@ -41,7 +41,7 @@
     <input type="text" id="nombre_donante" name="nombre_donante">
 
     <label for="contacto_donante">Telefono del Donante:</label>
-    <input type="text" id="nombre_donante" name="nombre_donante">
+    <input type="text" id="contacto_donante" name="contacto_donante">
 
     <label for="nombre_medicamento">Nombre del Medicamento:</label>
     <input type="text" id="nombre_medicamento" name="nombre_medicamento" required>
@@ -60,13 +60,13 @@
     </select>
 
     <label for="lote">Lote</label>
-    <input type="text" id="presentacion" name="presentacion" required>
+    <input type="text" id="lote" name="lote" required>
 
     <label for="fecha_vencimiento">Fecha de Vencimiento</label>
-    <input type="text" id="presentacion" name="presentacion" required>
+    <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" required>
 
     <label for="observaciones">Observaciones</label>
-    <input type="text" id="presentacion" name="presentacion" required>
+    <input type="text" id="observaciones" name="observaciones" required>
 
     <label for="estado">esstado</label>
     <select id="estado" name="estado" required>
@@ -87,6 +87,7 @@
             Powered by Petfriendly
         </div>
     </footer>
+    <script src="/static/js/fecha_vencimiento.js"></script>
     <script>
         document.getElementById('form-donacion').addEventListener('submit', async (e) => {
             e.preventDefault();
