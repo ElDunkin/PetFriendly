@@ -142,7 +142,7 @@ def eliminar_paciente(id_paciente):
 
     try:
         # Verificar dependencias en la tabla de citas
-        cur.execute('SELECT COUNT(*) AS total FROM petfriendly_dbcitas WHERE id_paciente = %s', (id_paciente,))
+        cur.execute('SELECT COUNT(*) AS total FROM citas WHERE id_paciente = %s', (id_paciente,))
         resultado = cur.fetchone()
         total_citas = (resultado or {}).get('total', 0)
 
@@ -159,19 +159,19 @@ def eliminar_paciente(id_paciente):
     except pymysql.err.IntegrityError:
         # Fallback por si otra FK dispara el bloqueo
         conn.rollback()
-        try:
-            cur.close()
-        except Exception:
-            pass
-        return redirect('/listar_paciente_animal?text=No+se+puede+eliminar:+el+paciente+tiene+registros+asociados')
-    except Exception:
-        # Cualquier otro error genérico
-        conn.rollback()
-        try:
-            cur.close()
-        except Exception:
-            pass
-        return redirect('/listar_paciente_animal?text=No+se+pudo+eliminar:+el+paciente+puede+tener+citas+u+otros+registros+asociados')    
+    #     try:
+    #         cur.close()
+    #     except Exception:
+    #         pass
+    #     return redirect('/listar_paciente_animal?text=No+se+puede+eliminar:+el+paciente+tiene+registros+asociados')
+    # except Exception:
+    #     # Cualquier otro error genérico
+    #     conn.rollback()
+    #     try:
+    #         cur.close()
+    #     except Exception:
+    #         pass
+    #     return redirect('/listar_paciente_animal?text=No+se+pudo+eliminar:+el+paciente+puede+tener+citas+u+otros+registros+asociados')    
 
 @rutas_pacientes.route('/ver_pacientes/<int:id_paciente>')
 def ver_paciente(id_paciente):
