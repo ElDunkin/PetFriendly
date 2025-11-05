@@ -44,12 +44,29 @@ def registrar_insumo():
 
 @rutas_insumos.route('/api/insumos', methods=['GET'])
 def listar_insumos():
+    page = int(request.args.get('page', 1))
+    per_page = 15
+    offset = (page - 1) * per_page
+
     conn = obtener_conexion()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM insumo')
+
+    # Get total count for pagination
+    cur.execute('SELECT COUNT(*) as total FROM insumo')
+    total_records = cur.fetchone()[0]
+    total_pages = (total_records + per_page - 1) // per_page
+
+    # Get paginated results
+    cur.execute('SELECT * FROM insumo LIMIT %s OFFSET %s', (per_page, offset))
     columnas = [desc[0] for desc in cur.description]
     insumos = [dict(zip(columnas, fila)) for fila in cur.fetchall()]
-    return jsonify(insumos)
+
+    return jsonify({
+        'insumos': insumos,
+        'page': page,
+        'total_pages': total_pages,
+        'per_page': per_page
+    })
 
 
 @rutas_insumos.route('/api/alertas', methods=['GET'])

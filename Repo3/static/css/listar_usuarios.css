@@ -25,3 +25,55 @@ h1 {
     text-align: center;
     margin-top: 2rem;
 }
+
+/* Pagination Styles */
+.pagination {
+    margin-top: 20px;
+}
+
+.page-link {
+    color: #0C254B;
+    background-color: #fff;
+    border: 1px solid #0C254B;
+}
+
+.page-link:hover {
+    color: #fff;
+    background-color: #0C254B;
+    border-color: #0C254B;
+}
+
+.page-item.active .page-link {
+    background-color: #0C254B;
+    border-color: #0C254B;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+/* Pagination for Gestion Insumos */
+#paginationControls .page-link {
+    color: #0C254B;
+    background-color: #fff;
+    border: 1px solid #0C254B;
+}
+
+#paginationControls .page-link:hover {
+    color: #fff;
+    background-color: #0C254B;
+    border-color: #0C254B;
+}
+
+#paginationControls .page-item.active .page-link {
+    background-color: #0C254B;
+    border-color: #0C254B;
+}
+
+#paginationControls .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+}

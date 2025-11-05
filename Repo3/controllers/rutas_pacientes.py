@@ -69,15 +69,27 @@ def registro_pacientes():
 
 @rutas_pacientes.route('/listar_paciente_animal')
 def listar_pacientes():
+    page = int(request.args.get('page', 1))
+    per_page = 15
+    offset = (page - 1) * per_page
+
     conn = obtener_conexion()
     cur = conn.cursor(pymysql.cursors.DictCursor)
-    cur.execute('SELECT * FROM paciente_por_usuario')
+
+    # Get total count for pagination
+    cur.execute('SELECT COUNT(*) as total FROM paciente_por_usuario')
+    total_records = cur.fetchone()['total']
+    total_pages = (total_records + per_page - 1) // per_page
+
+    # Get paginated results
+    cur.execute('SELECT * FROM paciente_por_usuario LIMIT %s OFFSET %s', (per_page, offset))
     pacientes = cur.fetchall()
-    
+
     text = request.args.get('text')
     textM = request.args.get('textM')
     textE = request.args.get('textE')
-    return render_template('crud_paciente_animal/listar_paciente_animal.html', pacientes=pacientes, text=text, textM=textM, textE=textE)
+    return render_template('crud_paciente_animal/listar_paciente_animal.html', pacientes=pacientes, text=text, textM=textM, textE=textE,
+                         page=page, total_pages=total_pages, per_page=per_page)
 
 @rutas_pacientes.route('/modificar_paciente_animal/<int:id_paciente>', methods=['GET','POST'])
 def modificar_paciente(id_paciente):

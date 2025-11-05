@@ -110,15 +110,27 @@ def registro_consulta():
 
 @rutas_consultas.route('/listar_consulta')
 def listar_consulta():
+    page = int(request.args.get('page', 1))
+    per_page = 15
+    offset = (page - 1) * per_page
+
     conn = obtener_conexion()
     cur = conn.cursor(pymysql.cursors.DictCursor)
-    cur.execute('SELECT * FROM consultas')
+
+    # Get total count for pagination
+    cur.execute('SELECT COUNT(*) as total FROM consultas')
+    total_records = cur.fetchone()['total']
+    total_pages = (total_records + per_page - 1) // per_page
+
+    # Get paginated results
+    cur.execute('SELECT * FROM consultas LIMIT %s OFFSET %s', (per_page, offset))
     consultas = cur.fetchall()
-    
+
     text = request.args.get('text')
     textM = request.args.get('textM')
     textE = request.args.get('textE')
-    return render_template('consultas_medicas/listar_consultas.html', consultas=consultas, text=text, textM=textM, textE=textE)
+    return render_template('consultas_medicas/listar_consultas.html', consultas=consultas, text=text, textM=textM, textE=textE,
+                         page=page, total_pages=total_pages, per_page=per_page)
 
 @rutas_consultas.route('/modificar_consultas/<int:id_consulta>', methods=['GET','POST'])
 def modificar_consulta(id_consulta):

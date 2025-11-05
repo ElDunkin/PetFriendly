@@ -29,9 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Mostrar insumos en tabla
-async function cargarInsumos() {
-    const res = await fetch('/api/insumos');
-    const insumos = await res.json();
+async function cargarInsumos(page = 1) {
+    const res = await fetch(`/api/insumos?page=${page}`);
+    const data = await res.json();
+    const insumos = data.insumos;
+    const { page: currentPage, total_pages, per_page } = data;
+
     let tbody = document.querySelector('#tablaInsumos tbody');
     tbody.innerHTML = '';
     insumos.forEach(ins => {
@@ -46,6 +49,33 @@ async function cargarInsumos() {
                 <td>${ins.tipo_insumo}</td>
             </tr>`;
     });
+
+    // Generate pagination controls
+    const paginationControls = document.getElementById('paginationControls');
+    paginationControls.innerHTML = '';
+
+    // Previous button
+    if (currentPage > 1) {
+        paginationControls.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="cargarInsumos(${currentPage - 1})">Anterior</a></li>`;
+    } else {
+        paginationControls.innerHTML += `<li class="page-item disabled"><span class="page-link">Anterior</span></li>`;
+    }
+
+    // Page numbers
+    for (let i = 1; i <= total_pages; i++) {
+        if (i === currentPage) {
+            paginationControls.innerHTML += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+        } else {
+            paginationControls.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="cargarInsumos(${i})">${i}</a></li>`;
+        }
+    }
+
+    // Next button
+    if (currentPage < total_pages) {
+        paginationControls.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="cargarInsumos(${currentPage + 1})">Siguiente</a></li>`;
+    } else {
+        paginationControls.innerHTML += `<li class="page-item disabled"><span class="page-link">Siguiente</span></li>`;
+    }
 }
 cargarInsumos();
 
