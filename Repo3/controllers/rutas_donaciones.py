@@ -29,13 +29,18 @@ def registrar_donacion():
     if int(datos.get('cantidad', 0)) <= 0:
         return jsonify({'error': 'La cantidad debe ser mayor a cero'}), 400
 
+    # Validar fecha de vencimiento
     if datos.get('fecha_vencimiento'):
         try:
             fecha_vencimiento = date.fromisoformat(datos['fecha_vencimiento'])
-            if fecha_vencimiento < date.today():
-                return jsonify({'error': 'No se pueden registrar donaciones de medicamentos vencidos'}), 400
+            if fecha_vencimiento <= date.today():
+                return jsonify({'error': 'La fecha de vencimiento debe ser posterior a la fecha actual'}), 400
         except ValueError:
             return jsonify({'error': 'Formato de fecha de vencimiento inválido'}), 400
+    else:
+        return jsonify({'error': 'La fecha de vencimiento es obligatoria'}), 400
+
+
 
     # 2. Inserción en BD
     conn, cursor = None, None
