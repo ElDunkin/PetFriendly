@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <title>Ver Procedimiento Quirúrgico</title>
+    <style>
+        .info-card {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .badge-custom {
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="menu">
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/listar_procedimientos">Procedimientos Quirúrgicos</a></li>
+            </ul>
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Detalle del Procedimiento Quirúrgico #{{ procedimiento.id_procedimiento }}</h1>
+            <div>
+                <a href="/listar_procedimientos" class="btn btn-secondary">← Volver</a>
+                {% if procedimiento.estado != 'Cancelado' %}
+                    <a href="/modificar_procedimiento/{{ procedimiento.id_procedimiento }}" class="btn btn-warning">✏️ Editar</a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if request.args.get('text') %}
+            <div class="alert alert-success">{{ request.args.get('text') }}</div>
+        {% endif %}
+
+        <!-- Información del Paciente -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">🐾 Información del Paciente</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><span class="info-label">Nombre:</span> {{ procedimiento.nombre_paciente }}</p>
+                        <p><span class="info-label">Especie:</span> {{ procedimiento.especie_paciente }}</p>
+                        <p><span class="info-label">Raza:</span> {{ procedimiento.raza_paciente }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><span class="info-label">Sexo:</span> {{ procedimiento.sexo_paciente }}</p>
+                        <p><span class="info-label">Peso:</span> {{ procedimiento.peso_paciente }} kg</p>
+                        <p><span class="info-label">Edad:</span> {{ procedimiento.edad_estimada_paciente or 'N/A' }} años</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del Procedimiento -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">🏥 Información del Procedimiento</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><span class="info-label">Fecha:</span> {{ procedimiento.fecha_procedimiento.strftime('%d/%m/%Y') if procedimiento.fecha_procedimiento else 'N/A' }}</p>
+                        <p><span class="info-label">Hora Inicio:</span> {{ procedimiento.hora_inicio }}</p>
+                        <p><span class="info-label">Hora Fin:</span> {{ procedimiento.hora_fin or 'N/A' }}</p>
+                        <p><span class="info-label">Tipo de Cirugía:</span> {{ procedimiento.tipo_cirugia }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><span class="info-label">Estado:</span> 
+                            {% if procedimiento.estado == 'Completado' %}
+                                <span class="badge bg-success badge-custom">{{ procedimiento.estado }}</span>
+                            {% elif procedimiento.estado == 'En proceso' %}
+                                <span class="badge bg-primary badge-custom">{{ procedimiento.estado }}</span>
+                            {% elif procedimiento.estado == 'Programado' %}
+                                <span class="badge bg-info badge-custom">{{ procedimiento.estado }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary badge-custom">{{ procedimiento.estado }}</span>
+                            {% endif %}
+                        </p>
+                        <p><span class="info-label">Estado Post-Operatorio:</span> 
+                            {% if procedimiento.estado_post_operatorio == 'Estable' %}
+                                <span class="badge bg-success badge-custom">{{ procedimiento.estado_post_operatorio }}</span>
+                            {% elif procedimiento.estado_post_operatorio == 'En observación' %}
+                                <span class="badge bg-warning badge-custom">{{ procedimiento.estado_post_operatorio }}</span>
+                            {% elif procedimiento.estado_post_operatorio == 'Crítico' %}
+                                <span class="badge bg-danger badge-custom">{{ procedimiento.estado_post_operatorio }}</span>
+                            {% else %}
+                                <span class="badge bg-info badge-custom">{{ procedimiento.estado_post_operatorio }}</span>
+                            {% endif %}
+                        </p>
+                        <p><span class="info-label">Próximo Control:</span> {{ procedimiento.proximo_control.strftime('%d/%m/%Y') if procedimiento.proximo_control else 'No programado' }}</p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="info-card">
+                    <p class="info-label">Descripción del Procedimiento:</p>
+                    <p>{{ procedimiento.descripcion_procedimiento }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de Anestesia -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">💉 Anestesia</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><span class="info-label">Anestesia Utilizada:</span> {{ procedimiento.anestesia_utilizada or 'No especificada' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><span class="info-label">Dosis:</span> {{ procedimiento.dosis_anestesia or 'No especificada' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complicaciones y Observaciones -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">⚠️ Complicaciones y Observaciones</h5>
+            </div>
+            <div class="card-body">
+                <div class="info-card">
+                    <p class="info-label">Complicaciones:</p>
+                    <p>{{ procedimiento.complicaciones or 'Ninguna' }}</p>
+                </div>
+                
+                <div class="info-card">
+                    <p class="info-label">Observaciones:</p>
+                    <p>{{ procedimiento.observaciones or 'Sin observaciones' }}</p>
+                </div>
+                
+                <div class="info-card">
+                    <p class="info-label">Recomendaciones:</p>
+                    <p>{{ procedimiento.recomendaciones or 'Sin recomendaciones específicas' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del Veterinario -->
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">👨‍⚕️ Veterinario Responsable</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><span class="info-label">Nombre:</span> Dr(a). {{ procedimiento.nombre_veterinario }} {{ procedimiento.apellido_veterinario }}</p>
+                        <p><span class="info-label">Documento:</span> {{ procedimiento.documento_veterinario }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><span class="info-label">Correo:</span> {{ procedimiento.correo_veterinario }}</p>
+                        <p><span class="info-label">Teléfono:</span> {{ procedimiento.telefono_veterinario }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Archivos Adjuntos -->
+        {% if archivos %}
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">📎 Archivos Adjuntos</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% for archivo in archivos %}
+                    <a href="/static/img/archivos_procedimientos/{{ archivo.nombre_archivo }}" 
+                       class="list-group-item list-group-item-action" target="_blank">
+                        📄 {{ archivo.nombre_archivo }}
+                        <small class="text-muted">({{ archivo.fecha_subida.strftime('%d/%m/%Y %H:%M') if archivo.fecha_subida else '' }})</small>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Información de Registro -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="text-muted mb-0">
+                    <small>Fecha de registro: {{ procedimiento.fecha_registro.strftime('%d/%m/%Y %H:%M:%S') if procedimiento.fecha_registro else 'N/A' }}</small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5">
+        <div>Copyright © 2025 Developed by Trio Imperial co.</div>
+        <div>Powered by Petfriendly</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<link rel="stylesheet" href="/static/css/citas.css">
+<!-- Modal -->
+<div class="modal fade" id="modalNuevaCita" tabindex="-1" aria-labelledby="modalNuevaCitaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered custom-modal">
+    <div class="modal-content rounded-4 shadow-lg">
+      
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalNuevaCitaLabel">🐾 Registrar Nueva Cita</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <form action="{{ url_for('rutas_citas.citas') }}" method="POST">
+
+          <!-- Documento -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">👤 Documento del Propietario</label>
+            <input type="text" id="documento" name="numero_documento" class="form-control" placeholder="Ingresa el número de documento" required>
+            <div id="mensaje-documento" class="text-danger mt-1 small"></div>
+          </div>
+
+          <!-- Mascota -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">🐶 Mascota</label>
+            <select name="id_paciente" id="select-mascota" class="form-select" required disabled>
+              <option value="">-- Selecciona la mascota --</option>
+            </select>
+          </div>
+
+          <!-- Fecha -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">📅 Fecha</label>
+            <input type="date" name="fecha" id="fecha-cita" class="form-control" required>
+          </div>
+
+          <!-- Hora -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">⏰ Hora</label>
+            <input type="time" name="hora" class="form-control" required>
+          </div>
+
+          <!-- Motivo -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">📝 Motivo</label>
+            <input type="text" name="motivo" class="form-control" placeholder="Motivo de la cita" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">📝 Estado</label>
+            <select  name="estado">
+                <option value="Activa">Activa</option>
+                <option value="Cancelada">Cancelada</option>
+                <option value="Atendida">Atendida </option>
+            </select>
+          </div>
+
+          <!-- Botones -->
+          <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="btn btn-success px-4">
+              ✅ Registrar
+            </button>
+            <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+              ❌ Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  // llenar select de mascotas por documento
+  document.addEventListener('DOMContentLoaded', function(){
+    const documentoInput = document.getElementById('documento');
+    const selectMascota = document.getElementById('select-mascota');
+    const mensaje = document.getElementById('mensaje-documento');
+    const fechaInput = document.getElementById('fecha-cita');
+
+    // Establecer fecha mínima como hoy
+    const hoy = new Date().toISOString().split('T')[0];
+    fechaInput.setAttribute('min', hoy);
+
+    documentoInput.addEventListener('blur', function() {
+      const documento = this.value.trim();
+      selectMascota.innerHTML = '<option value="">-- Selecciona la mascota --</option>';
+      selectMascota.disabled = true;
+      mensaje.textContent = '';
+
+      if (!documento) return;
+
+      fetch(`/buscar_mascotas/${encodeURIComponent(documento)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) {
+            mensaje.textContent = data.error;
+            return;
+          }
+          if (!data.mascotas || data.mascotas.length === 0) {
+            mensaje.textContent = 'Este propietario no tiene animales registrados.';
+            return;
+          }
+          data.mascotas.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m.id_paciente;
+            opt.textContent = m.nombre_paciente;
+            selectMascota.appendChild(opt);
+          });
+          selectMascota.disabled = false;
+        })
+        .catch(() => { mensaje.textContent = 'Error al consultar mascotas.'; });
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+

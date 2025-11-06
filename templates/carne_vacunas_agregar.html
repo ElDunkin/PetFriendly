@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Agregar Vacuna - {{ mascota.nombre_paciente }}</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Nombre:</strong> {{ mascota.nombre_paciente }}</p>
+                    <p><strong>ID Interno:</strong> {{ mascota.id_paciente }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Especie:</strong> {{ mascota.especie_paciente }}</p>
+                    <p><strong>Raza:</strong> {{ mascota.raza_paciente }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Registrar Nueva Vacuna</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nombre_vacuna" class="form-label">Nombre de la Vacuna <span class="text-danger">*</span></label>
+                        <select id="nombre_vacuna" name="nombre_vacuna" class="form-select" required>
+                            <option value="">Seleccione una vacuna</option>
+                            {% for vacuna in listado_vacunas %}
+                            <option value="{{ vacuna }}">{{ vacuna }}</option>
+                            {% endfor %}
+                            <option value="Otra">Otra (especificar en observaciones)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="fecha_aplicacion" class="form-label">Fecha de Aplicación <span class="text-danger">*</span></label>
+                        <input type="date" id="fecha_aplicacion" name="fecha_aplicacion" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="proxima_aplicacion" class="form-label">Próxima Aplicación</label>
+                        <input type="date" id="proxima_aplicacion" name="proxima_aplicacion" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="observaciones" class="form-label">Observaciones</label>
+                        <textarea id="observaciones" name="observaciones" class="form-control" rows="3" placeholder="Detalles adicionales sobre la vacuna aplicada..."></textarea>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Registrar Vacuna
+                    </button>
+                    <a href="{{ url_for('rutas_carne_vacunas.ver_carne', id_paciente=mascota.id_paciente) }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Validación adicional para fechas
+document.getElementById('fecha_aplicacion').addEventListener('change', function() {
+    const fechaAplicacion = new Date(this.value);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    if (fechaAplicacion > hoy) {
+        alert('La fecha de aplicación no puede ser futura.');
+        this.value = '';
+    }
+});
+
+document.getElementById('proxima_aplicacion').addEventListener('change', function() {
+    const fechaAplicacion = new Date(document.getElementById('fecha_aplicacion').value);
+    const proximaAplicacion = new Date(this.value);
+
+    if (proximaAplicacion <= fechaAplicacion) {
+        alert('La próxima aplicación debe ser posterior a la fecha de aplicación.');
+        this.value = '';
+    }
+});
+</script>
+{% endblock %}

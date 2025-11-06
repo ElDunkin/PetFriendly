@@ -1,0 +1,55 @@
+{% for animal in animales %}
+<div class="modal fade" id="modal_Historial_{{ animal.id_rescatado }}" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Historial de {{ animal.nombre_temporal }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Salud Física</th>
+              <th>Salud Emocional</th>
+              <th>Observaciones</th>
+              <th>Medicamentos</th>
+              <th>Responsable</th>
+              <th>Imagen</th>
+            </tr>
+          </thead>
+          <tbody id="historial-body-{{ animal.id_rescatado }}">
+            {% set historial = historial_por_animal.get(animal.id_rescatado, []) %}
+            {% if historial %}
+              {% for registro in historial %}
+                <tr>
+                  <td>{{ registro.fecha_control }}</td>
+                  <td>{{ registro.estado_salud }}</td>
+                  <td>{{ registro.estado_emocional }}</td>
+                  <td>{{ registro.observaciones }}</td>
+                  <td>{{ registro.medicamentos or 'N/A' }}</td>
+                  <td>{{ registro.responsable }}</td>
+                  <td>
+                    {% if registro.imagen_url %}
+                      <img src="{{ url_for('static', filename='img/permanencias/' ~ registro.imagen_url) }}"
+                           width="80" height="80" class="img-thumbnail">
+                    {% else %}
+                      Sin imagen
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center text-muted">No hay historial registrado.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+  

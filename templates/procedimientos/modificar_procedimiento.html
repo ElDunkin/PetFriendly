@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/registro_usuarios.css">
+    <title>Modificar Procedimiento Quirúrgico</title>
+</head>
+<body>
+    <header>
+        <nav class="menu">
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/listar_procedimientos">Procedimientos Quirúrgicos</a></li>
+            </ul>
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Modificar Procedimiento Quirúrgico #{{ procedimiento.id_procedimiento }}</h1>
+        
+        {% if request.args.get('error') %}
+            <div class="alert alert-danger">{{ request.args.get('error') }}</div>
+        {% endif %}
+
+        <form method="POST" class="needs-validation">
+            <!-- Información del Paciente (Solo lectura) -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Información del Paciente (No editable)</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Paciente:</strong> {{ procedimiento.id_paciente }}</p>
+                    <p><strong>Fecha:</strong> {{ procedimiento.fecha_procedimiento.strftime('%d/%m/%Y') if procedimiento.fecha_procedimiento else 'N/A' }}</p>
+                    <p><strong>Hora Inicio:</strong> {{ procedimiento.hora_inicio }}</p>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Información Editable del Procedimiento -->
+            <h4 class="mb-3">Detalles del Procedimiento</h4>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="hora_fin" class="form-label">Hora de Finalización</label>
+                        <input type="time" class="form-control" id="hora_fin" name="hora_fin" 
+                               value="{{ procedimiento.hora_fin if procedimiento.hora_fin else '' }}">
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">Estado del Procedimiento *</label>
+                        <select class="form-select" id="estado" name="estado" required>
+                            <option value="Programado" {% if procedimiento.estado == 'Programado' %}selected{% endif %}>Programado</option>
+                            <option value="En proceso" {% if procedimiento.estado == 'En proceso' %}selected{% endif %}>En proceso</option>
+                            <option value="Completado" {% if procedimiento.estado == 'Completado' %}selected{% endif %}>Completado</option>
+                            <option value="Cancelado" {% if procedimiento.estado == 'Cancelado' %}selected{% endif %}>Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="tipo_cirugia" class="form-label">Tipo de Cirugía *</label>
+                <input type="text" class="form-control" id="tipo_cirugia" name="tipo_cirugia" 
+                       value="{{ procedimiento.tipo_cirugia }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcion_procedimiento" class="form-label">Descripción del Procedimiento *</label>
+                <textarea class="form-control" id="descripcion_procedimiento" name="descripcion_procedimiento" 
+                          rows="4" required>{{ procedimiento.descripcion_procedimiento }}</textarea>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Información de Anestesia -->
+            <h4 class="mb-3">Anestesia</h4>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="anestesia_utilizada" class="form-label">Anestesia Utilizada</label>
+                        <input type="text" class="form-control" id="anestesia_utilizada" name="anestesia_utilizada" 
+                               value="{{ procedimiento.anestesia_utilizada if procedimiento.anestesia_utilizada else '' }}">
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="dosis_anestesia" class="form-label">Dosis de Anestesia</label>
+                        <input type="text" class="form-control" id="dosis_anestesia" name="dosis_anestesia" 
+                               value="{{ procedimiento.dosis_anestesia if procedimiento.dosis_anestesia else '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Estado Post-Operatorio -->
+            <h4 class="mb-3">Estado Post-Operatorio</h4>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="estado_post_operatorio" class="form-label">Estado Post-Operatorio *</label>
+                        <select class="form-select" id="estado_post_operatorio" name="estado_post_operatorio" required>
+                            <option value="En observación" {% if procedimiento.estado_post_operatorio == 'En observación' %}selected{% endif %}>En observación</option>
+                            <option value="Estable" {% if procedimiento.estado_post_operatorio == 'Estable' %}selected{% endif %}>Estable</option>
+                            <option value="Crítico" {% if procedimiento.estado_post_operatorio == 'Crítico' %}selected{% endif %}>Crítico</option>
+                            <option value="Recuperado" {% if procedimiento.estado_post_operatorio == 'Recuperado' %}selected{% endif %}>Recuperado</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="proximo_control" class="form-label">Próximo Control</label>
+                        <input type="date" class="form-control" id="proximo_control" name="proximo_control" 
+                               value="{{ procedimiento.proximo_control if procedimiento.proximo_control else '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="complicaciones" class="form-label">Complicaciones</label>
+                <textarea class="form-control" id="complicaciones" name="complicaciones" 
+                          rows="3">{{ procedimiento.complicaciones if procedimiento.complicaciones else '' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea class="form-control" id="observaciones" name="observaciones" 
+                          rows="3">{{ procedimiento.observaciones if procedimiento.observaciones else '' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="recomendaciones" class="form-label">Recomendaciones</label>
+                <textarea class="form-control" id="recomendaciones" name="recomendaciones" 
+                          rows="3">{{ procedimiento.recomendaciones if procedimiento.recomendaciones else '' }}</textarea>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <a href="/ver_procedimiento/{{ procedimiento.id_procedimiento }}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="mt-5">
+        <div>Copyright © 2025 Developed by Trio Imperial co.</div>
+        <div>Powered by Petfriendly</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

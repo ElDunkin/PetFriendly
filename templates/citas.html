@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/generic.css">
+
+<header>
+  <div class="logo">
+    <nav class="menu">
+      <ul>
+        <li><a href="/dashboard_medico">Dashboard</a></li>
+        <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+        <li><a href="/seleccionar_paciente_consulta">Gestion Consulta</a></li>
+        <li><a href="/citas">Gestion Citas</a></li>
+        <li><a href="/consultar_donaciones">Donaciones</a></li>
+      </ul>
+      <div class="btn-group">
+        <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <h3>Listado de Citas</h3>
+      <!-- Botón que abre el modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaCita">
+        🐾 Nueva Cita
+      </button>
+    </div>
+
+    <table class="table mt-3">
+      <thead>
+        <tr>
+          <th>Mascota</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Motivo</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cita in citas %}
+        <tr>
+          <td>{{ cita.nombre_paciente }}</td>
+          <td>{{ cita.fecha }}</td>
+          <td>{{ cita.hora }}</td>
+          <td>{{ cita.motivo }}</td>
+          <td>{{ cita.estado }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="text-center">No hay citas registradas.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</main>
+{% include 'modals/registrar_cita.html' %}
+{% endblock %}
+

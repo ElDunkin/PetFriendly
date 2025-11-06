@@ -1,0 +1,75 @@
+<div class="modal fade" id="modalSolicitudes" tabindex="-1" aria-labelledby="modalSolicitudesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSolicitudesLabel">Solicitudes de Donaciones</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Medicamento</th>
+              <th>Cantidad</th>
+              <th>Presentación</th> 
+              <th>Estado</th>
+              <th>Recibido Por</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaSolicitudes"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function cargarSolicitudes() {
+  const response = await fetch("/consultar_donaciones");
+  const donaciones = await response.json();
+  const tbody = document.getElementById("tablaSolicitudes");
+  tbody.innerHTML = "";
+
+  donaciones.forEach(d => {
+    let acciones = "";
+    if (d.estado === "en revision") {
+      acciones = `
+        <button class="btn btn-success btn-sm" onclick="revisarDonacion(${d.id_donacion}, 'aprobar')">Aprobar</button>
+        <button class="btn btn-danger btn-sm" onclick="revisarDonacion(${d.id_donacion}, 'rechazar')">Rechazar</button>`;
+    }
+    tbody.innerHTML += `
+      <tr>
+        <td>${d.nombre_medicamento}</td>
+        <td>${d.cantidad}</td>
+        <td>${d.presentacion}</td>
+        <td>${d.estado}</td>
+        <td>${d.nombre_usuario ? d.nombre_usuario + " " + d.apellido_usuario : "No asignado"}</td>
+        <td>${acciones}</td>
+      </tr>`;
+  });
+}
+
+async function revisarDonacion(id, accion) {
+  let justificacion = "";
+  if (accion === "rechazar") {
+    justificacion = prompt("Ingrese justificación para rechazo:");
+    if (!justificacion) return;
+  }
+  const response = await fetch(`/revisar_donacion/${id}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ accion, justificacion })
+  });
+  const result = await response.json();
+  alert(result.mensaje || result.error);
+  cargarSolicitudes();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("modalSolicitudes");
+  if (modal) {
+    modal.addEventListener("show.bs.modal", cargarSolicitudes);
+  }
+});
+</script>
