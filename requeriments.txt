@@ -1,0 +1,9 @@
+Flask
+Flask-Ext
+mysql
+Flask-MySQL
+PyMySQL
+Flask-Mail
+twilio
+flask_wtf
+reportlab
