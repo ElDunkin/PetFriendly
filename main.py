@@ -1,3 +1,4 @@
+import os
 from config import conexion_base_de_datos
 from controllers.rutas_principales import rutas_principales
 from controllers.rutas_usuarios import rutas_usuarios
@@ -16,9 +17,22 @@ from controllers.rutas_alimentos import rutas_alimentos
 from controllers.rutas_citas import rutas_citas
 from controllers.rutas_carne_vacunas import rutas_carne_vacunas
 from controllers.rutas_jornada import rutas_jornada
+from controllers.rutas_adopcion import rutas_adopciones
+
+
 
 main = conexion_base_de_datos()
-main.secret_key = '1234'
+main.secret_key = os.urandom(24)
+
+
+
+UPLOAD_FOLDER = 'contratos'
+ALLOWED_EXTENSIONS = {'pdf'}
+MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB
+
+main.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+main.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
+
 
 main.register_blueprint(rutas_principales)
 main.register_blueprint(rutas_usuarios)
@@ -37,7 +51,11 @@ main.register_blueprint(rutas_alimentos)
 main.register_blueprint(rutas_citas)
 main.register_blueprint(rutas_carne_vacunas)
 main.register_blueprint(rutas_jornada)
+main.register_blueprint(rutas_adopciones)
+
 
 
 if __name__ == '__main__':
     main.run(debug=True)
+    
+

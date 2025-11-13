@@ -5,6 +5,8 @@ from models.conexion import obtener_conexion
 
 rutas_citas = Blueprint('rutas_citas', __name__)
 
+from datetime import date, datetime, timedelta
+
 @rutas_citas.route('/citas', methods=['GET', 'POST'])
 def citas():
     conn = obtener_conexion()
@@ -48,9 +50,16 @@ def citas():
         """)
         citas = cur.fetchall()
 
+    # 🔧 Convertir cualquier tipo no serializable (datetime, timedelta) a string
+    for cita in citas:
+        for k, v in cita.items():
+            if isinstance(v, (datetime, date, timedelta)):
+                cita[k] = str(v)
+
     cur.close()
     conn.close()
     return render_template('citas.html', citas=citas)
+
 
 @rutas_citas.route('/listar_citas', methods=['GET'])
 def listar_citas():

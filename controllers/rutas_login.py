@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, session, request, redirect, url_fo
 # from werkzeug.security import  check_password_hash
 import hashlib
 from models.conexion import obtener_conexion
+from models.log_system import log_system
 import pymysql
 
 rutas_login = Blueprint('rutas_login', __name__)
@@ -32,6 +33,13 @@ def login():
             session['nombre'] = usuario['nombre_usuario']
             session['apellido'] = usuario['apellido_usuario']
 
+            # Registrar login en el log
+            usuario_actual = f"{usuario['nombre_usuario']} {usuario['apellido_usuario']}"
+            log_system.log_login(
+                usuario_actual,
+                f"Inicio de sesión exitoso - Rol: {usuario['nombre_rol']} - IP: {request.remote_addr}"
+            )
+
             # Redirigimos según el rol
             if usuario['nombre_rol'] == 'Administrador':
                 return redirect(url_for('rutas_dashboard.dashboard_administrador'))
@@ -47,9 +55,34 @@ def login():
             return redirect(url_for('rutas_login.login', textf='Correo o contraseña incorrectos'))
     text = request.args.get('text')
     textf = request.args.get('textf')
-    return render_template('login.html', text=text, textf = textf)
+    logout_message = request.args.get('logout_message')
+    return render_template('login.html', text=text, textf=textf, logout_message=logout_message)
 
 @rutas_login.route('/logout')
 def logout():
-    session.clear()
-    return redirect(url_for('rutas_login.login'))
+    if 'rol' not in session:  # Verifica una clave que realmente se guarda en login
+        flash('No tienes una sesión activa.', 'warning')
+        resp = redirect(url_for('rutas_login.login'))
+        resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        resp.headers['Pragma'] = 'no-cache'
+        resp.headers['Expires'] = '0'
+        return resp
+
+    nombre_usuario = session.get('nombre', 'Usuario')  # Usa 'nombre' que se guarda en login
+
+    # Registrar logout en el log
+    usuario_actual = f"{session.get('nombre', 'Desconocido')} {session.get('apellido', 'Desconocido')}"
+    log_system.log_logout(
+        usuario_actual,
+        f"Cierre de sesión - Rol: {session.get('rol', 'Desconocido')} - IP: {request.remote_addr}"
+    )
+
+    session.clear()  # Limpia toda la sesión
+    session.modified = True  # Fuerza la actualización de la sesión
+
+    # Crear respuesta con headers para evitar caché del navegador
+    resp = redirect(url_for('rutas_login.login', logout_message=f'Sesión cerrada correctamente. ¡Hasta pronto, {nombre_usuario}!'))
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp

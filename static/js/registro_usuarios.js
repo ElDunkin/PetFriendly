@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmPasswordInput = document.querySelector('input[name="confirmar_contrasena"]');
     const rolSelect = document.querySelector('select[name="id_rol"]');
 
+    // Event listener para el botón "Ver lista de usuarios"
+    const btnVerUsuarios = document.getElementById('btnVerUsuarios');
+    if (btnVerUsuarios) {
+        btnVerUsuarios.addEventListener('click', function() {
+            window.location.href = '/listar_usuarios';
+        });
+    }
+
     form.addEventListener('submit', function (e) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const idRegex = /^\d+$/;
@@ -61,3 +69,4 @@ btn.addEventListener('click', function () {
         icon.classList.add('bi-eye');
     }
 });
+

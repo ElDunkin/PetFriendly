@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template, request, session
 from datetime import datetime
 from models.conexion import obtener_conexion
+from models.log_system import log_system
 
 rutas_medicamentos = Blueprint('rutas_medicamentos', __name__)
 
@@ -16,7 +17,7 @@ def medicamentos():
 
     if request.method == 'GET':
         cur.execute("""
-            SELECT id_medicamento, nombre_medicamento, existencia, estado, fecha_vencimiento
+            SELECT id_medicamento, nombre_medicamento, existencia, lote, fecha_vencimiento, estado
             FROM medicamento
         """)
         meds = cur.fetchall()
@@ -26,8 +27,9 @@ def medicamentos():
                 'id_medicamento': m[0],
                 'nombre_medicamento': m[1],
                 'existencia': m[2],
-                'estado': m[3],
-                'fecha_vencimiento': m[4].strftime('%Y-%m-%d') if m[4] else ''
+                'lote': m[3],   # 👈 Aquí incluimos el lote
+                'fecha_vencimiento': m[4].strftime('%Y-%m-%d') if m[4] else '',
+                'estado': m[5]
             })
         cur.close()
         conn.close()
@@ -46,12 +48,16 @@ def medicamentos():
     existe = cur.fetchone()
 
     if existe:
+    # Si el lote ya existe → actualizar stock
         id_medicamento, existencia_actual = existe
         nueva_existencia = existencia_actual + int(data['cantidad_inicial'])
-        cur.execute("UPDATE medicamento SET existencia=%s WHERE id_medicamento=%s",
-                    (nueva_existencia, id_medicamento))
-        mensaje = "Stock actualizado"
+        cur.execute(
+            "UPDATE medicamento SET existencia=%s WHERE id_medicamento=%s",
+            (nueva_existencia, id_medicamento)
+        )
+        mensaje = "Stock actualizado al lote existente"
     else:
+    # Si el lote no existe → crear nuevo registro
         cur.execute("""
             INSERT INTO medicamento (
                 nombre_medicamento, principio_activo, presentacion, lote, concentracion,
@@ -66,12 +72,21 @@ def medicamentos():
             fecha_venc,
             data['cantidad_inicial'],
             data['cantidad_inicial'],
-            data.get('proveedor',''),
-            data.get('observaciones',''),
+            data.get('proveedor', ''),
+            data.get('observaciones', ''),
             estado
         ))
         id_medicamento = cur.lastrowid
-        mensaje = "Medicamento registrado"
+        mensaje = "Nuevo medicamento registrado con nuevo lote"
+
+    # Registrar en el log
+    usuario_actual = f"{session.get('nombre', 'Desconocido')} {session.get('apellido', 'Desconocido')}"
+    log_system.log_insert(
+        usuario_actual,
+        "medicamento",
+        id_medicamento,
+        f"Medicamento {data['nombre_medicamento']} registrado - Lote: {data['lote']} - Cantidad: {data['cantidad_inicial']}"
+    )
 
     conn.commit()
     cur.close()
@@ -108,7 +123,7 @@ def registrar_movimiento():
         return jsonify({'error': 'No hay suficiente stock para esta salida'}), 400
 
     # Validar responsable (documento)
-    cur.execute("SELECT nombre, apellido FROM usuario WHERE documento = %s", (data['responsable'],))
+    cur.execute("SELECT nombre, apellido FROM usuarios WHERE numero_documento = %s", (data['responsable'],))
     usuario = cur.fetchone()
     if not usuario:
         cur.close()
@@ -118,6 +133,11 @@ def registrar_movimiento():
 
     # Calcular nueva existencia
     nueva_existencia = existencia_actual + data['cantidad'] if data['tipo'] == 'Entrada' else existencia_actual - data['cantidad']
+
+    # Obtener nombre del medicamento para el log
+    cur.execute("SELECT nombre_medicamento FROM medicamento WHERE id_medicamento = %s", (data['id_medicamento'],))
+    medicamento = cur.fetchone()
+    nombre_medicamento = medicamento[0] if medicamento else "Desconocido"
 
     # Actualizar existencia
     cur.execute("UPDATE medicamento SET existencia = %s WHERE id_medicamento = %s", (nueva_existencia, data['id_medicamento']))
@@ -137,6 +157,15 @@ def registrar_movimiento():
         data['motivo'],
         data.get('observacion', '')
     ))
+
+    # Registrar en el log
+    usuario_actual = f"{session.get('nombre', 'Desconocido')} {session.get('apellido', 'Desconocido')}"
+    log_system.log_update(
+        usuario_actual,
+        "medicamento",
+        data['id_medicamento'],
+        f"Movimiento {data['tipo']} - {nombre_medicamento}: {data['cantidad']} unidades - Motivo: {data['motivo']}"
+    )
 
     conn.commit()
     cur.close()

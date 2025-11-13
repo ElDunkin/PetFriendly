@@ -237,6 +237,19 @@ CREATE TABLE vacunas (
     FOREIGN KEY (`numero_documento`) REFERENCES usuarios(`numero_documento`)
 );
 
+CREATE TABLE `adopciones` (
+        `id_adopciones` INT AUTO_INCREMENT PRIMARY KEY,
+        `nombre_adoptante` VARCHAR(100),
+        `tipo_documento` VARCHAR(20),
+        `identificacion` VARCHAR(30),
+        `direccion` VARCHAR(100),
+        `numero_contacto` VARCHAR(20),
+        `correo` VARCHAR(80),
+        `fecha_adopcion` DATE,
+        `id_rescatado` INT,
+        `contrato_pdf` VARCHAR(255),
+        FOREIGN KEY (`id_rescatado`) REFERENCES animales_rescatados(`id_rescatado`)
+    );
 
 
 
@@ -383,23 +396,56 @@ SELECT
 FROM insumo
 WHERE fecha_vencimiento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY);
 
+-- CREATE VIEW vista_animales_en_permanencia AS
+-- SELECT ar.id_rescatado,
+--        ar.nombre_temporal,
+--        ar.foto_url,
+--        ar.estado
+-- FROM animales_rescatados ar
+-- INNER JOIN permanencia_animal pa 
+--        ON ar.id_rescatado = pa.id_rescatado
+-- WHERE ar.estado = 'En permanencia'
+-- GROUP BY ar.id_rescatado, ar.nombre_temporal, ar.foto_url, ar.estado;
+
+CREATE OR REPLACE VIEW vista_animales_en_permanencia AS
+SELECT 
+    ar.id_rescatado,
+    ar.nombre_temporal,
+    ar.foto_url,
+    ar.estado
+FROM animales_rescatados ar
+INNER JOIN permanencia_animal pa ON ar.id_rescatado = pa.id_rescatado
+WHERE ar.estado LIKE '%permanencia%'
+GROUP BY ar.id_rescatado, ar.nombre_temporal, ar.foto_url, ar.estado;
+
+-- CREATE OR REPLACE VIEW vista_animales_en_permanencia AS
+-- SELECT ar.id_rescatado,
+--        ar.nombre_temporal,
+--        ar.foto_url,
+--        ar.estado
+-- FROM animales_rescatados ar
+-- INNER JOIN permanencia_animal pa 
+--        ON ar.id_rescatado = pa.id_rescatado
+-- WHERE LOWER(TRIM(ar.estado)) = 'en permanencia'
+
+
 -- SELECT c.*, cc.motivo, cc.fecha_cancelacion
 -- FROM consultas c
 -- LEFT JOIN consultas_canceladas cc ON c.id_consulta = cc.id_consulta;
 
--- CREATE VIEW resumen_adopciones AS
--- SELECT
---     ar.id_rescatado,
---     ar.nombre_provicional,
---     ar.fecha_ingreso,
---     ar.estado_salud,
---     ar.estado,
---     a.fecha_adopcion,
---     u.nombre_usuario AS adoptante_nombre,
---     u.apellido_usuario AS adoptante_apellido
--- FROM animales_rescatados ar
--- LEFT JOIN adopciones a ON ar.id_rescatado = a.id_rescatado
--- LEFT JOIN usuarios u ON a.numero_documento = u.numero_documento;
+CREATE VIEW resumen_adopciones AS
+SELECT
+    ar.id_rescatado,
+    ar.nombre_provicional,
+    ar.fecha_ingreso,
+    ar.estado_salud,
+    ar.estado,
+    a.fecha_adopcion,
+    u.nombre_usuario AS adoptante_nombre,
+    u.apellido_usuario AS adoptante_apellido
+FROM animales_rescatados ar
+LEFT JOIN adopciones a ON ar.id_rescatado = a.id_rescatado
+LEFT JOIN usuarios u ON a.numero_documento = u.numero_documento;
 
 -- SELECT c.id_cita AS id,
 --             p.nombre_paciente AS nombre_mascota,
@@ -504,23 +550,15 @@ VALUES
 (4, 'Desparasitación', '2025-07-30', 'Colegio San José', 'Atención desde 8am'),
 (5, 'Charlas de cuidado', '2025-08-05', 'Biblioteca Municipal', 'Abierto al público');
 
-INSERT INTO `medicamento` (`id_medicamento`,`nombre_medicamento`,`principio_activo`,`presentacion`,`lote`,`concentracion`,`fecha_vencimiento`,`cantidad_inicial`,`existencia`,`proveedor`,`observaciones`,`estado`)
+INSERT INTO `medicamento`
+(`id_medicamento`, `nombre_medicamento`, `principio_activo`, `presentacion`, `lote`, `concentracion`, `fecha_vencimiento`, `cantidad_inicial`, `existencia`, `proveedor`, `observaciones`, `estado`)
 VALUES
-(1, 'Amoxicilina', 'Amoxicilina', 'Tabletas', 'L123', '500mg', '2025-12-01', 100, 80, 'VetFarm', NULL, 'Activo'),
-(2, 'Ivermectina', 'Ivermectina', 'Solución oral', 'L124', '10ml', '2026-01-01', 50, 45, 'VetFarm', NULL, 'Activo'),
-(3, 'Ketoprofeno', 'Ketoprofeno', 'Inyectable', 'L125', '5mg/ml', '2026-06-01', 30, 25, 'MedVet', NULL, 'Activo'),
-(4, 'Metronidazol', 'Metronidazol', 'Tabletas', 'L126', '250mg', '2025-11-01', 200, 150, 'BioVet', NULL, 'Activo'),
-(5, 'Omeprazol', 'Omeprazol', 'Cápsulas', 'L127', '20mg', '2026-03-01', 100, 90, 'PharmaPet', NULL, 'Activo'),
-(6, 'Amoxicilina', 'Amoxicilina', 'Tabletas', 'L001', '500mg', '2025-09-25', 100, 80, 'VetPharma Ltda.', 'Antibiótico de amplio espectro', 'Activo'),
-(7, 'Enrofloxacina', 'Enrofloxacina', 'Solución inyectable', 'E2025A', '10%', '2025-09-28', 50, 45, 'Farmavet SAS', 'Mantener en refrigeración', 'Activo'),
-(8, 'Ketoprofeno', 'Ketoprofeno', 'Ampollas', 'K2509', '100mg/2ml', '2025-09-22', 30, 25, 'Laboratorio VetAndes', 'Analgésico y antiinflamatorio', 'Activo'),
-(9, 'Ivermectina', 'Ivermectina', 'Frasco 50ml', 'IVM123', '1%', '2025-09-30', 20, 18, 'Agrovet Ltda.', 'Antiparasitario', 'Activo'),
-(10, 'Prednisolona', 'Prednisolona', 'Tabletas', 'PRED2025', '20mg', '2025-10-15', 60, 55, 'Distribuidora Salud Animal', 'Corticoide', 'Activo'),
-(11, 'Metronidazol', 'Metronidazol', 'Tabletas', 'MZ100', '250mg', '2025-09-24', 120, 110, 'PharmaVet', 'Antiprotozoario', 'Activo'),
-(12, 'Doxiciclina', 'Doxiciclina', 'Cápsulas', 'DOX567', '100mg', '2025-11-20', 90, 85, 'VetFarm', 'Antibiótico tetraciclina', 'Activo'),
-(13, 'Meloxicam', 'Meloxicam', 'Suspensión oral', 'MELX200', '1.5mg/ml', '2025-09-21', 40, 35, 'Laboratorios AnimalCare', 'Analgésico', 'Activo'),
-(14, 'Clorfenamina', 'Clorfenamina', 'Ampollas', 'CLF2025', '10mg/ml', '2025-12-05', 70, 70, 'VetLife SAS', 'Antihistamínico', 'Activo'),
-(15, 'Sulfadiazina', 'Sulfadiazina', 'Tabletas', 'SLF250', '500mg', '2026-01-15', 50, 48, 'Farmacológicos del Quindío', 'Antibacteriano', 'Activo');
+(1, 'Amoxicilina', 'Amoxicilina', 'Tabletas', 'L123', '500mg', '2025-12-01', 100, 80, 'VetFarm', NULL, 'En_revision'),
+(2, 'Ivermectina', 'Ivermectina', 'Solución oral', 'L124', '10ml', '2026-01-01', 50, 45, 'VetFarm', NULL, 'En_revision'),
+(3, 'Ketoprofeno', 'Ketoprofeno', 'Inyectable', 'L125', '5mg/ml', '2026-06-01', 30, 25, 'MedVet', NULL, 'En_revision'),
+(4, 'Enrofloxacina', 'Enrofloxacina', 'Tabletas', 'L126', '150mg', '2024-11-01', 40, 10, 'VetMed', NULL, 'En_revision'),
+(5, 'Prednisolona', 'Prednisolona', 'Jarabe', 'L127', '15mg/5ml', '2024-09-01', 20, 5, 'PharmaVet', NULL, 'En_revision');
+
 
 
 INSERT INTO `movimiento` (`id_movimiento`,`id_medicamento`,`fecha_movimiento`,`responsable_movieminto`,`cantidad`,`tipo_movimiento`,`motivo_moviemiento`,`observacion_observación`)

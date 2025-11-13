@@ -1,177 +1,2112 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard | Administrador</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_admin.css') }}">
-  <link rel="stylesheet" href="/static/css/generic.css">
-  <link rel="stylesheet" href="/static/css/dashboard.css">
+    <meta charset="UTF-8">
+    <title>Dashboard | {{ session['rol'] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_admin.css') }}">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <style>
+        /* Header profesional */
+        .dashboard-header {
+            background: linear-gradient(135deg, #b0d0f0 0%, #a8b9c9 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
+        .dashboard-header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-  </style>
+        .dashboard-header p {
+            font-size: 1.2rem;
+            margin: 15px 0 0 0;
+            opacity: 0.9;
+        }
+
+        /* Estadísticas mejoradas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        /* Botón para ver lista de usuarios */
+        .btn-ver-usuarios {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            margin: 20px 0;
+            display: inline-block;
+        }
+
+        .btn-ver-usuarios:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Modal de usuarios mejorado */
+        .usuarios-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px);
+        }
+
+        .usuarios-modal-content {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            margin: 2% auto;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.8);
+            width: 95%;
+            max-width: 1400px;
+            border-radius: 16px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        .usuarios-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e1e5e9;
+        }
+
+        .usuarios-modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .usuarios-close {
+            color: #aaa;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .usuarios-close:hover,
+        .usuarios-close:focus {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* Controles de búsqueda y paginación para usuarios */
+        .usuarios-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(52, 152, 219, 0.1);
+        }
+
+        .usuarios-search {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .usuarios-search input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .usuarios-search input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .usuarios-pagination-settings {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .usuarios-pagination-settings label {
+            margin: 0;
+            font-weight: 500;
+            color: #34495e;
+        }
+
+        .usuarios-pagination-settings select {
+            padding: 8px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .usuarios-pagination-settings select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Tabla de usuarios */
+        .usuarios-table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #usuariosTable {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #usuariosTable th {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e1e5e9;
+        }
+
+        #usuariosTable th.sortable {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        #usuariosTable th.sortable:hover {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+
+        #usuariosTable th.sortable i {
+            margin-left: 8px;
+            opacity: 0.7;
+        }
+
+        #usuariosTable td {
+            padding: 15px;
+            border-bottom: 1px solid #e1e5e9;
+            color: #555;
+        }
+
+        #usuariosTable tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        #usuariosTable tr:hover {
+            background-color: #e8f4fd;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        /* Información de paginación */
+        .usuarios-pagination-info {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 1rem;
+        }
+
+        /* Navegación de páginas */
+        .usuarios-pagination-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .usuarios-page-btn {
+            padding: 10px 15px;
+            border: 2px solid #e1e5e9;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .usuarios-page-btn:hover:not(:disabled) {
+            background-color: #f8f9fa;
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .usuarios-page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #e9ecef;
+        }
+
+        .usuarios-page-number.active {
+            background-color: #3498db !important;
+            color: white !important;
+            border-color: #3498db !important;
+        }
+
+        .usuarios-page-numbers {
+            display: flex;
+            gap: 5px;
+        }
+
+        .usuarios-page-number {
+            padding: 10px 15px;
+            border: 2px solid #e1e5e9;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            min-width: 45px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .usuarios-page-number:hover:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .usuarios-modal-content {
+                margin: 1% auto;
+                padding: 20px;
+                max-width: 98%;
+            }
+
+            .usuarios-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .usuarios-search {
+                margin-right: 0;
+            }
+
+            .usuarios-table-container {
+                font-size: 0.9rem;
+            }
+
+            #usuariosTable th,
+            #usuariosTable td {
+                padding: 10px;
+            }
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.8);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin: 8px 0 0 0;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Sección de reportes mejorada */
+        .reportes-section {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.8);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reportes-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .reportes-section h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 0.95rem;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .reportes-section button {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .reportes-section button:hover {
+            background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Layout de gráficos mejorado */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.8);
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .chart-container h3 {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .chart-container h3 i {
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+
+        .chart-wrapper {
+            flex: 1;
+            position: relative;
+            background: rgba(255,255,255,0.8);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 8px;
+        }
+
+        /* Mejoras específicas para gráficos */
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Animaciones mejoradas para gráficos */
+        .chart-container {
+            animation: chartFadeIn 0.8s ease-out;
+        }
+
+        .chart-container:nth-child(1) { animation-delay: 0.1s; }
+        .chart-container:nth-child(2) { animation-delay: 0.2s; }
+        .chart-container:nth-child(3) { animation-delay: 0.3s; }
+        .chart-container:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes chartFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Tooltips mejorados */
+        .chart-tooltip {
+            background: rgba(0,0,0,0.9) !important;
+            color: white !important;
+            border-radius: 8px !important;
+            padding: 12px !important;
+            font-size: 14px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+            border: none !important;
+        }
+
+        /* Responsive para gráficos */
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .chart-container {
+                height: 350px;
+            }
+
+            .chart-legend {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Estilos del modal mejorados */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            margin: 3% auto;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.8);
+            width: 95%;
+            max-width: 1300px;
+            border-radius: 16px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            text-decoration: none;
+            transform: rotate(90deg);
+        }
+
+        #reporteTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #reporteTable th,
+        #reporteTable td {
+            border: 1px solid #e1e5e9;
+            padding: 15px;
+            text-align: left;
+        }
+
+        #reporteTable th {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        #reporteTable tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        #reporteTable tr:hover {
+            background-color: #e8f4fd;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .modal-buttons {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .modal-buttons button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            margin: 0 10px;
+        }
+
+        .modal-buttons button:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Estilos de paginación */
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .pagination-info {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .pagination-settings {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pagination-settings label {
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .pagination-settings select {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .pagination-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: #f8f9fa;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-number {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .page-number.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .page-number:hover:not(.active) {
+            background-color: #f8f9fa;
+        }
+
+        /* Animaciones de entrada */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card, .chart-container, .reportes-section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .chart-container:nth-child(1) { animation-delay: 0.3s; }
+        .chart-container:nth-child(2) { animation-delay: 0.4s; }
+        .chart-container:nth-child(3) { animation-delay: 0.5s; }
+        .chart-container:nth-child(4) { animation-delay: 0.6s; }
+        .reportes-section { animation-delay: 0.7s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .chart-container {
+                height: 350px;
+            }
+
+            .stat-card {
+                padding: 25px;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media print {
+            .modal {
+                display: block !important;
+                position: static !important;
+                background: white !important;
+            }
+            .modal-content {
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                max-height: none !important;
+            }
+            .close, .modal-buttons, .pagination-controls, .pagination-nav {
+                display: none !important;
+            }
+            #reporteTable {
+                display: table !important;
+            }
+        }
+    </style>
+
+    
+    <style>
+
+    </style>
 </head>
-    <body>
+
+<body>
 
     <header>
         <div class="logo">
-        <nav class="menu">
-            <ul>
-                <li><a href="/dashboard_administrador">Dashboard</a></li>
+            <nav class="menu">
+                <ul>
+                    <li><a href="/dashboard_administrador">Dashboard {{ session['rol'] }}</a></li>
 
-                <!-- Gestión (submenú) -->
-                <li class="dropdown">
-                    <a href="#">Gestión ▼</a>
-                    <ul class="submenu">
-                        <li><a href="/registro_usuarios">Usuarios</a></li>
-                        <li><a href="/registro_paciente_animal">Pacientes</a></li>
-                        <li><a href="/gestion_insumos">Insumos</a></li>
-                        <li><a href="/medicamento">Medicamentos</a></li>
-                        <li><a href="/registrar_animal_rescatado">Animales Rescatados</a></li>
-                        <li><a href="/carne_vacunas">Carné de Vacunas</a></li>
-                        <li><a href="/jornadas">Jornadas</a></li>
-                    </ul>
-                </li>
+                    <!-- Gestión (submenú) -->
+                    <li class="dropdown">
+                        <a href="#">Gestión ▼</a>
+                        <ul class="submenu">
+                            <li><a href="/registro_usuarios">Usuarios</a></li>
+                            <li><a href="/registro_paciente_animal">Pacientes</a></li>
+                            <li><a href="/gestion_insumos">Insumos</a></li>
+                            <li><a href="/medicamento">Medicamentos</a></li>
+                            <li><a href="/registrar_animal_rescatado">Animales Rescatados</a></li>
+                            <li><a href="/carne_vacunas">Carné de Vacunas</a></li>
+                            <li><a href="/jornadas">Jornadas</a></li>
+                            <li><a href="/registro_adopcion">Adopciones</a></li>
+                        </ul>
+                    </li>
 
-                <!-- Animales -->
-                
+                    <!-- Animales -->
 
-                <!-- Donaciones (submenú) -->
-                <li class="dropdown">
-                    <a href="#">Donaciones ▼</a>
-                    <ul class="submenu">
-                        <li><a href="/registrar_donacion">Medicamentos</a></li>
-                        <li><a href="/donaciones_alimentos">Alimentos</a></li>
-                    </ul>
-                </li>
-            </ul>
 
-            <div class="btn-group">
-                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
-            </div>
-        </nav>
+                    <!-- Donaciones (submenú) -->
+                    <li class="dropdown">
+                        <a href="#">Donaciones ▼</a>
+                        <ul class="submenu">
+                            <li><a href="/registrar_donacion">Medicamentos</a></li>
+                            <li><a href="/donaciones_alimentos">Alimentos</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="btn-group">
+                    <a href="{{ url_for('rutas_login.logout') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+                </div>
+            </nav>
     </header>
 
-    <main class="dashboard-container">
-
-        <div class="mensaje-bienvenida">
-            <h1>Bienvenido, {{ session['nombre'] }} {{ session['apellido'] }} </h1>
-            <h2>Panel de Administración</h2>
+    <!-- Header profesional -->
+    <section class="dashboard-header">
+        <div class="container">
+            <h1><i class="fas fa-crown"></i> Panel {{ session['rol'] }}</h1>
+            <p>Bienvenido, {{ session['nombre'] }} {{ session['apellido'] }}</p>
         </div>
-        
-        <!-- Métricas rápidas -->
-        <div class="cards">
-            <div class="card"><h2>👥 Usuarios</h2><p>{{ total_usuarios }}</p></div>
-            <div class="card"><h2>🐶 Animales</h2><p>{{ total_animales }}</p></div>
+    </section>
+
+    <main class="container">
+        <!-- Estadísticas rápidas mejoradas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users stat-icon" style="color: #3498db;"></i>
+                <div class="stat-number">{{ total_usuarios }}</div>
+                <div class="stat-label">Usuarios Registrados</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-heart stat-icon" style="color: #e74c3c;"></i>
+                <div class="stat-number">{{ total_animales }}</div>
+                <div class="stat-label">Animales en Sistema</div>
+            </div>
         </div>
 
-        <!-- Gráficos -->
+        <!-- Botón para ver lista de usuarios -->
+        <div style="text-align: center;">
+            <button class="btn-ver-usuarios" onclick="abrirModalUsuarios()">
+                <i class="fas fa-users"></i> Ver Lista de Usuarios
+            </button>
+        </div>
+
+        <!-- Reportes -->
+        <div class="reportes-section">
+            <h2>Generar Reportes</h2>
+            <form id="reporteForm">
+                <div class="form-group">
+                    <label for="tipo_reporte">Tipo de Reporte:</label>
+                    <select id="tipo_reporte" name="tipo_reporte" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="adopciones">Adopciones</option>
+                        <option value="donaciones">Donaciones</option>
+                        <option value="consultas">Consultas Médicas</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="subtipoDonacionesGroup" style="display: none;">
+                    <label for="subtipo_donaciones">Tipo de Donación:</label>
+                    <select id="subtipo_donaciones" name="subtipo_donaciones">
+                        <option value="">Todas las donaciones</option>
+                        <option value="medicamentos">Medicamentos</option>
+                        <option value="alimentos">Alimentos</option>
+                        <option value="efectivo">Efectivo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha_inicio">Fecha Inicio:</label>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha_fin">Fecha Fin:</label>
+                    <input type="date" id="fecha_fin" name="fecha_fin" required>
+                </div>
+
+                <button type="button" id="generarReporteBtn">Generar Reporte</button>
+            </form>
+        </div>
+
+        <!-- Modal para mostrar reportes -->
+        <div id="reporteModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalTitle">Reporte</h2>
+
+                <!-- Controles de paginación -->
+                <div class="pagination-controls">
+                    <div class="pagination-info">
+                        <span id="registrosInfo">Mostrando 0 de 0 registros</span>
+                    </div>
+                    <div class="pagination-settings">
+                        <label for="registrosPorPagina">Registros por página:</label>
+                        <select id="registrosPorPagina">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="reporteContent">
+                    <table id="reporteTable">
+                        <thead id="reporteTableHead"></thead>
+                        <tbody id="reporteTableBody"></tbody>
+                    </table>
+                    <div id="noDataMessage" style="display: none; text-align: center; color: #666; font-style: italic; padding: 40px;">
+                        No se encontraron datos para el período seleccionado.
+                    </div>
+                </div>
+
+                <!-- Navegación de páginas -->
+                <div class="pagination-nav" id="paginationNav" style="display: none;">
+                    <button id="prevPage" class="page-btn">« Anterior</button>
+                    <div id="pageNumbers" class="page-numbers"></div>
+                    <button id="nextPage" class="page-btn">Siguiente »</button>
+                </div>
+
+                <div class="modal-buttons">
+                    <button id="imprimirBtn">🖨️ Imprimir Reporte</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos mejorados -->
         <div class="charts-grid">
-            <div>
-            <h3>Usuarios por Rol</h3>
-            <canvas id="usuariosRol"></canvas>
+            <div class="chart-container">
+                <h3><i class="fas fa-users-cog"></i> Usuarios por Rol</h3>
+                <div class="chart-wrapper">
+                    <canvas id="usuariosRol"></canvas>
+                </div>
             </div>
-            <div>
-            <h3>Donaciones</h3>
-            <canvas id="donaciones"></canvas>
+            <div class="chart-container">
+                <h3><i class="fas fa-hand-holding-heart"></i> Donaciones</h3>
+                <div class="chart-wrapper">
+                    <canvas id="donaciones"></canvas>
+                </div>
             </div>
-            <div>
-            <h3>Insumos por vencer</h3>
-            <canvas id="insumos"></canvas>
+            <div class="chart-container">
+                <h3><i class="fas fa-exclamation-triangle"></i> Insumos por Vencer</h3>
+                <div class="chart-wrapper">
+                    <canvas id="insumos"></canvas>
+                </div>
             </div>
-            <div>
-            <h3>Medicamentos por Vencer (30 días)</h3>
-            <canvas id="chartMedicamentosVencer"></canvas>
+            <div class="chart-container">
+                <h3><i class="fas fa-pills"></i> Medicamentos por Vencer</h3>
+                <div class="chart-controls" style="margin-bottom: 15px;">
+                    <select id="medicamentoSelector" class="form-select form-select-sm" style="width: auto; display: inline-block; margin-right: 10px;">
+                        <option value="">Todos los medicamentos</option>
+                    </select>
+                    <button id="toggleListBtn" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-list"></i> Ver Lista Detallada
+                    </button>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="chartMedicamentosVencer"></canvas>
+                </div>
+                <div id="medicamentosList" class="medicamentos-list" style="display: none; margin-top: 15px; max-height: 200px; overflow-y: auto; background: rgba(255,255,255,0.9); border-radius: 8px; padding: 10px;">
+                    <h6 style="margin-bottom: 10px; color: #2c3e50;"><i class="fas fa-info-circle"></i> Detalle de Medicamentos por Vencer:</h6>
+                    <div id="medicamentosDetailList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Usuarios -->
+        <div id="usuariosModal" class="usuarios-modal">
+            <div class="usuarios-modal-content">
+                <div class="usuarios-modal-header">
+                    <h2 class="usuarios-modal-title"><i class="fas fa-users"></i> Lista de Usuarios Registrados</h2>
+                    <span class="usuarios-close" onclick="cerrarModalUsuarios()">&times;</span>
+                </div>
+
+                <!-- Controles de búsqueda y paginación -->
+                <div class="usuarios-controls">
+                    <div class="usuarios-search">
+                        <input type="text" id="searchUsuarios" placeholder="Buscar usuarios por nombre, documento, correo...">
+                    </div>
+                    <div class="usuarios-pagination-settings">
+                        <label for="registrosPorPaginaUsuarios">Registros por página:</label>
+                        <select id="registrosPorPaginaUsuarios">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabla de usuarios -->
+                <div class="usuarios-table-container">
+                    <table id="usuariosTable">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-column="0">N° Documento <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-column="1">Nombre <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-column="2">Apellido <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-column="3">Tipo Documento <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-column="4">Correo <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-column="5">Teléfono <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-column="6">Rol <i class="fas fa-sort"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuariosTableBody">
+                            <!-- Los datos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Información de paginación -->
+                <div class="usuarios-pagination-info" id="usuariosPaginationInfo">
+                    Mostrando 0 de 0 registros
+                </div>
+
+                <!-- Navegación de páginas -->
+                <div class="usuarios-pagination-nav" id="usuariosPaginationNav" style="display: none;">
+                    <button id="usuariosPrevPage" class="usuarios-page-btn">« Anterior</button>
+                    <div id="usuariosPageNumbers" class="usuarios-page-numbers"></div>
+                    <button id="usuariosNextPage" class="usuarios-page-btn">Siguiente »</button>
+                </div>
             </div>
         </div>
     </main>
-        
-        <footer>
-            <div>
-                Copyright © 2025 Developed by Trio Imperial co.
-            </div>
 
-            <div>
-                Powered by Petfriendly
-            </div>
-        </footer>
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
 
-        <script>
-  // Usuarios por Rol
-    new Chart(document.getElementById('usuariosRol'), {
-        type: 'doughnut',
-        data: {
-            labels: {{ roles_labels|safe }},
-            datasets: [{
-                data: {{ roles_data|safe }},
-                backgroundColor: ['#36A2EB', '#4BC0C0', '#FFCD56']
-            }]
-        }
-    });
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Configuración común para tooltips mejorados
+        const tooltipConfig = {
+            backgroundColor: 'rgba(0,0,0,0.9)',
+            titleColor: 'white',
+            bodyColor: 'white',
+            borderColor: 'rgba(255,255,255,0.2)',
+            borderWidth: 1,
+            cornerRadius: 8,
+            displayColors: true,
+            padding: 12,
+            titleFont: { size: 14, weight: 'bold' },
+            bodyFont: { size: 13 }
+        };
 
-  // Donaciones
-    new Chart(document.getElementById('donaciones'), {
-        type: 'bar',
-        data: {
-            labels: {{ donaciones_labels|safe }},
-            datasets: [{
-                label: 'Cantidad',
-                data: {{ donaciones_data|safe }},
-                backgroundColor: ['#FF6384','#36A2EB']
-            }]
-        }
-    });
-
-  // Insumos por vencer
-    new Chart(document.getElementById('insumos'), {
-        type: 'bar',
-        data: {
-            labels: {{ insumos_labels|safe }},
-            datasets: [{
-                label: 'Cantidad disponible',
-                data: {{ insumos_data|safe }},
-                backgroundColor: '#FF9F40'
-            }]
-        },
-        options: {
-            indexAxis: 'y'
-        }
-    });
-
-    const ctxMed = document.getElementById('chartMedicamentosVencer').getContext('2d');
-    new Chart(ctxMed, {
-        type: 'bar',
-        data: {
-        labels: {{ medicamentos_labels|safe }},
-        datasets: [{
-            label: 'Existencia',
-            data: {{ medicamentos_data|safe }},
-            backgroundColor: 'rgba(54, 162, 235, 0.7)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-        }]
-        },
-        options: {
-        indexAxis: 'y', // 👈 esto lo hace HORIZONTAL
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { position: 'top' },
-            title: {
-            display: true,
-            text: 'Medicamentos próximos a vencer'
+        // Usuarios por Rol - Gráfico de dona mejorado
+        new Chart(document.getElementById('usuariosRol'), {
+            type: 'doughnut',
+            data: {
+                labels: {{ roles_labels| safe }},
+                datasets: [{
+                    data: {{ roles_data| safe }},
+                    backgroundColor: ['#667eea', '#f093fb', '#4facfe'],
+                    borderColor: ['#667eea', '#f093fb', '#4facfe'],
+                    borderWidth: 3,
+                    hoverBorderWidth: 5,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: { size: 12, weight: '500' }
+                        }
+                    },
+                    tooltip: {
+                        ...tooltipConfig,
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribución de Usuarios por Rol',
+                        font: { size: 16, weight: 'bold' },
+                        padding: { top: 10, bottom: 30 }
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true,
+                    duration: 2000,
+                    easing: 'easeInOutQuart'
+                },
+                cutout: '65%'
             }
-        },
-        scales: {
-            x: {
-            beginAtZero: true,
-            ticks: { stepSize: 5 }
+        });
+
+        // Donaciones - Gráfico de barras mejorado
+        new Chart(document.getElementById('donaciones'), {
+            type: 'bar',
+            data: {
+                labels: {{ donaciones_labels| safe }},
+                datasets: [{
+                    label: 'Cantidad de Donaciones',
+                    data: {{ donaciones_data| safe }},
+                    backgroundColor: ['#667eea', '#f093fb'],
+                    borderColor: ['#667eea', '#f093fb'],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    hoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        ...tooltipConfig,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Donaciones: ' + context.parsed.y;
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Donaciones Recibidas',
+                        font: { size: 16, weight: 'bold' },
+                        padding: { top: 10, bottom: 30 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: {
+                            stepSize: 1,
+                            font: { weight: '500' }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { weight: '500' }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuart',
+                    delay: function(context) {
+                        return context.dataIndex * 200;
+                    }
+                }
+            }
+        });
+
+        // Insumos por vencer - Gráfico horizontal mejorado
+        new Chart(document.getElementById('insumos'), {
+            type: 'bar',
+            data: {
+                labels: {{ insumos_labels| safe }},
+                datasets: [{
+                    label: 'Cantidad Disponible',
+                    data: {{ insumos_data| safe }},
+                    backgroundColor: '#ff9a9e',
+                    borderColor: '#ff9a9e',
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    hoverBorderWidth: 3,
+                    hoverBackgroundColor: '#ff6b6b'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        ...tooltipConfig,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Disponible: ' + context.parsed.x + ' unidades';
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Insumos por Vencer',
+                        font: { size: 16, weight: 'bold' },
+                        padding: { top: 10, bottom: 30 }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: {
+                            stepSize: 5,
+                            font: { weight: '500' }
+                        }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { weight: '500' }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuart',
+                    delay: function(context) {
+                        return context.dataIndex * 150;
+                    }
+                }
+            }
+        });
+
+        // Medicamentos por vencer - Gráfico horizontal mejorado con selector
+        const medicamentosData = {{ medicamentos_alerta|tojson|safe }};
+        let currentMedicamentoFilter = '';
+
+        // Poblar el selector de medicamentos
+        const medicamentoSelector = document.getElementById('medicamentoSelector');
+        const uniqueMedicamentos = [...new Set(medicamentosData.map(m => m.nombre_medicamento))];
+        uniqueMedicamentos.forEach(med => {
+            const option = document.createElement('option');
+            option.value = med;
+            option.textContent = med;
+            medicamentoSelector.appendChild(option);
+        });
+
+        const ctxMed = document.getElementById('chartMedicamentosVencer').getContext('2d');
+        let chartMedicamentos = new Chart(ctxMed, {
+            type: 'bar',
+            data: {
+                labels: {{ medicamentos_labels| safe }},
+                datasets: [{
+                    label: 'Existencia',
+                    data: {{ medicamentos_data| safe }},
+                    backgroundColor: '#667eea',
+                    borderColor: '#667eea',
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    hoverBorderWidth: 3,
+                    hoverBackgroundColor: '#764ba2'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        ...tooltipConfig,
+                        callbacks: {
+                            label: function(context) {
+                                const data = medicamentosData[context.dataIndex];
+                                return [
+                                    'Existencia: ' + context.parsed.x + ' unidades',
+                                    'Lote: ' + data.lote,
+                                    'Vence: ' + new Date(data.fecha_vencimiento).toLocaleDateString('es-ES')
+                                ];
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Medicamentos Próximos a Vencer',
+                        font: { size: 16, weight: 'bold' },
+                        padding: { top: 10, bottom: 30 }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: {
+                            stepSize: 5,
+                            font: { weight: '500' }
+                        }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { weight: '500' },
+                            maxTicksLimit: 10
+                        }
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuart',
+                    delay: function(context) {
+                        return context.dataIndex * 150;
+                    }
+                }
+            }
+        });
+
+        // Función para filtrar medicamentos
+        function filterMedicamentos() {
+            let filteredData = medicamentosData;
+            if (currentMedicamentoFilter) {
+                filteredData = medicamentosData.filter(m => m.nombre_medicamento === currentMedicamentoFilter);
+            }
+
+            const labels = filteredData.map(m => m.display_name);
+            const data = filteredData.map(m => m.existencia);
+
+            chartMedicamentos.data.labels = labels;
+            chartMedicamentos.data.datasets[0].data = data;
+            chartMedicamentos.update();
+
+            // Actualizar lista detallada
+            updateMedicamentosList(filteredData);
+        }
+
+        // Event listener para el selector
+        medicamentoSelector.addEventListener('change', function() {
+            currentMedicamentoFilter = this.value;
+            filterMedicamentos();
+        });
+
+        // Función para actualizar la lista detallada
+        function updateMedicamentosList(data) {
+            const listContainer = document.getElementById('medicamentosDetailList');
+            listContainer.innerHTML = '';
+
+            if (data.length === 0) {
+                listContainer.innerHTML = '<p class="text-muted">No hay medicamentos que cumplan con el filtro.</p>';
+                return;
+            }
+
+            data.forEach(med => {
+                const item = document.createElement('div');
+                item.className = 'medicamento-item';
+                item.style.cssText = 'padding: 8px; margin: 4px 0; background: rgba(102, 126, 234, 0.1); border-radius: 4px; border-left: 3px solid #667eea;';
+                item.innerHTML = `
+                    <strong>${med.nombre_medicamento}</strong><br>
+                    <small class="text-muted">
+                        Lote: ${med.lote} |
+                        Existencia: ${med.existencia} |
+                        Vence: ${new Date(med.fecha_vencimiento).toLocaleDateString('es-ES')}
+                    </small>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        // Toggle para mostrar/ocultar lista detallada
+        document.getElementById('toggleListBtn').addEventListener('click', function() {
+            const listDiv = document.getElementById('medicamentosList');
+            const isVisible = listDiv.style.display !== 'none';
+
+            if (isVisible) {
+                listDiv.style.display = 'none';
+                this.innerHTML = '<i class="fas fa-list"></i> Ver Lista Detallada';
+            } else {
+                listDiv.style.display = 'block';
+                this.innerHTML = '<i class="fas fa-list-ul"></i> Ocultar Lista';
+                updateMedicamentosList(currentMedicamentoFilter ?
+                    medicamentosData.filter(m => m.nombre_medicamento === currentMedicamentoFilter) :
+                    medicamentosData);
+            }
+        });
+
+        // Inicializar lista detallada
+        updateMedicamentosList(medicamentosData);
+
+        // Funcionalidad del modal de usuarios
+        let usuariosData = [];
+        let currentUsuariosPage = 1;
+        let registrosPorPaginaUsuarios = 5;
+        let filteredUsuariosData = [];
+        let sortUsuariosColumn = -1;
+        let sortUsuariosDirection = 'asc';
+
+        // Función para abrir modal de usuarios
+        window.abrirModalUsuarios = function() {
+            // Obtener datos de usuarios desde el servidor
+            fetch('/api/usuarios')
+                .then(response => response.json())
+                .then(data => {
+                    usuariosData = data;
+                    filteredUsuariosData = [...usuariosData];
+                    currentUsuariosPage = 1;
+                    document.getElementById('usuariosModal').style.display = 'block';
+                    renderUsuariosTable();
+                    renderUsuariosPagination();
+                    updateUsuariosSortIcons();
+                })
+                .catch(error => {
+                    console.error('Error al cargar usuarios:', error);
+                    alert('Error al cargar la lista de usuarios');
+                });
+        };
+
+        // Función para cerrar modal de usuarios
+        window.cerrarModalUsuarios = function() {
+            document.getElementById('usuariosModal').style.display = 'none';
+        };
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('usuariosModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // Función de búsqueda de usuarios
+        document.getElementById('searchUsuarios').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            filteredUsuariosData = usuariosData.filter(usuario =>
+                usuario.numero_documento.toString().includes(searchTerm) ||
+                usuario.nombre_usuario.toLowerCase().includes(searchTerm) ||
+                usuario.apellido_usuario.toLowerCase().includes(searchTerm) ||
+                usuario.tipo_documento_usuario.toLowerCase().includes(searchTerm) ||
+                usuario.correo_electronico_usuario.toLowerCase().includes(searchTerm) ||
+                usuario.telefono.toLowerCase().includes(searchTerm) ||
+                usuario.nombre_rol.toLowerCase().includes(searchTerm)
+            );
+            currentUsuariosPage = 1;
+            renderUsuariosTable();
+            renderUsuariosPagination();
+        });
+
+        // Función de ordenamiento de usuarios
+        document.querySelectorAll('#usuariosTable th.sortable').forEach(header => {
+            header.addEventListener('click', function() {
+                const column = parseInt(this.dataset.column);
+                if (sortUsuariosColumn === column) {
+                    sortUsuariosDirection = sortUsuariosDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortUsuariosColumn = column;
+                    sortUsuariosDirection = 'asc';
+                }
+                sortUsuariosData();
+                renderUsuariosTable();
+                updateUsuariosSortIcons();
+            });
+        });
+
+        function sortUsuariosData() {
+            filteredUsuariosData.sort((a, b) => {
+                let aVal = Object.values(a)[sortUsuariosColumn];
+                let bVal = Object.values(b)[sortUsuariosColumn];
+
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+
+                if (sortUsuariosDirection === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+        }
+
+        function updateUsuariosSortIcons() {
+            document.querySelectorAll('#usuariosTable th.sortable i').forEach((icon, index) => {
+                if (index === sortUsuariosColumn) {
+                    icon.className = sortUsuariosDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+                } else {
+                    icon.className = 'fas fa-sort';
+                }
+            });
+        }
+
+        // Cambio de registros por página
+        document.getElementById('registrosPorPaginaUsuarios').addEventListener('change', function() {
+            registrosPorPaginaUsuarios = parseInt(this.value);
+            currentUsuariosPage = 1;
+            renderUsuariosTable();
+            renderUsuariosPagination();
+        });
+
+        function renderUsuariosTable() {
+            const startIndex = (currentUsuariosPage - 1) * registrosPorPaginaUsuarios;
+            const endIndex = startIndex + registrosPorPaginaUsuarios;
+            const pageData = filteredUsuariosData.slice(startIndex, endIndex);
+
+            let html = '';
+            if (pageData.length === 0) {
+                html = '<tr><td colspan="7" class="text-center">No se encontraron resultados.</td></tr>';
+            } else {
+                pageData.forEach(usuario => {
+                    html += `
+                        <tr>
+                            <td>${usuario.numero_documento}</td>
+                            <td>${usuario.nombre_usuario}</td>
+                            <td>${usuario.apellido_usuario}</td>
+                            <td>${usuario.tipo_documento_usuario}</td>
+                            <td>${usuario.correo_electronico_usuario}</td>
+                            <td>${usuario.telefono || 'N/A'}</td>
+                            <td>${usuario.nombre_rol}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            document.getElementById('usuariosTableBody').innerHTML = html;
+
+            // Actualizar información de registros
+            const totalRegistros = filteredUsuariosData.length;
+            const inicio = totalRegistros === 0 ? 0 : startIndex + 1;
+            const fin = Math.min(endIndex, totalRegistros);
+            document.getElementById('usuariosPaginationInfo').textContent = `Mostrando ${inicio} - ${fin} de ${totalRegistros} registros`;
+        }
+
+        function renderUsuariosPagination() {
+            const totalPages = Math.ceil(filteredUsuariosData.length / registrosPorPaginaUsuarios);
+            const paginationNav = document.getElementById('usuariosPaginationNav');
+            const pageNumbers = document.getElementById('usuariosPageNumbers');
+
+            if (totalPages > 1) {
+                paginationNav.style.display = 'flex';
+                let html = '';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === currentUsuariosPage) {
+                        html += `<button class="usuarios-page-number usuarios-page-btn active">${i}</button>`;
+                    } else {
+                        html += `<button class="usuarios-page-number usuarios-page-btn" onclick="changeUsuariosPage(${i})">${i}</button>`;
+                    }
+                }
+
+                pageNumbers.innerHTML = html;
+            } else {
+                paginationNav.style.display = 'none';
+            }
+
+            // Actualizar botones anterior/siguiente
+            document.getElementById('usuariosPrevPage').disabled = currentUsuariosPage === 1;
+            document.getElementById('usuariosNextPage').disabled = currentUsuariosPage === totalPages;
+        }
+
+        window.changeUsuariosPage = function(page) {
+            currentUsuariosPage = page;
+            renderUsuariosTable();
+            renderUsuariosPagination();
+        };
+
+        // Event listeners para navegación de usuarios
+        document.getElementById('usuariosPrevPage').addEventListener('click', function() {
+            if (currentUsuariosPage > 1) {
+                changeUsuariosPage(currentUsuariosPage - 1);
+            }
+        });
+
+        document.getElementById('usuariosNextPage').addEventListener('click', function() {
+            const totalPages = Math.ceil(filteredUsuariosData.length / registrosPorPaginaUsuarios);
+            if (currentUsuariosPage < totalPages) {
+                changeUsuariosPage(currentUsuariosPage + 1);
+            }
+        });
+
+        // Funcionalidad del modal de reportes
+        const modal = document.getElementById('reporteModal');
+        const closeBtn = document.getElementsByClassName('close')[0];
+        const generarBtn = document.getElementById('generarReporteBtn');
+        const imprimirBtn = document.getElementById('imprimirBtn');
+
+        // Cerrar modal
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
             }
         }
+
+        // Event listener para mostrar/ocultar subtipo de donaciones
+        document.getElementById('tipo_reporte').addEventListener('change', function() {
+            const subtipoGroup = document.getElementById('subtipoDonacionesGroup');
+            if (this.value === 'donaciones') {
+                subtipoGroup.style.display = 'block';
+            } else {
+                subtipoGroup.style.display = 'none';
+                document.getElementById('subtipo_donaciones').value = '';
+            }
+        });
+
+        // Generar reporte
+        generarBtn.onclick = function() {
+            const tipoReporte = document.getElementById('tipo_reporte').value;
+            const subtipoDonaciones = document.getElementById('subtipo_donaciones').value;
+            const fechaInicio = document.getElementById('fecha_inicio').value;
+            const fechaFin = document.getElementById('fecha_fin').value;
+
+            if (!tipoReporte || !fechaInicio || !fechaFin) {
+                alert('Por favor complete todos los campos');
+                return;
+            }
+
+            // Mostrar loading
+            generarBtn.disabled = true;
+            generarBtn.textContent = 'Generando...';
+
+            // Preparar datos para enviar
+            const formData = {
+                tipo_reporte: tipoReporte,
+                fecha_inicio: fechaInicio,
+                fecha_fin: fechaFin
+            };
+
+            if (tipoReporte === 'donaciones' && subtipoDonaciones) {
+                formData.subtipo_donaciones = subtipoDonaciones;
+            }
+
+            // Enviar petición AJAX
+            fetch('/generar_reporte', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                mostrarReporteEnModal(data);
+                modal.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al generar el reporte');
+            })
+            .finally(() => {
+                generarBtn.disabled = false;
+                generarBtn.textContent = 'Generar Reporte';
+            });
         }
-    });
-</script>
-    </body>
-        </html>
+
+        // Event listeners para paginación
+        document.getElementById('registrosPorPagina').addEventListener('change', function() {
+            registrosPorPagina = parseInt(this.value);
+            currentPage = 1;
+            actualizarPaginacion();
+            mostrarPaginaActual();
+        });
+
+        document.getElementById('prevPage').addEventListener('click', function() {
+            if (currentPage > 1) {
+                cambiarPagina(currentPage - 1);
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', function() {
+            const totalPaginas = Math.ceil(datosActuales.length / registrosPorPagina);
+            if (currentPage < totalPaginas) {
+                cambiarPagina(currentPage + 1);
+            }
+        });
+
+        // Variables globales para paginación
+        let currentPage = 1;
+        let registrosPorPagina = 5;
+        let datosActuales = [];
+
+        // Función para mostrar el reporte en el modal
+        function mostrarReporteEnModal(data) {
+            document.getElementById('modalTitle').textContent = data.titulo;
+            datosActuales = data.datos;
+            currentPage = 1;
+
+            const registrosSelect = document.getElementById('registrosPorPagina');
+            registrosSelect.value = registrosPorPagina;
+
+            actualizarPaginacion();
+            mostrarPaginaActual();
+        }
+
+        // Función para actualizar la información de paginación
+        function actualizarPaginacion() {
+            const totalRegistros = datosActuales.length;
+            const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
+
+            // Actualizar información de registros
+            const registrosInfo = document.getElementById('registrosInfo');
+            if (totalRegistros === 0) {
+                registrosInfo.textContent = 'No se encontraron registros';
+            } else {
+                const inicio = (currentPage - 1) * registrosPorPagina + 1;
+                const fin = Math.min(currentPage * registrosPorPagina, totalRegistros);
+                registrosInfo.textContent = `Mostrando ${inicio} - ${fin} de ${totalRegistros} registros`;
+            }
+
+            // Mostrar/ocultar navegación de páginas
+            const paginationNav = document.getElementById('paginationNav');
+            if (totalPaginas > 1) {
+                paginationNav.style.display = 'flex';
+                generarNumerosPaginas(totalPaginas);
+            } else {
+                paginationNav.style.display = 'none';
+            }
+
+            // Actualizar botones anterior/siguiente
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPaginas;
+        }
+
+        // Función para generar los números de página
+        function generarNumerosPaginas(totalPaginas) {
+            const pageNumbers = document.getElementById('pageNumbers');
+            pageNumbers.innerHTML = '';
+
+            for (let i = 1; i <= totalPaginas; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'page-number';
+                pageBtn.textContent = i;
+                if (i === currentPage) {
+                    pageBtn.classList.add('active');
+                }
+                pageBtn.onclick = () => cambiarPagina(i);
+                pageNumbers.appendChild(pageBtn);
+            }
+        }
+
+        // Función para cambiar de página
+        function cambiarPagina(pagina) {
+            currentPage = pagina;
+            mostrarPaginaActual();
+            actualizarPaginacion();
+        }
+
+        // Función para mostrar la página actual
+        function mostrarPaginaActual() {
+            const tableHead = document.getElementById('reporteTableHead');
+            const tableBody = document.getElementById('reporteTableBody');
+            const noDataMessage = document.getElementById('noDataMessage');
+            const reporteTable = document.getElementById('reporteTable');
+
+            // Limpiar tabla anterior
+            tableHead.innerHTML = '';
+            tableBody.innerHTML = '';
+
+            if (datosActuales.length === 0) {
+                reporteTable.style.display = 'none';
+                noDataMessage.style.display = 'block';
+                return;
+            }
+
+            reporteTable.style.display = 'table';
+            noDataMessage.style.display = 'none';
+
+            // Calcular índices para la página actual
+            const inicio = (currentPage - 1) * registrosPorPagina;
+            const fin = Math.min(inicio + registrosPorPagina, datosActuales.length);
+            const datosPagina = datosActuales.slice(inicio, fin);
+
+            // Crear encabezados según el tipo de reporte
+            const headers = [];
+            if (datosActuales.length > 0 && datosActuales[0].hasOwnProperty('fecha_adopcion')) {
+                headers.push('Fecha de Adopción', 'Animal Adoptado', 'Adoptante');
+            } else if (datosActuales.length > 0 && datosActuales[0].hasOwnProperty('tipo')) {
+                headers.push('Tipo', 'Fecha de Donación', 'Descripción', 'Cantidad', 'Unidad');
+            } else if (datosActuales.length > 0 && datosActuales[0].hasOwnProperty('fecha_consulta')) {
+                headers.push('Fecha', 'Hora', 'Paciente', 'Estado', 'Diagnóstico');
+            }
+
+            // Crear fila de encabezados
+            const headerRow = document.createElement('tr');
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+            tableHead.appendChild(headerRow);
+
+            // Crear filas de datos para la página actual
+            datosPagina.forEach(dato => {
+                const row = document.createElement('tr');
+
+                if (dato.hasOwnProperty('fecha_adopcion')) {
+                    row.innerHTML = `
+                        <td>${dato.fecha_adopcion}</td>
+                        <td>${dato.nombre_temporal}</td>
+                        <td>${dato.adoptante_nombre}</td>
+                    `;
+                } else if (dato.hasOwnProperty('tipo')) {
+                    row.innerHTML = `
+                        <td>${dato.tipo}</td>
+                        <td>${dato.fecha_donacion}</td>
+                        <td>${dato.descripcion}</td>
+                        <td>${dato.cantidad}</td>
+                        <td>${dato.unidad_medida}</td>
+                    `;
+                } else if (dato.hasOwnProperty('fecha_consulta')) {
+                    row.innerHTML = `
+                        <td>${dato.fecha_consulta}</td>
+                        <td>${dato.hora_consulta}</td>
+                        <td>${dato.nombre_paciente}</td>
+                        <td>${dato.estado_consulta}</td>
+                        <td>${dato.diagnostico || 'N/A'}</td>
+                    `;
+                }
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Función de impresión del modal
+        imprimirBtn.onclick = function() {
+            // Crear una ventana de impresión con solo el contenido del modal
+            const printWindow = window.open('', '_blank');
+
+            // Obtener el título del modal
+            const titulo = document.getElementById('modalTitle').textContent;
+
+            // Crear tabla completa con todos los datos (sin paginación)
+            let tableHTML = '<table>';
+            const headers = [];
+
+            // Determinar headers según el tipo de reporte
+            if (datosActuales.length > 0) {
+                if (datosActuales[0].hasOwnProperty('fecha_adopcion')) {
+                    headers.push('Fecha de Adopción', 'Animal Adoptado', 'Adoptante');
+                } else if (datosActuales[0].hasOwnProperty('tipo')) {
+                    headers.push('Tipo', 'Fecha de Donación', 'Descripción', 'Cantidad', 'Unidad');
+                } else if (datosActuales[0].hasOwnProperty('fecha_consulta')) {
+                    headers.push('Fecha', 'Hora', 'Paciente', 'Estado', 'Diagnóstico');
+                }
+            }
+
+            // Crear fila de encabezados
+            tableHTML += '<thead><tr>';
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+
+            // Crear todas las filas de datos (sin paginación)
+            datosActuales.forEach(dato => {
+                tableHTML += '<tr>';
+                if (dato.hasOwnProperty('fecha_adopcion')) {
+                    tableHTML += `
+                        <td>${dato.fecha_adopcion}</td>
+                        <td>${dato.nombre_temporal}</td>
+                        <td>${dato.adoptante_nombre}</td>
+                    `;
+                } else if (dato.hasOwnProperty('tipo')) {
+                    tableHTML += `
+                        <td>${dato.tipo}</td>
+                        <td>${dato.fecha_donacion}</td>
+                        <td>${dato.descripcion}</td>
+                        <td>${dato.cantidad}</td>
+                        <td>${dato.unidad_medida}</td>
+                    `;
+                } else if (dato.hasOwnProperty('fecha_consulta')) {
+                    tableHTML += `
+                        <td>${dato.fecha_consulta}</td>
+                        <td>${dato.hora_consulta}</td>
+                        <td>${dato.nombre_paciente}</td>
+                        <td>${dato.estado_consulta}</td>
+                        <td>${dato.diagnostico || 'N/A'}</td>
+                    `;
+                }
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody></table>';
+
+            // Crear el contenido HTML para impresión
+            const printContent = `
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${titulo}</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                            color: #333;
+                            position: relative;
+                        }
+                        .logo-background {
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            width: 700px;
+                            height: auto;
+                            opacity: 0.50;
+                            z-index: 0;
+                            pointer-events: none;
+                        }
+                        .content-wrapper {
+                            position: relative;
+                            z-index: 1;
+                        }
+                        .header-print {
+                            text-align: center;
+                            margin-bottom: 30px;
+                            border-bottom: 2px solid #333;
+                            padding-bottom: 20px;
+                        }
+                        .title-print {
+                            font-size: 24px;
+                            font-weight: bold;
+                            color: #333;
+                            margin: 10px 0;
+                        }
+                        .date-print {
+                            font-size: 14px;
+                            color: #666;
+                            margin-bottom: 20px;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                            font-size: 12px;
+                        }
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f8f9fa;
+                            font-weight: bold;
+                            text-align: center;
+                        }
+                        tr:nth-child(even) {
+                            background-color: #f9f9f9;
+                        }
+                        .footer-print {
+                            margin-top: 30px;
+                            text-align: center;
+                            font-size: 10px;
+                            color: #666;
+                            border-top: 1px solid #ddd;
+                            padding-top: 10px;
+                        }
+                        @media print {
+                            body { margin: 0; }
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <img src="/static/img/patitas2.png" alt="PetFriendly Logo" class="logo-background">
+
+                    <div class="content-wrapper">
+                        <div class="header-print">
+                            <div class="title-print">${titulo}</div>
+                            <div class="date-print">Generado el ${new Date().toLocaleDateString('es-ES')}</div>
+                        </div>
+
+                        ${tableHTML}
+
+                        <div class="footer-print">
+                            Reporte generado por PetFriendly - ${new Date().toLocaleString('es-ES')}
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+
+            // Esperar a que se cargue la imagen antes de imprimir
+            printWindow.onload = function() {
+                printWindow.print();
+                printWindow.close();
+            };
+        }
+    </script>
+</body>
+
+</html>

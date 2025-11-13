@@ -79,7 +79,7 @@ def registrar_animal_rescatado():
                     nombre_temporal, sexo, edad, tamanio, especie, raza,
                     rescatista, contacto, filename, "En permanencia"))
             conn.commit()
-        return render_template("animales_rescatados.html", success="Animal rescatado registrado exitosamente.")
+        return render_template("rescatados/animales_rescatados.html", success="Animal rescatado registrado exitosamente.")
     finally:
         conn.close()
 

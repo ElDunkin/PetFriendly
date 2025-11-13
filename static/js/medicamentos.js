@@ -85,6 +85,7 @@ async function cargarMedicamentos() {
         tr.innerHTML = `
             <td>${m.nombre_medicamento}</td>
             <td>${m.existencia}</td>
+            <td>${m.lote}</td> 
             <td>${m.estado}</td>
             <td>${m.fecha_vencimiento}</td>
             <td>

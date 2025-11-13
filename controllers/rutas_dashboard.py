@@ -1,4 +1,4 @@
-from flask import Blueprint, json, render_template, session, redirect, url_for
+from flask import Blueprint, json, render_template, session, redirect, url_for, request, jsonify
 from models.conexion import obtener_conexion
 import pymysql
 
@@ -57,16 +57,21 @@ def dashboard_administrador():
     insumos_labels = [p['nombre_insumo'] for p in productos_alerta]
     insumos_data = [p['cantidad_inicial'] for p in productos_alerta]
     
-        # 💊 Medicamentos por vencer
+        # 💊 Medicamentos por vencer (agrupados por lote)
     cur.execute("""
-        SELECT nombre_medicamento, fecha_vencimiento, existencia
+        SELECT
+            nombre_medicamento,
+            lote,
+            existencia,
+            fecha_vencimiento,
+            CONCAT(nombre_medicamento, ' - Lote: ', lote, ' (Vence: ', DATE_FORMAT(fecha_vencimiento, '%d/%m/%Y'), ')') as display_name
         FROM medicamento
         WHERE fecha_vencimiento IS NOT NULL
         AND fecha_vencimiento <= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
-        ORDER BY fecha_vencimiento ASC;
+        ORDER BY fecha_vencimiento ASC, nombre_medicamento ASC;
     """)
     medicamentos_alerta = cur.fetchall()
-    medicamentos_labels = [m['nombre_medicamento'] for m in medicamentos_alerta]
+    medicamentos_labels = [m['display_name'] for m in medicamentos_alerta]
     medicamentos_data = [m['existencia'] for m in medicamentos_alerta]
 
     cur.close()
@@ -187,5 +192,149 @@ def dashboard_cliente():
         nombre=session.get('nombre_usuario'),
         apellido=session.get('apellido_usuario')
     )
+
+@rutas_dashboard.route('/generar_reporte', methods=['POST'])
+def generar_reporte():
+    # Seguridad: solo Admin
+    if session.get('rol') != 'Administrador':
+        return redirect(url_for('rutas_login.login'))
+
+    tipo_reporte = request.form.get('tipo_reporte')
+    subtipo_donaciones = request.form.get('subtipo_donaciones')
+    fecha_inicio = request.form.get('fecha_inicio')
+    fecha_fin = request.form.get('fecha_fin')
+
+    if not tipo_reporte or not fecha_inicio or not fecha_fin:
+        return redirect(url_for('rutas_dashboard.dashboard_administrador'))
+
+    conn = obtener_conexion()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+
+    if tipo_reporte == 'adopciones':
+        # Reporte de adopciones
+        cur.execute("""
+                SELECT 
+                    a.fecha_adopcion,
+                    COALESCE(ar.nombre_temporal, 'Sin nombre asignado') AS nombre_temporal,
+                    a.nombre_adoptante AS adoptante_nombre,
+                    a.identificacion AS adoptante_identificacion
+                FROM adopciones a
+                LEFT JOIN animales_rescatados ar ON a.id_rescatado = ar.id_rescatado
+                WHERE DATE(a.fecha_adopcion) BETWEEN %s AND %s
+                ORDER BY a.fecha_adopcion DESC
+        """, (fecha_inicio, fecha_fin))
+        datos = cur.fetchall()
+        titulo = f"Reporte de Adopciones ({fecha_inicio} - {fecha_fin})"
+
+    elif tipo_reporte == 'donaciones':
+        # Reporte de donaciones (medicamentos, alimentos, efectivo)
+        query_parts = []
+        params = []
+
+        if not subtipo_donaciones or subtipo_donaciones == 'medicamentos':
+            query_parts.append("""
+                SELECT 'Medicamento' AS tipo, d.fecha_donacion, d.nombre_medicamento AS descripcion, d.cantidad, d.unidad_medida
+                FROM donaciones d
+                WHERE d.fecha_donacion BETWEEN %s AND %s
+            """)
+            params.extend([fecha_inicio, fecha_fin])
+
+        if not subtipo_donaciones or subtipo_donaciones == 'alimentos':
+            query_parts.append("""
+                SELECT 'Alimento' AS tipo, da.fecha_recepcion AS fecha_donacion, da.tipo_alimento AS descripcion, da.cantidad_recibida AS cantidad, da.unidad_medida
+                FROM donaciones_alimentos da
+                WHERE da.fecha_recepcion BETWEEN %s AND %s
+            """)
+            params.extend([fecha_inicio, fecha_fin])
+
+        # Para donaciones en efectivo, por ahora no hay tabla específica
+        # Se puede agregar después si es necesario
+        # Nota: La opción "efectivo" está disponible en el selector pero no genera resultados
+        # hasta que se implemente la tabla correspondiente
+
+        if query_parts:
+            full_query = " UNION ALL ".join(query_parts) + " ORDER BY fecha_donacion DESC"
+            cur.execute(full_query, params)
+            datos = cur.fetchall()
+        else:
+            datos = []
+
+        if subtipo_donaciones:
+            titulo = f"Reporte de Donaciones - {subtipo_donaciones.title()} ({fecha_inicio} - {fecha_fin})"
+        else:
+            titulo = f"Reporte de Donaciones ({fecha_inicio} - {fecha_fin})"
+
+    elif tipo_reporte == 'consultas':
+        # Reporte de consultas médicas
+        cur.execute("""
+            SELECT c.fecha_consulta, c.hora_consulta, p.nombre_paciente, c.estado_consulta, c.diagnostico
+            FROM consultas c
+            JOIN paciente_animal p ON c.id_paciente = p.id_paciente
+            WHERE c.fecha_consulta BETWEEN %s AND %s
+            ORDER BY c.fecha_consulta DESC, c.hora_consulta DESC
+        """, (fecha_inicio, fecha_fin))
+        datos = cur.fetchall()
+        titulo = f"Reporte de Consultas Médicas ({fecha_inicio} - {fecha_fin})"
+
+    cur.close()
+    conn.close()
+
+    # Convertir datos a formato JSON serializable
+    datos_json = []
+    for dato in datos:
+        dato_dict = {}
+        for key, value in dato.items():
+            if isinstance(value, (bytes, bytearray)):
+                dato_dict[key] = value.decode('utf-8')
+            elif hasattr(value, 'isoformat'):  # Para fechas/datetimes
+                dato_dict[key] = value.isoformat() if value else None
+            else:
+                dato_dict[key] = value
+        datos_json.append(dato_dict)
+        
+    
+
+    return jsonify({
+        'titulo': titulo,
+        'datos': datos_json,
+        'tipo_reporte': tipo_reporte,
+        'total_registros': len(datos_json)
+    })
+
+@rutas_dashboard.route('/api/usuarios')
+def api_usuarios():
+    # Seguridad: solo Admin
+    if session.get('rol') != 'Administrador':
+        return jsonify({'error': 'No autorizado'}), 403
+
+    conn = obtener_conexion()
+    cur = conn.cursor(pymysql.cursors.DictCursor)
+
+    # Obtener todos los usuarios con información de rol
+    cur.execute("""
+        SELECT u.numero_documento, u.nombre_usuario, u.apellido_usuario,
+               u.tipo_documento_usuario, u.correo_electronico_usuario,
+               u.telefono, r.nombre_rol
+        FROM usuarios u
+        JOIN rol r ON u.id_rol = r.id_rol
+        ORDER BY u.nombre_usuario ASC
+    """)
+
+    usuarios = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    # Convertir a formato JSON serializable
+    usuarios_json = []
+    for usuario in usuarios:
+        usuario_dict = {}
+        for key, value in usuario.items():
+            if isinstance(value, (bytes, bytearray)):
+                usuario_dict[key] = value.decode('utf-8')
+            else:
+                usuario_dict[key] = value
+        usuarios_json.append(usuario_dict)
+
+    return jsonify(usuarios_json)
 
 
