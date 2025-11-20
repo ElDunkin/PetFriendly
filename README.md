@@ -120,7 +120,7 @@ Módulo de Adopciones: registrar aspirantes, aprobar/admitir, seguimiento post-a
 
 Se incluyen validaciones, control de accesos, y generación de reportes básicos (exportar PDF, historial de operaciones).
 
-8. Roles y acceso
+## 8. Roles y acceso
 Rol	Permisos principales
 Administrador	Gestión de usuarios, configuración general, visualización de todos los módulos.
 Veterinario	Acceso clínico: pacientes, procedimientos, citas, historial.
@@ -128,7 +128,7 @@ Auxiliar	Gestión operativa: insumos, inventario, seguimiento de adopciones.
 
 Se recomienda mantener el principio de menor privilegio y asignar roles según responsabilidades operativas.
 
-9. Requisitos funcionales clave
+## 9. Requisitos funcionales clave
 Por ejemplo:
 
 RF006 – Generar perfil de animal: El sistema debe permitir registrar un perfil completo de animal con sus controles, restricciones y criterios de aceptación.
@@ -141,7 +141,7 @@ Inventario – Actualizar inventario: Los casos de uso: registrar salida por uso
 
 Estos requisitos están documentados de manera detallada para cada ítem: descripción, controles, restricciones y criterios de aceptación.
 
-10. Buenas prácticas de desarrollo
+## 10. Buenas prácticas de desarrollo
 Utilizar nombres de variables, clases y métodos significativos, en inglés o español consistente según política del equipo.
 
 Mantener la simplicidad: seguir el principio KISS (Keep It Simple Stupid).
@@ -160,7 +160,7 @@ Usar try-except o context managers (with) para el manejo de recursos externos y 
 
 Documentar en el proyecto las dependencias y fechas de revisión de versiones.
 
-11. Contribuciones
+## 11. Contribuciones
 Las contribuciones son bienvenidas. Para participar:
 
 Forkea este repositorio.
@@ -175,10 +175,10 @@ Asegúrate de actualizar la documentación y, si aplica, añadir pruebas.
 
 Por favor, revisa las Issues abiertas para ver sugerencias o tareas pendientes.
 
-12. Licencia
+## 12. Licencia
 Este proyecto está bajo la licencia MIT — puedes usarlo, modificarlo y distribuirlo libremente, siempre que mantengas el aviso de copyright original.
 
-13. Contacto
+## 13. Contacto
 Para dudas, problemas o sugerencias:
 
 Autor: ElDunkin
