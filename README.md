@@ -67,7 +67,7 @@ PetFriendly/
 ├── requeriments.txt
 └── README.md
 
-yaml
+Comand prompt
 Copiar código
 Cada carpeta y archivo tiene su propósito bien definido para mantener modularidad, facilidad de mantenimiento y claridad para nuevos desarrolladores.
 
@@ -87,24 +87,25 @@ Cada carpeta y archivo tiene su propósito bien definido para mantener modularid
    git checkout develop
 Crea un entorno virtual (opcional pero recomendado):
 
-bash
+Comand prompt
 Copiar código
 python -m venv venv
 source venv/bin/activate   # en Linux/macOS
 venv\Scripts\activate      # en Windows
 Instala dependencias:
 
-bash
+Comand prompt
 Copiar código
 pip install -r requeriments.txt
 Configura la conexión MongoDB en config.py (por ejemplo, URI, base de datos).
 
 Ejecuta la aplicación:
 
-bash
+Comand prompt
 Copiar código
 python main.py
-7. Uso y funcionalidades principales
+
+## 7. Uso y funcionalidades principales
 Inicio de sesión para distintos roles (administrador, clínico, auxiliar).
 
 Dashboard que muestra métricas clave: número de pacientes activos, próximos procedimientos, stock bajo.
