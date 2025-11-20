@@ -1,194 +1,156 @@
-# PetFriendly – Sistema de Información para el Centro Veterinario Patitas
+Proyecto PetFriendly – Sistema de Información Veterinario
+=========================================================
 
-[![GitHub stars](https://img.shields.io/github/stars/ElDunkin/PetFriendly?style=social)](https://github.com/ElDunkin/PetFriendly)  
-[![GitHub issues](https://img.shields.io/github/issues/ElDunkin/PetFriendly)](https://github.com/ElDunkin/PetFriendly/issues)  
-[![GitHub license](https://img.shields.io/github/license/ElDunkin/PetFriendly)](LICENSE)  
-[![Python version](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/)  
-[![Build status](https://img.shields.io/github/actions/workflow/status/ElDunkin/PetFriendly/ci.yml?branch=develop)](https://github.com/ElDunkin/PetFriendly/actions)  
+Descripción del Proyecto
+------------------------
+PetFriendly es un sistema de información completo diseñado para optimizar la gestión clínica,
+administrativa y operativa del Centro Veterinario Patitas, ubicado en Armenia, Quindío. 
 
----
+Su objetivo principal es reemplazar procesos manuales realizados en Excel y papel por una 
+plataforma digital centralizada que mejore la eficiencia, trazabilidad y atención a los 
+pacientes (peludos y humanos).
 
-## 1. Descripción  
-PetFriendly es un sistema de información diseñado para **optimizar la gestión de pacientes y recursos** del Centro Veterinario Patitas, ubicado en Armenia, Quindío.  
-Este proyecto nace con el objetivo de sustituir procesos manuales (Excel, papelería) por una plataforma digital, que permita llevar control de: admisión de animales, historia clínica, programación de citas, procedimientos de esterilización, gestión de insumos (alimentos, medicamentos, donaciones), inventario de suministros, administración de usuarios y más.
+Módulos principales:
+- Gestión de usuarios y roles
+- Panel administrativo (Dashboard)
+- Gestión de pacientes
+- Consultas médicas
+- Citas veterinarias
+- Manejo de medicamentos e insumos
+- Control de alimentos
+- Módulo de animales rescatados
+- Registro de adopciones
+- Módulo de permanencia y salidas
+- Donaciones
+- Generación de carnés de vacunación
+- Jornadas de esterilización
+- Seguridad, sesiones, y recuperación de contraseña
+- Subida de documentos (PDFs)
 
----
+---------------------------------------------------------
+Tecnologías Utilizadas
+---------------------------------------------------------
+- Python 3
+- Flask (Microframework backend)
+- MySQL (Base de datos)
+- PyMySQL (Conector MySQL)
+- Flask-MySQL
+- Flask-WTF
+- Flask-Mail
+- Twilio (Mensajería)
+- ReportLab (Generación de PDFs)
+- Bootstrap (Frontend)
+- HTML5 / CSS3 / JS
 
-## 2. Tabla de contenidos  
-- [2. Tabla de contenidos](#2-tabla-de-contenidos)  
-- [3. Alcance del proyecto](#3-alcance-del-proyecto)  
-- [4. Tecnología y arquitectura](#4-tecnología-y-arquitectura)  
-- [5. Estructura del repositorio](#5-estructura-del-repositorio)  
-- [6. Instalación y configuración](#6-instalación-y-configuración)  
-- [7. Uso y funcionalidades principales](#7-uso-y-funcionalidades-principales)  
-- [8. Roles y acceso](#8-roles-y-acceso)  
-- [9. Requisitos funcionales clave](#9-requisitos-funcionales-clave)  
-- [10. Buenas prácticas de desarrollo](#10-buenas-prácticas-de-desarrollo)  
-- [11. Contribuciones](#11-contribuciones)  
-- [12. Licencia](#12-licencia)  
-- [13. Contacto](#13-contacto)  
+---------------------------------------------------------
+Arquitectura del Proyecto
+---------------------------------------------------------
 
----
+Estructura general:
+-------------------
+main.py
+config.py
+controllers/
+    rutas_principales.py
+    rutas_usuarios.py
+    rutas_login.py
+    rutas_dashboard.py
+    rutas_pacientes.py
+    rutas_consultas.py
+    rutas_recuperar_contraseña.py
+    rutas_insumos.py
+    rutas_medicamento.py
+    rutas_rescatados.py
+    rutas_donaciones.py
+    rutas_permanencia.py
+    rutas_salidas.py
+    rutas_alimentos.py
+    rutas_citas.py
+    rutas_carne_vacunas.py
+    rutas_jornada.py
+    rutas_adopcion.py
+templates/
+static/
+contratos/
 
-## 3. Alcance del proyecto  
-- Digitalizar el registro de animales atendidos: rescate, rehabilitación, adopción.  
-- Gestionar citas veterinarias, procedimientos quirúrgicos (esterilización) y seguimiento clínico.  
-- Controlar inventario de insumos: alimentos, medicamentos, material clínico, donaciones.  
-- Administrar usuarios (veterinarios, auxiliares, administrativos), tiendas o sedes según aplique, vehículos de entrega (si aplica para adopciones).  
-- Generar reportes y dashboards con métricas clave (número de pacientes, insumos usados, stock, adopciones) para mejorar la toma de decisiones.  
+Descripción por carpeta/módulo:
+-------------------------------
+controllers/
+    Cada archivo implementa un Blueprint con rutas independientes.
+    Se aplica arquitectura modular, permitiendo escalar sin romper todo.
 
----
+templates/
+    Contiene todas las vistas HTML renderizadas por Flask.
 
-## 4. Tecnología y arquitectura  
-- Lenguaje principal: **Python** (versión 3.9 o superior)  
-- Framework/librería de GUI (si aplica): Tkinter (para aplicación de escritorio)  
-- Base de datos: MongoDB (colección `Aspirante_Adopcion` en la base de datos `PetFriendly`)  
-- Backend (lógica, controllers, models) y frontend ligero (templates, estáticos)  
-- Estructura tipo MVC: carpetas `controllers/`, `models/`, `templates/`, `static/`  
-- Archivo de configuración: `config.py`  
-- Requisitos y dependencias listados en `requeriments.txt`  
-- Esquema de base de datos incluido (`petfriendly_db.sql`, `petfriendly_db.png`) para referencia  
+static/
+    CSS, imágenes, scripts JS y otros recursos públicos.
 
----
+config.py
+    Configuración de conexión a la base de datos MySQL.
+    Centraliza los datos del entorno.
 
-## 5. Estructura del repositorio  
-PetFriendly/
-├── .vscode/
-├── controllers/
-├── models/
-├── static/
-├── templates/
-├── config.py
-├── main.py
-├── log.txt
-├── petfriendly_db.html
-├── petfriendly_db.png
-├── petfriendly_db.sql
-├── requeriments.txt
-└── README.md
+main.py
+    - Inicializa Flask
+    - Conecta con MySQL
+    - Registra Blueprints
+    - Define parámetros globales: uploads, tamaño máximo, secret_key.
+    - Ejecuta el servidor.
 
-Comand prompt
-Copiar código
-Cada carpeta y archivo tiene su propósito bien definido para mantener modularidad, facilidad de mantenimiento y claridad para nuevos desarrolladores.
+contratos/
+    Almacena documentos PDF cargados por usuarios para adopciones.
 
----
+---------------------------------------------------------
+Instalación y Configuración del Entorno
+---------------------------------------------------------
 
-## 6. Instalación y configuración  
-### Requisitos previos  
-- Python 3.9 o superior instalado  
-- MongoDB en ejecución (o servicio en la nube)  
-- Git para clonar el repositorio  
+Crear entorno virtual:
+    py -3 -m venv EntornoVirtual
 
-### Instalación  
-1. Clona el proyecto:
-   ```bash
-   git clone https://github.com/ElDunkin/PetFriendly.git
-   cd PetFriendly
-   git checkout develop
-Crea un entorno virtual (opcional pero recomendado):
+Activar entorno:
+    EntornoVirtual\Scripts\activate
 
-Comand prompt
-Copiar código
-python -m venv venv
-source venv/bin/activate   # en Linux/macOS
-venv\Scripts\activate      # en Windows
-Instala dependencias:
+Instalar dependencias:
+    pip install Flask
+    pip install Flask-MySQL
+    pip install PyMySQL
+    pip install Flask-Mail
+    pip install twilio
+    pip install flask_wtf
+    pip install reportlab
 
-Comand prompt
-Copiar código
-pip install -r requeriments.txt
-Configura la conexión MongoDB en config.py (por ejemplo, URI, base de datos).
+NOTA: El paquete "Flask-Ext" no existe (es un mito como los unicornios laborales).
 
-Ejecuta la aplicación:
+Configurar base de datos:
+    mysql -h localhost -u root -p
+    Crear base: petfriendly_db
 
-Comand prompt
-Copiar código
-python main.py
+---------------------------------------------------------
+Ejecutar el Proyecto
+---------------------------------------------------------
 
-## 7. Uso y funcionalidades principales
-Inicio de sesión para distintos roles (administrador, clínico, auxiliar).
+Opción 1:
+    python main.py
 
-Dashboard que muestra métricas clave: número de pacientes activos, próximos procedimientos, stock bajo.
+Opción 2:
+    flask --app main run
 
-Módulo de Pacientes: crear/editar perfiles de animales, historial clínico, estado de rehabilitación o adopción.
+El servidor correrá en:
+    http://127.0.0.1:5000/
 
-Módulo de Citas y Procedimientos: agendar, confirmar, realizar seguimiento de esterilizaciones y otros servicios.
+---------------------------------------------------------
+Características Especiales
+---------------------------------------------------------
+- Límite de subida de archivos: 5MB
+- Solo PDFs permitidos
+- Generación de secret_key aleatoria
+- Integraciones externas con Twilio y Flask-Mail
+- ReportLab para creación de documentos
+- Blueprints bien separados (código limpio y mantenible)
 
-Módulo de Inventario de Insumos: registrar entradas (donaciones, compras), salidas por uso clínico, vencidos, ajustes manuales; generar historial de movimientos.
+---------------------------------------------------------
+Autor
+---------------------------------------------------------
+Desarrollado por Trio Imperial - PetFriendly.
 
-Módulo de Adopciones: registrar aspirantes, aprobar/admitir, seguimiento post-adopción.
-
-Se incluyen validaciones, control de accesos, y generación de reportes básicos (exportar PDF, historial de operaciones).
-
-## 8. Roles y acceso
-Rol	Permisos principales
-Administrador	Gestión de usuarios, configuración general, visualización de todos los módulos.
-Veterinario	Acceso clínico: pacientes, procedimientos, citas, historial.
-Auxiliar	Gestión operativa: insumos, inventario, seguimiento de adopciones.
-
-Se recomienda mantener el principio de menor privilegio y asignar roles según responsabilidades operativas.
-
-## 9. Requisitos funcionales clave
-Por ejemplo:
-
-RF006 – Generar perfil de animal: El sistema debe permitir registrar un perfil completo de animal con sus controles, restricciones y criterios de aceptación.
-
-RF007 – Registro ingreso, permanencia y salida de animales rescatados: Incluye registro de fecha de ingreso, motivo, procedimiento, fecha de salida y estado (adoptado, liberado, fallecido).
-
-RF008 – Generar tarjeta de vacunación: Se debe permitir crear un documento o PDF con información de vacunas aplicadas y próximas dosis.
-
-Inventario – Actualizar inventario: Los casos de uso: registrar salida por uso clínico; registrar entrada por reposición; ajustar stock manualmente; registrar producto vencido; generar historial de movimientos.
-
-Estos requisitos están documentados de manera detallada para cada ítem: descripción, controles, restricciones y criterios de aceptación.
-
-## 10. Buenas prácticas de desarrollo
-Utilizar nombres de variables, clases y métodos significativos, en inglés o español consistente según política del equipo.
-
-Mantener la simplicidad: seguir el principio KISS (Keep It Simple Stupid).
-
-Usar control de versiones con ramas (develop, feature/..., hotfix/...) y realizar Pull Requests para revisión de código.
-
-Documentar funciones complejas mediante comentarios y docstrings.
-
-Evitar redundancias: por ejemplo, centralizar la conexión a la base de datos en una clase reutilizable.
-
-Crear pruebas básicas unitarias o de integración para rutas críticas del sistema.
-
-Mantener el estilo de código limpio (por ejemplo, PEP 8 en Python) y ejecutar linters si es posible.
-
-Usar try-except o context managers (with) para el manejo de recursos externos y evitar fugas de conexión.
-
-Documentar en el proyecto las dependencias y fechas de revisión de versiones.
-
-## 11. Contribuciones
-Las contribuciones son bienvenidas. Para participar:
-
-Forkea este repositorio.
-
-Crea una rama con el prefijo feature/ o bugfix/.
-
-Realiza tus cambios y súbelos al repositorio remoto.
-
-Abre un Pull Request detallando lo que has añadido o corregido.
-
-Asegúrate de actualizar la documentación y, si aplica, añadir pruebas.
-
-Por favor, revisa las Issues abiertas para ver sugerencias o tareas pendientes.
-
-## 12. Licencia
-Este proyecto está bajo la licencia MIT — puedes usarlo, modificarlo y distribuirlo libremente, siempre que mantengas el aviso de copyright original.
-
-## 13. Contacto
-Para dudas, problemas o sugerencias:
-
-Autor: ElDunkin
-
-Repositorio: https://github.com/ElDunkin/PetFriendly
-
-Ubicación: Bogotá, Colombia
-
-Estamos desarrollando como parte del proyecto para el Centro Veterinario Patitas, en Armenia (Quindío)
-
-Puedes enviar un issue o un email directo si necesitas comunicarte.
-
-¡Gracias por interesarte en PetFriendly! Que los peludos sean felices y el código limpio. 🐾
+Si llegaste hasta aquí, felicidades: ya leíste más que el 90% de los programadores
+cuando abren un README por primera vez. ;)
