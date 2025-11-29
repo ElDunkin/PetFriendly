@@ -1,156 +1,178 @@
-Proyecto PetFriendly – Sistema de Información Veterinario
-=========================================================
+# PetFriendly - Sistema de Gestión Veterinaria
 
-Descripción del Proyecto
-------------------------
-PetFriendly es un sistema de información completo diseñado para optimizar la gestión clínica,
-administrativa y operativa del Centro Veterinario Patitas, ubicado en Armenia, Quindío. 
+## Descripción General
 
-Su objetivo principal es reemplazar procesos manuales realizados en Excel y papel por una 
-plataforma digital centralizada que mejore la eficiencia, trazabilidad y atención a los 
-pacientes (peludos y humanos).
+PetFriendly es un sistema integral de gestión veterinaria basado en web, desarrollado con Flask y MySQL. Proporciona una solución completa para la gestión de servicios de cuidado de mascotas, incluyendo registros de pacientes, consultas, medicamentos, animales rescatados, donaciones y más. El sistema soporta múltiples roles de usuario (Administradores, Veterinarios y Clientes) para garantizar operaciones seguras y eficientes.
 
-Módulos principales:
-- Gestión de usuarios y roles
-- Panel administrativo (Dashboard)
-- Gestión de pacientes
-- Consultas médicas
-- Citas veterinarias
-- Manejo de medicamentos e insumos
-- Control de alimentos
-- Módulo de animales rescatados
-- Registro de adopciones
-- Módulo de permanencia y salidas
-- Donaciones
-- Generación de carnés de vacunación
-- Jornadas de esterilización
-- Seguridad, sesiones, y recuperación de contraseña
-- Subida de documentos (PDFs)
+## Características
 
----------------------------------------------------------
-Tecnologías Utilizadas
----------------------------------------------------------
-- Python 3
-- Flask (Microframework backend)
-- MySQL (Base de datos)
-- PyMySQL (Conector MySQL)
-- Flask-MySQL
-- Flask-WTF
-- Flask-Mail
-- Twilio (Mensajería)
-- ReportLab (Generación de PDFs)
-- Bootstrap (Frontend)
-- HTML5 / CSS3 / JS
+### Funcionalidad Principal
+- **Gestión de Usuarios**: Sistema de autenticación multi-rol con inicio de sesión seguro
+- **Registros de Pacientes**: Base de datos completa de pacientes animales con perfiles detallados
+- **Consultas**: Gestión completa de consultas con diagnósticos, tratamientos y seguimientos
+- **Gestión de Medicamentos**: Seguimiento de inventario, monitoreo de vencimientos y registro de uso
+- **Animales Rescatados**: Gestión de mascotas rescatadas con seguimiento de salud y procesos de adopción
+- **Donaciones**: Manejo de donaciones de medicamentos y alimentos con flujos de aprobación
+- **Citas**: Programación y gestión de citas veterinarias
+- **Procedimientos Quirúrgicos**: Seguimiento de operaciones quirúrgicas y cuidado post-operatorio
+- **Gestión de Inventario**: Seguimiento de suministros y equipos médicos
+- **Reportes**: Varias vistas y reportes para análisis de datos
 
----------------------------------------------------------
-Arquitectura del Proyecto
----------------------------------------------------------
+### Características Técnicas
+- **Control de Acceso Basado en Roles**: Diferentes permisos para roles de Admin, Veterinario y Cliente
+- **Vistas de Base de Datos**: Vistas pre-construidas para consultas comunes y reportes
+- **Soporte de Carga de Archivos**: Gestión de documentos e imágenes para consultas y procedimientos
+- **Integración de Correo Electrónico**: Flask-Mail para notificaciones y comunicaciones
+- **Integración SMS**: Twilio para recordatorios de citas
+- **Generación de PDF**: ReportLab para generar reportes médicos y certificados
 
-Estructura general:
--------------------
-main.py
-config.py
-controllers/
-    rutas_principales.py
-    rutas_usuarios.py
-    rutas_login.py
-    rutas_dashboard.py
-    rutas_pacientes.py
-    rutas_consultas.py
-    rutas_recuperar_contraseña.py
-    rutas_insumos.py
-    rutas_medicamento.py
-    rutas_rescatados.py
-    rutas_donaciones.py
-    rutas_permanencia.py
-    rutas_salidas.py
-    rutas_alimentos.py
-    rutas_citas.py
-    rutas_carne_vacunas.py
-    rutas_jornada.py
-    rutas_adopcion.py
-templates/
-static/
-contratos/
+## Tecnologías Utilizadas
 
-Descripción por carpeta/módulo:
--------------------------------
-controllers/
-    Cada archivo implementa un Blueprint con rutas independientes.
-    Se aplica arquitectura modular, permitiendo escalar sin romper todo.
+- **Backend**: Python Flask
+- **Base de Datos**: MySQL
+- **Frontend**: HTML, CSS, JavaScript (con plantillas Jinja2)
+- **Autenticación**: Flask-WTF para manejo y validación de formularios
+- **ORM de Base de Datos**: PyMySQL para conectividad de base de datos
+- **Bibliotecas Adicionales**:
+  - Flask-Mail para funcionalidad de correo electrónico
+  - Twilio para servicios SMS
+  - ReportLab para generación de PDF
 
-templates/
-    Contiene todas las vistas HTML renderizadas por Flask.
+## Instalación
 
-static/
-    CSS, imágenes, scripts JS y otros recursos públicos.
+### Prerrequisitos
+- Python 3.8 o superior
+- Servidor MySQL
+- Entorno virtual (recomendado)
 
-config.py
-    Configuración de conexión a la base de datos MySQL.
-    Centraliza los datos del entorno.
+### Instrucciones de Configuración
 
-main.py
-    - Inicializa Flask
-    - Conecta con MySQL
-    - Registra Blueprints
-    - Define parámetros globales: uploads, tamaño máximo, secret_key.
-    - Ejecuta el servidor.
+1. **Clonar el repositorio**:
+   ```bash
+   git clone <url-del-repositorio>
+   cd petfriendly
+   ```
 
-contratos/
-    Almacena documentos PDF cargados por usuarios para adopciones.
+2. **Crear entorno virtual**:
+   ```bash
+   python -m venv EntornoVirtual
+   EntornoVirtual\Scripts\activate  # Windows
+   # o
+   source EntornoVirtual/bin/activate  # Linux/Mac
+   ```
 
----------------------------------------------------------
-Instalación y Configuración del Entorno
----------------------------------------------------------
+3. **Instalar dependencias**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Crear entorno virtual:
-    py -3 -m venv EntornoVirtual
+4. **Configuración de Base de Datos**:
+   - Crear una base de datos MySQL llamada `petfriendly_db`
+   - Importar el esquema de base de datos desde `petfriendly_db.sql`
+   - Actualizar las credenciales de base de datos en `config.py` si es necesario
 
-Activar entorno:
-    EntornoVirtual\Scripts\activate
+5. **Configurar Entorno**:
+   - Actualizar `config.py` con sus credenciales MySQL
+   - Configurar ajustes de correo electrónico para Flask-Mail
+   - Configurar credenciales de Twilio para funcionalidad SMS
 
-Instalar dependencias:
-    pip install Flask
-    pip install Flask-MySQL
-    pip install PyMySQL
-    pip install Flask-Mail
-    pip install twilio
-    pip install flask_wtf
-    pip install reportlab
+6. **Ejecutar la aplicación**:
+   ```bash
+   python main.py
+   # o
+   flask --app main run
+   ```
 
-NOTA: El paquete "Flask-Ext" no existe (es un mito como los unicornios laborales).
+7. **Acceder a la aplicación**:
+   Abra su navegador y navegue a `http://localhost:5000`
 
-Configurar base de datos:
-    mysql -h localhost -u root -p
-    Crear base: petfriendly_db
+## Esquema de Base de Datos
 
----------------------------------------------------------
-Ejecutar el Proyecto
----------------------------------------------------------
+El sistema utiliza una base de datos MySQL completa con las siguientes entidades principales:
 
-Opción 1:
-    python main.py
+- **Usuarios**: Gestión de usuarios multi-rol
+- **Pacientes**: Registros de pacientes animales
+- **Consultas**: Consultas médicas y tratamientos
+- **Medicamentos**: Seguimiento de inventario y uso de medicamentos
+- **Animales Rescatados**: Gestión de mascotas rescatadas
+- **Donaciones**: Manejo de donaciones de medicamentos y alimentos
+- **Citas**: Sistema de programación
+- **Procedimientos Quirúrgicos**: Seguimiento de operaciones
+- **Inventario**: Gestión de suministros
 
-Opción 2:
-    flask --app main run
+## Uso
 
-El servidor correrá en:
-    http://127.0.0.1:5000/
+### Roles de Usuario
 
----------------------------------------------------------
-Características Especiales
----------------------------------------------------------
-- Límite de subida de archivos: 5MB
-- Solo PDFs permitidos
-- Generación de secret_key aleatoria
-- Integraciones externas con Twilio y Flask-Mail
-- ReportLab para creación de documentos
-- Blueprints bien separados (código limpio y mantenible)
+1. **Administrador**:
+   - Acceso completo al sistema
+   - Gestión de usuarios
+   - Configuración del sistema
+   - Reportes y análisis
 
----------------------------------------------------------
-Autor
----------------------------------------------------------
-Desarrollado por Trio Imperial - PetFriendly.
+2. **Veterinario**:
+   - Gestión de pacientes
+   - Consultas y tratamientos
+   - Procedimientos quirúrgicos
+   - Dispensación de medicamentos
 
-Si llegaste hasta aquí, felicidades: ya leíste más que el 90% de los programadores
-cuando abren un README por primera vez. ;)
+3. **Cliente**:
+   - Ver registros de sus propias mascotas
+   - Programar citas
+   - Acceder al historial médico
+
+### Flujos de Trabajo Clave
+
+- **Registro de Pacientes**: Agregar nuevos pacientes animales con perfiles completos
+- **Proceso de Consulta**: Registrar diagnósticos, tratamientos y seguimientos
+- **Gestión de Medicamentos**: Seguimiento de inventario y uso
+- **Operaciones de Rescate**: Gestionar animales rescatados y procesos de adopción
+- **Manejo de Donaciones**: Procesar y aprobar donaciones
+- **Programación de Citas**: Reservar y gestionar visitas veterinarias
+
+## Endpoints de API
+
+La aplicación proporciona varios endpoints RESTful para:
+- Autenticación y gestión de usuarios
+- Operaciones de datos de pacientes
+- Gestión de consultas
+- Seguimiento de inventario
+- Generación de reportes
+
+## Características de Seguridad
+
+- **Hash de Contraseñas**: Encriptación SHA-256 para contraseñas de usuario
+- **Gestión de Sesiones**: Manejo seguro de sesiones Flask
+- **Validación de Entrada**: Flask-WTF para validación de formularios
+- **Acceso Basado en Roles**: Controles de permisos basados en roles de usuario
+- **Seguridad de Carga de Archivos**: Tipos de archivo y límites de tamaño restringidos
+
+## Contribuyendo
+
+1. Hacer fork del repositorio
+2. Crear una rama de características (`git checkout -b feature/CaracteristicaIncreible`)
+3. Confirmar sus cambios (`git commit -m 'Agregar alguna CaracteristicaIncreible'`)
+4. Hacer push a la rama (`git push origin feature/CaracteristicaIncreible`)
+5. Abrir un Pull Request
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para detalles.
+
+## Soporte
+
+Para soporte y preguntas:
+- Correo electrónico: support@petfriendly.com
+- Documentación: Disponible en el directorio `/docs`
+
+## Mejoras Futuras
+
+- Desarrollo de aplicación móvil
+- Reportes y análisis avanzados
+- Integración con sistemas veterinarios externos
+- Asistencia de diagnóstico con IA
+- Portal de reserva de citas en línea
+
+---
+
+**PetFriendly** - Cuidando mascotas, un sistema a la vez.
