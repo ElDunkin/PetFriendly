@@ -1,0 +1,111 @@
+[2025-11-05 01:37:18] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 01:41:39] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 01:56:54] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 01:58:23] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: INSERT | TABLA: usuarios | ID_REGISTRO: 1234568790 | DETALLES: Usuario Pedro colmenares registrado
+[2025-11-05 02:03:12] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: INSERT | TABLA: usuarios | ID_REGISTRO: 3652145 | DETALLES: Usuario Carlos Perez registrado
+[2025-11-05 02:11:16] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 02:14:57] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:17:38] USUARIO: Carlos Gómez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:17:43] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 02:18:29] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: DELETE | TABLA: usuarios | ID_REGISTRO: 3652145 | DETALLES: Usuario Carlos Perez (carpe@gmail.com) eliminado
+[2025-11-05 02:19:11] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: UPDATE | TABLA: usuarios | ID_REGISTRO: 1001 | DETALLES: Cambios: nombre: 'Ana' -> 'Ana Maria'
+[2025-11-05 02:20:16] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 02:20:24] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:22:28] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:26:39] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:27:49] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 02:28:50] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: INSERT | TABLA: usuarios | ID_REGISTRO: 102365258 | DETALLES: Usuario Maria Suana  Perez Castro registrado
+[2025-11-05 02:29:25] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:29:31] USUARIO: Carlos Gómez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:30:04] USUARIO: Laura Martínez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Cliente - IP: 127.0.0.1
+[2025-11-05 02:30:22] USUARIO: Laura Martínez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Cliente - IP: 127.0.0.1
+[2025-11-05 02:31:53] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 02:32:59] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: INSERT | TABLA: paciente_animal | ID_REGISTRO: 6 | DETALLES: Paciente Misifus (Gato - naranjoso) registrado
+[2025-11-05 02:33:44] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:39:31] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:44:26] USUARIO: Carlos Gómez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:44:30] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 02:45:59] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 02:49:18] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 03:03:16] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 03:07:52] USUARIO: Carlos Gómez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 03:08:37] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 03:21:00] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 03:21:49] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 03:22:47] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: UPDATE | TABLA: usuarios | ID_REGISTRO: 1002 | DETALLES: Cambios: nombre: 'Carlos' -> 'Carlos Mario', apellido: 'Gómez' -> 'Gómez Pastrana', correo: 'carlos.gomez@example.com' -> 'carlos.gomezP@gamil.com'
+[2025-11-05 03:24:18] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: DELETE | TABLA: usuarios | ID_REGISTRO: 102365258 | DETALLES: Usuario Maria Suana  Perez Castro (marisu@gmail.com) eliminado
+[2025-11-05 23:27:12] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 23:33:01] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 23:42:43] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: INSERT | TABLA: medicamento | ID_REGISTRO: 1 | DETALLES: Medicamento Amoxicilina registrado - Lote: L123 - Cantidad: 100
+[2025-11-05 23:48:22] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 23:48:32] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-11-05 23:48:41] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 23:51:11] USUARIO: Juliana López | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-11-05 23:51:18] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 00:26:26] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 00:30:15] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 00:37:31] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 01:13:40] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 01:27:06] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 01:28:13] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 01:29:34] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 01:32:58] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 02:13:17] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 02:20:53] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 02:34:08] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-11-06 02:38:34] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 01:47:24] USUARIO: Carlos Pedraza | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Cliente - IP: 127.0.0.1
+[2025-12-02 01:47:27] USUARIO: Carlos Pedraza | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Cliente - IP: 127.0.0.1
+[2025-12-02 01:47:31] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 01:59:35] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:04:17] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:04:19] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:07:07] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:07:09] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:07:54] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:07:55] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:10:34] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:10:35] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:13:10] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:13:12] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:14:18] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:14:20] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:17:40] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:17:41] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:18:47] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:18:49] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:19:15] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-02 02:19:16] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-03 20:35:54] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-03 20:38:33] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-03 20:38:55] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-03 20:38:59] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-03 20:39:22] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-03 20:39:23] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGOUT | TABLA: sistema | DETALLES: Cierre de sesión - Rol: Administrador - IP: 127.0.0.1
+[2025-12-03 19:42:48] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 00:13:50] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 02:10:04] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 02:22:36] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 03:42:03] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 03:51:05] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 03:55:22] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 04:01:08] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 04:02:48] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 04:04:18] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 04:08:17] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 04:10:18] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 04:11:56] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 04:17:13] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 19:22:36] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 19:34:08] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 19:45:01] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 19:51:49] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 20:06:27] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 20:38:17] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 21:11:21] USUARIO: Ana Pérez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-09 21:11:39] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 21:12:54] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 21:13:14] USUARIO: Ana Pérez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-09 21:14:41] USUARIO: Ana Pérez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-09 21:34:04] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1
+[2025-12-09 23:55:17] USUARIO: Juliana López | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Medico_Veterinario - IP: 127.0.0.1

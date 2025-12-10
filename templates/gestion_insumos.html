@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Insumos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/gestion_insumos.css">
+    <link rel="stylesheet" href="/static/css/generic.css">
+</head>
+<body>
+    <header>
+    <div class="logo">
+    <nav class="menu">
+        <ul>
+            <li><a href="/dashboard_administrador">Dashboard</a></li>
+
+            <!-- Gestión (submenú) -->
+            <li class="dropdown">
+                <a href="#">Gestión ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registro_usuarios">Usuarios</a></li>
+                    <li><a href="/registro_paciente_animal">Pacientes</a></li>
+                    <li><a href="/gestion_insumos">Insumos</a></li>
+                    <li><a href="/medicamento">Medicamentos</a></li>
+                    <li><a href="/registrar_animal_rescatado">Animales Rescatados</a></li>
+                </ul>
+            </li>
+
+            <!-- Animales -->
+            
+
+            <!-- Donaciones (submenú) -->
+            <li class="dropdown">
+                <a href="#">Donaciones ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registrar_donacion">Medicamentos</a></li>
+                    <li><a href="/donaciones_alimentos">Alimentos</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="btn-group">
+            <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+        </div>
+    </nav>
+</header>
+
+    <main>
+        <h1>Gestión de Insumos</h1>
+
+    <div class="container">
+        <div class="form-section">
+            <h2>Registrar nuevo insumo</h2>
+                <form id="nuevoInsumoForm">
+                <label>Nombre del insumo*</label>
+                <input name="nombre_insumo" placeholder="Nombre del insumo" required>
+
+                <label>Cantidad inicial*</label>
+                <input type="number" name="cantidad_inicial" placeholder="Cantidad inicial" required>
+
+                <label>Unidad de medida*</label>
+                <input name="unidad_medida" placeholder="Unidad de medida" required>
+
+                <label>Proveedor*</label>
+                <input name="proveedor" placeholder="Proveedor" required>
+
+                <label>Fecha de ingreso*</label>
+                <input type="date" name="fecha_ingreso" required>
+
+                <label>Fecha de vencimiento</label>
+                <input type="date" name="fecha_vencimiento">
+
+                <label>Tipo de insumo*</label>
+                <input name="tipo_insumo" placeholder="Tipo de insumo" required>
+
+                <label>Observaciones</label>
+                <textarea name="observaciones" placeholder="Observaciones"></textarea>
+
+                <button type="submit">Registrar</button>
+            </form>
+        </div>
+        <div class="table-section">
+            <h2>Inventario de insumos</h2>
+            <table id="tablaInsumos">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Existencia actual</th>
+                        <th>Unidad</th>
+                        <th>Proveedor</th>
+                        <th>Fecha ingreso</th>
+                        <th>Fecha vencimiento</th>
+                        <th>Tipo</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button onclick="mostrarAlerta()">Ver alertas</button>
+        </div>
+    </div>
+
+    <!-- Modal de alerta -->
+    <div id="alertaModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarAlerta()">&times;</span>
+            <h2>¡Aviso!</h2>
+            <ul id="alertaLista"></ul>
+        </div>
+    </div>
+    </main>
+    
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+    <script src="/static/js/gestion_insumos.js"></script>
+</body>
+</html>

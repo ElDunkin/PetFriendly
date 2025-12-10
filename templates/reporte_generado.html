@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/generic.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .btn-volver {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .btn-volver:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+        .btn-imprimir {
+            display: inline-block;
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        .btn-imprimir:hover {
+            background-color: #0b7dda;
+        }
+        @media print {
+            .btn-volver, .btn-imprimir {
+                display: none;
+            }
+            body {
+                margin: 0;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ titulo }}</h1>
+
+        <a href="/dashboard_administrador" class="btn-volver">← Volver al Dashboard</a>
+        <a href="javascript:window.print()" class="btn-imprimir">🖨️ Imprimir Reporte</a>
+
+        {% if datos %}
+            <table>
+                <thead>
+                    {% if tipo_reporte == 'adopciones' %}
+                        <tr>
+                            <th>Fecha de Adopción</th>
+                            <th>Animal Adoptado</th>
+                            <th>Adoptante</th>
+                        </tr>
+                    {% elif tipo_reporte == 'donaciones' %}
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Fecha de Donación</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Unidad</th>
+                        </tr>
+                    {% elif tipo_reporte == 'consultas' %}
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Paciente</th>
+                            <th>Estado</th>
+                            <th>Diagnóstico</th>
+                        </tr>
+                    {% endif %}
+                </thead>
+                <tbody>
+                    {% for dato in datos %}
+                        {% if tipo_reporte == 'adopciones' %}
+                            <tr>
+                                <td>{{ dato.fecha_adopcion }}</td>
+                                <td>{{ dato.nombre_temporal }}</td>
+                                <td>{{ dato.adoptante_nombre }}</td>
+                            </tr>
+                        {% elif tipo_reporte == 'donaciones' %}
+                            <tr>
+                                <td>{{ dato.tipo }}</td>
+                                <td>{{ dato.fecha_donacion }}</td>
+                                <td>{{ dato.descripcion }}</td>
+                                <td>{{ dato.cantidad }}</td>
+                                <td>{{ dato.unidad_medida }}</td>
+                            </tr>
+                        {% elif tipo_reporte == 'consultas' %}
+                            <tr>
+                                <td>{{ dato.fecha_consulta }}</td>
+                                <td>{{ dato.hora_consulta }}</td>
+                                <td>{{ dato.nombre_paciente }}</td>
+                                <td>{{ dato.estado_consulta }}</td>
+                                <td>{{ dato.diagnostico or 'N/A' }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-data">
+                <p>No se encontraron datos para el período seleccionado.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

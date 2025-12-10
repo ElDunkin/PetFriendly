@@ -1,0 +1,138 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Header con título y botón de nueva cita -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Gestión de Citas</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaCita">
+            <i class="fas fa-calendar-plus"></i> Nueva Cita
+        </button>
+    </div>
+
+    <!-- Tabla de citas -->
+    <div class="table-responsive shadow p-3 bg-white rounded">
+        <table class="table table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Mascota</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in citas %}
+                <tr>
+                    <td>{{ c.id_cita }}</td>
+                    <td>{{ c.nombre_paciente or 'Desconocido' }}</td>
+                    <td>{{ c.fecha }}</td>
+                    <td>{{ c.hora }}</td>
+                    <td>{{ c.motivo }}</td>
+                    <td>
+                        {% if c.estado == 'Activa' %}
+                            <span class="badge bg-success">Activa</span>
+                        {% elif c.estado == 'Cancelada' %}
+                            <span class="badge bg-danger">Cancelada</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Atendida</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <!-- Botón Editar -->
+                        <button class="btn btn-warning btn-sm btnEditarCita"
+                                data-id="{{ c.id_cita }}"
+                                data-fecha="{{ c.fecha }}"
+                                data-hora="{{ c.hora }}"
+                                data-motivo="{{ c.motivo }}"
+                                data-estado="{{ c.estado }}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarCita">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <!-- Botón Eliminar -->
+                        <a class="btn btn-danger btn-sm" 
+                           href="{{ url_for('rutas_citas.eliminar_cita', id=c.id_cita) }}"
+                           onclick="return confirm('¿Eliminar esta cita?');">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal de crear cita (se mantiene el include original) -->
+{% include 'modals/registrar_cita.html' %}
+
+<!-- ================================ MODAL EDITAR CITA ================================ -->
+<div class="modal fade" id="modalEditarCita" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">Editar Cita</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('rutas_citas.actualizar_cita') }}" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="id_cita_edit" name="id_cita">
+                    <div class="mb-3">
+                        <label>Fecha</label>
+                        <input type="date" id="fecha_edit" name="fecha" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Hora</label>
+                        <input type="time" id="hora_edit" name="hora" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Motivo</label>
+                        <input type="text" id="motivo_edit" name="motivo" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Estado</label>
+                        <select id="estado_edit" name="estado" class="form-select">
+                            <option value="Activa">Activa</option>
+                            <option value="Cancelada">Cancelada</option>
+                            <option value="Atendida">Atendida</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-warning">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ================================ JAVASCRIPT ================================ -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Escuchar todos los botones de editar y cargar datos en el modal
+    document.querySelectorAll(".btnEditarCita").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            const fecha = this.dataset.fecha;
+            const hora = this.dataset.hora;
+            const motivo = this.dataset.motivo;
+            const estado = this.dataset.estado;
+
+            document.getElementById("id_cita_edit").value = id;
+            document.getElementById("fecha_edit").value = fecha;
+            document.getElementById("hora_edit").value = hora;
+            document.getElementById("motivo_edit").value = motivo;
+            document.getElementById("estado_edit").value = estado;
+        });
+    });
+});
+</script>
+
+{% endblock %}

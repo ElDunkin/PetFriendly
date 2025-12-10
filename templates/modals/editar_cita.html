@@ -1,0 +1,58 @@
+<div class="modal fade" id="modalEditarCita" tabindex="-1" aria-labelledby="modalEditarCitaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content modal-cita-content">
+
+      <div class="modal-header modal-cita-header">
+        <h4 class="modal-title" id="modalEditarCitaLabel">
+          <i class="fas fa-edit text-warning"></i>
+          Editar Cita
+        </h4>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body modal-cita-body">
+
+        <form action="{{ url_for('rutas_citas.actualizar_cita') }}" method="POST">
+
+          <input type="hidden" name="id_cita" id="id_cita_edit">
+
+          <div class="row">
+            <div class="col-md-6">
+              <label>Fecha</label>
+              <input type="date" id="fecha_edit" name="fecha" class="form-control" required>
+            </div>
+
+            <div class="col-md-6">
+              <label>Hora</label>
+              <input type="time" id="hora_edit" name="hora" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label>Motivo</label>
+            <textarea name="motivo" id="motivo_edit" class="form-control" rows="3" required></textarea>
+          </div>
+
+          <div class="mt-3">
+            <label>Estado</label>
+            <select name="estado" id="estado_edit" class="form-select">
+              <option value="Activa">Activa</option>
+              <option value="Cancelada">Cancelada</option>
+              <option value="Atendida">Atendida</option>
+            </select>
+          </div>
+
+          <div class="modal-cita-footer mt-4">
+            <button type="button" class="btn btn-cancelar-cita" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-registrar-cita">
+              Guardar Cambios
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
