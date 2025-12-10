@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session, request, redirect, url_for, flash
-# from werkzeug.security import  check_password_hash
+from werkzeug.security import check_password_hash
 import hashlib
 from models.conexion import obtener_conexion
 from models.log_system import log_system
@@ -52,7 +52,10 @@ def login():
                 return redirect(url_for('rutas_login.login'))
         else:
             
-            return redirect(url_for('rutas_login.login', textf='Correo o contraseña incorrectos'))
+            return render_template(
+                'login.html',
+                logout_message_error=f'Correo o contraseña incorrectos'
+            )
     text = request.args.get('text')
     textf = request.args.get('textf')
     logout_message = request.args.get('logout_message')
@@ -81,8 +84,8 @@ def logout():
     session.modified = True  # Fuerza la actualización de la sesión
 
     # Crear respuesta con headers para evitar caché del navegador
-    resp = redirect(url_for('rutas_login.login', logout_message=f'Sesión cerrada correctamente. ¡Hasta pronto, {nombre_usuario}!'))
-    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    resp.headers['Pragma'] = 'no-cache'
-    resp.headers['Expires'] = '0'
-    return resp
+    return render_template(
+        'login.html',
+        logout_message=f'Sesión cerrada correctamente. ¡Hasta pronto, {nombre_usuario}!'
+    )
+    

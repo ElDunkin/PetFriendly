@@ -1,0 +1,69 @@
+/* Estilos para el modal de cierre de sesión exitoso (verde) */
+#logoutModal .modal-content {
+    background-color: #d4edda; /* Fondo verde claro */
+    border-color: #c3e6cb; /* Borde verde */
+    color: #155724; /* Texto verde oscuro */
+}
+
+#logoutModal .modal-header {
+    background-color: #d4edda;
+    border-bottom: 1px solid #c3e6cb;
+}
+
+#logoutModal .modal-title {
+    color: #155724;
+}
+
+#logoutModal .modal-body {
+    color: #155724;
+}
+
+#logoutModal .modal-footer {
+    background-color: #d4edda;
+    border-top: 1px solid #c3e6cb;
+}
+
+#logoutModal .btn-primary {
+    background-color: #28a745; /* Verde */
+    border-color: #28a745;
+}
+
+#logoutModal .btn-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* Estilos para el modal de error (rojo) */
+#logoutModalError .modal-content {
+    background-color: #f8d7da; /* Fondo rojo claro */
+    border-color: #f5c6cb; /* Borde rojo */
+    color: #721c24; /* Texto rojo oscuro */
+}
+
+#logoutModalError .modal-header {
+    background-color: #f8d7da;
+    border-bottom: 1px solid #f5c6cb;
+}
+
+#logoutModalError .modal-title {
+    color: #721c24;
+}
+
+#logoutModalError .modal-body {
+    color: #721c24;
+}
+
+#logoutModalError .modal-footer {
+    background-color: #f8d7da;
+    border-top: 1px solid #f5c6cb;
+}
+
+#logoutModalError .btn-primary {
+    background-color: #dc3545; /* Rojo */
+    border-color: #dc3545;
+}
+
+#logoutModalError .btn-primary:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}

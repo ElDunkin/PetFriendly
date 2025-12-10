@@ -162,7 +162,12 @@ CREATE TABLE `animales_rescatados` (
     `rescatista_nombre` VARCHAR(100),
     `rescatista_contacto` VARCHAR(100),
     `foto_url` VARCHAR(255) NOT NULL,
-    `estado` ENUM('En permanencia','Adoptado','Trasladado','Fallecido') DEFAULT 'En permanencia'
+    `estado` ENUM('En permanencia','Adoptado','Trasladado','Fallecido') DEFAULT 'En permanencia',
+    `estado_salud_adopcion` ENUM('Saludable','En tratamiento','Grave') DEFAULT NULL,
+    `caracter` ENUM('Sociable','Tímido','Activo') DEFAULT NULL,
+    `comportamiento_humanos` TEXT DEFAULT NULL,
+    `comportamiento_animales` TEXT DEFAULT NULL,
+    `historia` TEXT DEFAULT NULL
 );
 
 CREATE TABLE permanencia_animal (

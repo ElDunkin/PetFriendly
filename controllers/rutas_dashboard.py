@@ -150,7 +150,7 @@ def dashboard_medico():
 @rutas_dashboard.route('/dashboard_cliente')
 def dashboard_cliente():
     if session.get('rol') != 'Cliente':
-        return redirect(url_for('rutas_login.login_empleados'))
+        return redirect(url_for('rutas_login.login'))
 
     numero_documento = session.get('numero_documento')
 
@@ -168,19 +168,43 @@ def dashboard_cliente():
             citas_por_paciente = {}
             for mascota in mascotas:
                 cursor.execute("""
-                    SELECT id_cita
-                    FROM citas_por_paciente WHERE id_paciente=%s ORDER BY fecha ASC
+                    SELECT c.fecha, c.hora, c.motivo, c.estado
+                    FROM citas_por_paciente cp
+                    JOIN citas c ON cp.id_cita = c.id_cita
+                    WHERE cp.id_paciente=%s ORDER BY c.fecha ASC
                 """, (mascota['id_paciente'],))
-                citas_por_paciente[mascota['id_paciente']] = cursor.fetchall()
+                citas = cursor.fetchall()
+                # Convertir fechas y horas a strings para JSON
+                for cita in citas:
+                    cita['fecha'] = str(cita['fecha'])
+                    cita['hora'] = str(cita['hora'])
+                citas_por_paciente[mascota['id_paciente']] = citas
 
             # Traer consultas de cada mascota
             consultas_por_paciente = {}
             for mascota in mascotas:
                 cursor.execute("""
-                    SELECT id_consulta  
-                    FROM consultas_por_paciente WHERE id_paciente=%s ORDER BY fecha_consulta DESC
+                    SELECT c.fecha_consulta, c.hora_consulta, c.motivo_consulta, c.diagnostico, c.tratamiento
+                    FROM consultas_por_paciente cp
+                    JOIN consultas c ON cp.id_consulta = c.id_consulta
+                    WHERE cp.id_paciente=%s ORDER BY c.fecha_consulta DESC
                 """, (mascota['id_paciente'],))
-                consultas_por_paciente[mascota['id_paciente']] = cursor.fetchall()
+                consultas = cursor.fetchall()
+                # Convertir fechas y horas a strings para JSON
+                for consulta in consultas:
+                    consulta['fecha_consulta'] = str(consulta['fecha_consulta'])
+                    consulta['hora_consulta'] = str(consulta['hora_consulta'])
+                consultas_por_paciente[mascota['id_paciente']] = consultas
+
+            # Traer todas las citas del cliente
+            cursor.execute("""
+                SELECT c.fecha, c.hora, c.motivo, c.estado, p.nombre_paciente
+                FROM citas c
+                JOIN paciente_animal p ON c.id_paciente = p.id_paciente
+                WHERE p.numero_documento = %s
+                ORDER BY c.fecha DESC, c.hora DESC
+            """, (numero_documento,))
+            citas = cursor.fetchall()
     finally:
         conn.close()
 
@@ -189,6 +213,7 @@ def dashboard_cliente():
         mascotas=mascotas,
         citas_por_paciente=citas_por_paciente,
         consultas_por_paciente=consultas_por_paciente,
+        citas=citas,
         nombre=session.get('nombre_usuario'),
         apellido=session.get('apellido_usuario')
     )
@@ -336,5 +361,106 @@ def api_usuarios():
         usuarios_json.append(usuario_dict)
 
     return jsonify(usuarios_json)
+
+@rutas_dashboard.route('/actualizar_contacto', methods=['POST'])
+def actualizar_contacto():
+    if session.get('rol') != 'Cliente':
+        return redirect(url_for('rutas_login.login'))
+
+    numero_documento = session.get('numero_documento')
+    telefono = request.form.get('telefono')
+    correo = request.form.get('correo')
+
+    if not telefono or not correo:
+        return jsonify({'success': False, 'message': 'Todos los campos son requeridos'}), 400
+
+    conn = obtener_conexion()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute('''
+                UPDATE usuarios
+                SET telefono = %s, correo_electronico_usuario = %s
+                WHERE numero_documento = %s
+            ''', (telefono, correo, numero_documento))
+            conn.commit()
+        return jsonify({'success': True, 'message': 'Datos de contacto actualizados exitosamente'})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'success': False, 'message': 'Error al actualizar los datos'}), 500
+    finally:
+        conn.close()
+
+@rutas_dashboard.route('/cambiar_contrasena', methods=['POST'])
+def cambiar_contrasena():
+    if session.get('rol') != 'Cliente':
+        return redirect(url_for('rutas_login.login'))
+
+    numero_documento = session.get('numero_documento')
+    contrasena_actual = request.form.get('contrasena_actual')
+    nueva_contrasena = request.form.get('nueva_contrasena')
+    confirmar_contrasena = request.form.get('confirmar_contrasena')
+
+    if not contrasena_actual or not nueva_contrasena or not confirmar_contrasena:
+        return jsonify({'success': False, 'message': 'Todos los campos son requeridos'}), 400
+
+    if nueva_contrasena != confirmar_contrasena:
+        return jsonify({'success': False, 'message': 'Las contraseñas no coinciden'}), 400
+
+    from werkzeug.security import check_password_hash, generate_password_hash
+
+    conn = obtener_conexion()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute('SELECT contrasena FROM usuarios WHERE numero_documento = %s', (numero_documento,))
+            usuario = cursor.fetchone()
+
+            if not usuario or not check_password_hash(usuario['contrasena'], contrasena_actual):
+                return jsonify({'success': False, 'message': 'Contraseña actual incorrecta'}), 400
+
+            nueva_contrasena_hash = generate_password_hash(nueva_contrasena, method='pbkdf2:sha256')
+            cursor.execute('''
+                UPDATE usuarios
+                SET contrasena = %s
+                WHERE numero_documento = %s
+            ''', (nueva_contrasena_hash, numero_documento))
+            conn.commit()
+        return jsonify({'success': True, 'message': 'Contraseña cambiada exitosamente'})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'success': False, 'message': 'Error al cambiar la contraseña'}), 500
+    finally:
+        conn.close()
+
+@rutas_dashboard.route('/api/usuario_actual')
+def api_usuario_actual():
+    if session.get('rol') != 'Cliente':
+        return jsonify({'success': False, 'message': 'No autorizado'}), 403
+
+    numero_documento = session.get('numero_documento')
+
+    conn = obtener_conexion()
+    try:
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute('''
+                SELECT nombre_usuario, apellido_usuario, correo_electronico_usuario, telefono
+                FROM usuarios WHERE numero_documento = %s
+            ''', (numero_documento,))
+            usuario = cursor.fetchone()
+
+            if usuario:
+                return jsonify({'success': True, 'usuario': usuario})
+            else:
+                return jsonify({'success': False, 'message': 'Usuario no encontrado'}), 404
+    finally:
+        conn.close()
+
+@rutas_dashboard.route('/check_session')
+def check_session():
+    """Verifica si la sesión está activa"""
+    if 'rol' in session:
+        return jsonify({'active': True})
+    else:
+        return jsonify({'active': False}), 401
+
 
 

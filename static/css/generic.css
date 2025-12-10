@@ -25,7 +25,8 @@ header {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #243238;
     line-height: 1.6;
-    padding: 5px 0px;
+    padding: 20px 0px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .logo{
@@ -135,4 +136,8 @@ footer{
 
 .row{
     margin: -16px auto -16px auto;
+}
+
+.card.border-0{
+    margin: auto;
 }

@@ -10,6 +10,7 @@ pip install reportlab
 
 
 
+
 py -3 -m venv EntornoVirtual
 EntornoVirtual\Scripts\activate
 py main.py run

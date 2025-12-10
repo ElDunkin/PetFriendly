@@ -397,6 +397,29 @@
         </div>
     </main>
 
+    <!-- Modal Sesión Expirada -->
+    <div class="modal fade" id="modalSessionExpired" tabindex="-1" aria-labelledby="modalSessionExpiredLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title text-dark" id="modalSessionExpiredLabel">
+                        <i class="fas fa-clock"></i> Sesión Expirada
+                    </h5>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h5>Sesión expirada por inactividad</h5>
+                    <p class="text-muted">Tu sesión ha expirado debido a inactividad prolongada. Serás redirigido al inicio de sesión.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="redirectToLogin()">
+                        <i class="fas fa-sign-in-alt"></i> Ir al Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div>
             Copyright © 2025 Developed by Trio Imperial co.
@@ -567,6 +590,64 @@
                     card.style.transform = 'translateY(0)';
                 }, index * 150);
             });
+        });
+
+        // Sistema de detección de inactividad y expiración de sesión
+        let inactivityTimer;
+        let sessionCheckInterval;
+        const INACTIVITY_TIMEOUT = 25 * 60 * 1000; // 25 minutos (5 minutos antes del timeout del servidor)
+        const SESSION_CHECK_INTERVAL = 60 * 1000; // Verificar cada minuto
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                showSessionExpiredModal();
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        function checkSessionStatus() {
+            fetch('/check_session')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.active) {
+                        showSessionExpiredModal();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking session:', error);
+                    showSessionExpiredModal();
+                });
+        }
+
+        function showSessionExpiredModal() {
+            clearTimeout(inactivityTimer);
+            clearInterval(sessionCheckInterval);
+
+            const modal = new bootstrap.Modal(document.getElementById('modalSessionExpired'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            modal.show();
+        }
+
+        function redirectToLogin() {
+            window.location.href = '/login?logout_message=Sesi%C3%B3n+expirada+por+inactividad';
+        }
+
+        // Eventos de actividad del usuario
+        function setupActivityListeners() {
+            const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+
+            events.forEach(event => {
+                document.addEventListener(event, resetInactivityTimer, true);
+            });
+        }
+
+        // Inicializar sistema de detección de inactividad
+        document.addEventListener('DOMContentLoaded', function() {
+            setupActivityListeners();
+            resetInactivityTimer(); // Iniciar el timer
+            sessionCheckInterval = setInterval(checkSessionStatus, SESSION_CHECK_INTERVAL); // Verificar sesión periódicamente
         });
     </script>
 
