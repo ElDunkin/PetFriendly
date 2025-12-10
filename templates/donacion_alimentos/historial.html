@@ -1,0 +1,30 @@
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Modal -->
+  <div class="modal fade" id="historialModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content" style="background-color: whitesmoke; border-radius: 10px;">
+      
+      <!-- Header con título y botón de cerrar -->
+      <div class="modal-header">
+        <h5 class="modal-title">Historial de Donaciones</h5>
+        <!-- Botón X -->
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <!-- Cuerpo -->
+      <div class="modal-body">
+        {% include "donacion_alimentos/_historial.html" %}
+      </div>
+      
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

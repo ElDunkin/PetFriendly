@@ -1,0 +1,44 @@
+<div class="modal fade" id="modal_salida_{{ animal.id_rescatado }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="{{ url_for('rutas_salidas.registrar_salida', id_rescatado=animal.id_rescatado) }}" method="POST" enctype="multipart/form-data">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Registrar salida de {{ animal.nombre_temporal }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Fecha de salida:</label>
+                    <input type="date" name="fecha_salida" class="form-control" value="{{ current_date }}" required>
+                </div>
+            <div class="mb-3">
+                <label class="form-label">Motivo de salida:</label>
+                <select name="motivo" id="motivo_{{ animal.id_rescatado }}" class="form-select" required onchange="toggleReceptorFields({{ animal.id_rescatado }})">
+                    <option value="">Seleccione...</option>
+                    <option value="Adopción">Adopción</option>
+                    <option value="Traslado">Traslado</option>
+                    <option value="Fallecimiento">Fallecimiento</option>
+                </select>
+            </div>
+            <div class="mb-3 receptor-fields" id="receptor_fields_{{ animal.id_rescatado }}" style="display:none;">
+                <label class="form-label">Nombre del adoptante / entidad receptora:</label>
+                <input type="text" name="nombre_receptor" class="form-control">
+                <label class="form-label mt-2">Documento de identidad o NIT:</label>
+                <input type="text" name="documento_receptor" class="form-control">
+                <label class="form-label mt-2">Acta de salida (JPG o PNG máx. 5MB):</label>
+                <input type="file" name="acta_salida" accept=".jpg,.jpeg,.png" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Observaciones adicionales:</label>
+                <textarea name="observaciones" class="form-control"></textarea>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" onclick="return confirm('¿Está seguro de registrar la salida? Esta acción no podrá revertirse.')">Registrar salida</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>

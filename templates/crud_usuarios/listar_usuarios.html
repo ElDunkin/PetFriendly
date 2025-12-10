@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Usuarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/listar_usuarios.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modals.css') }}">
+</head>
+
+<body>
+    <header>
+    <div class="logo">
+    <nav class="menu">
+        <ul>
+            <li><a href="/dashboard_administrador">Dashboard</a></li>
+
+            <!-- Gestión (submenú) -->
+            <li class="dropdown">
+                <a href="#">Gestión ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registro_usuarios">Usuarios</a></li>
+                    <li><a href="/registro_paciente_animal">Pacientes</a></li>
+                    <li><a href="/gestion_insumos">Insumos</a></li>
+                    <li><a href="/medicamento">Medicamentos</a></li>
+                    <li><a href="/registrar_animal_rescatado">Animales Rescatados</a></li>
+                </ul>
+            </li>
+
+            <!-- Animales -->
+
+
+            <!-- Donaciones (submenú) -->
+            <li class="dropdown">
+                <a href="#">Donaciones ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registrar_donacion">Medicamentos</a></li>
+                    <li><a href="/donaciones_alimentos">Alimentos</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="btn-group">
+            <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+        </div>
+    </nav>
+</header>
+    <h1>Usuarios Registrados</h1>
+    {% if textM %}
+        <div class="alert alert-warning">{{ textM }}</div>
+    {% endif %}
+    {% if text %}
+        <div class="alert alert-success">{{ text }}</div>
+    {% endif %}
+    {% if textE %}
+        <div class="alert alert-danger">{{ textE }}</div>
+    {% endif %}
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>N° Documento</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Tipo Documento</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.numero_documento }}</td>
+                    <td>{{ usuario.nombre_usuario }}</td>
+                    <td>{{ usuario.apellido_usuario }}</td>
+                    <td>{{ usuario.tipo_documento_usuario }}</td>
+                    <td>{{ usuario.correo_electronico_usuario }}</td>
+                    <td>{{ usuario.telefono }}</td>
+                    <td>{{ usuario.nombre_rol }}</td>
+                    <td>
+                        <a href="#" class="btn btn-success btn-editar"
+                                    data-numero="{{ usuario.numero_documento }}"
+                                    data-nombre="{{ usuario.nombre_usuario }}"
+                                    data-apellido="{{ usuario.apellido_usuario }}"
+                                    data-correo="{{ usuario.correo_electronico_usuario }}"
+                                    data-telefono="{{ usuario.telefono }}">✏️ Editar</a>
+
+                        <a onclick="confirmarEliminacion('{{ usuario.nombre_usuario }} {{ usuario.apellido_usuario }}', '/eliminar_usuarios/{{ usuario.numero_documento }}')" class="btn btn-danger">🗑️ Eliminar</a>
+
+                    </td>
+                </tr>
+                    {% include 'modals/eliminar_usuarios.html' %}
+                    {% include 'modals/modificar_usuarios.html' %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        {% if page > 1 %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('rutas_usuarios.listar_usuarios', page=page-1) }}">Anterior</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Anterior</span>
+        </li>
+        {% endif %}
+
+        {% set page_size = 10 %}
+        {% set start_page = ((page - 1) // page_size) * page_size + 1 %}
+        {% set end_page = [start_page + page_size - 1, total_pages] | min %}
+
+        {# ---- RANGO DE PÁGINAS MOSTRADAS ---- #}
+        {% for page_num in range(start_page, end_page + 1) %}
+        <li class="page-item {% if page_num == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('rutas_usuarios.listar_usuarios', page=page_num) }}">{{ page_num }}</a>
+        </li>
+        {% endfor %}
+
+        {% if page < total_pages %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('rutas_usuarios.listar_usuarios', page=page+1) }}">Siguiente</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Siguiente</span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+
+    </main>
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/modificar_usuarios.js"></script>
+    <script src="../static/js/eliminar_usuarios.js"></script> 
+</body>
+</html>

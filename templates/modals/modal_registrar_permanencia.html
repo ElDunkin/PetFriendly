@@ -1,0 +1,64 @@
+<div class="modal fade" id="modal_Registrar_Permanencia{{ animal.id_rescatado }}" tabindex="-1" aria-labelledby="modalLabel{{ animal.id_rescatado }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel{{ animal.id_rescatado }}">
+          Registrar permanencia de {{ animal.nombre_temporal }}
+        </h5>
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="{{ url_for('rutas_permanencia.registrar_permanencia', id_rescatado=animal.id_rescatado) }}" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label>Fecha de control</label>
+                <input type="text" class="form-control" value="(Se asigna automáticamente)" disabled>
+            </div>
+
+            <div class="mb-3">
+                <label>Estado de salud</label>
+                <select name="estado_salud" class="form-select" required>
+                    <option value="">-- Seleccione --</option>
+                    <option value="Saludable">Saludable</option>
+                    <option value="En tratamiento">En tratamiento</option>
+                    <option value="Grave">Grave</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label>Estado emocional</label>
+                <select name="estado_emocional" class="form-select" required>
+                    <option value="">-- Seleccione --</option>
+                    <option value="Tranquilo">Tranquilo</option>
+                    <option value="Ansioso">Ansioso</option>
+                    <option value="Agresivo">Agresivo</option>
+                    <option value="Miedoso">Miedoso</option>
+                    <option value="Estable">Estable</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label>Observaciones</label>
+                <textarea name="observaciones" class="form-control" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Medicamentos administrados</label>
+                <input type="text" name="medicamentos" class="form-control" placeholder="Ej: Amoxicilina 500mg">
+            </div>
+
+            <div class="mb-3">
+                <label>Imagen (opcional)</label>
+                <input type="file" name="imagen" accept=".jpg,.jpeg,.png" class="form-control">
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">Guardar Permanencia</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>  

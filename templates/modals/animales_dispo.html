@@ -1,0 +1,85 @@
+<div id="modalAnimales" class="modal">
+    <div class="modal-content">
+        <span class="cerrar" onclick="cerrarModal()">&times;</span>
+        <h3>Seleccionar Animal</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+            {% if animales %}
+            {% for animal in animales %}
+            <div style="border: 1px solid #ccc; padding: 10px; text-align: center; border-radius: 10px;">
+                <img src="{{ url_for('static', filename='uploads/' ~ animal.foto_url) }}"
+                    alt="{{ animal.nombre_temporal }}"
+                    style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                <p><strong>{{ animal.nombre_temporal }}</strong></p>
+                <button type="button"
+                    onclick="seleccionarAnimal('{{ animal.id_rescatado }}', '{{ animal.nombre_temporal }}')">
+                    Seleccionar
+                </button>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No hay animales disponibles en permanencia.</p>
+            {% endif %}
+    </div>
+</div>
+</div>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content {
+        background: white;
+        margin: 10% auto;
+        padding: 20px;
+        width: 50%;
+        border-radius: 10px;
+    }
+
+    .cerrar {
+        float: right;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .modal-content button {
+        background: #0C254B;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .modal-content button:hover {
+        background: #243238;
+    }
+</style>
+
+<script>
+    function abrirModal() {
+    fetch('/modal_animales')
+    .then(response => response.text())
+    .then(html => {
+        document.body.insertAdjacentHTML('beforeend', html);
+        document.getElementById('modalAnimales').style.display = 'block';
+        modal.show();
+    })
+    .catch(err => console.error('Error al abrir modal:', err));
+}
+    function cerrarModal() {
+        document.getElementById("modalAnimales").style.display = "none";
+    }
+    function seleccionarAnimal(id, nombre) {
+        document.getElementById("id_rescatado").value = id;
+        document.getElementById("nombre_animal").value = nombre;
+        cerrarModal();
+    }
+</script>

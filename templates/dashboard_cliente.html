@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="../static/css/dashboard.css">
+
+    <title>Dashboard Veterinaria</title>
+    
+</head>
+<body>
+
+    <!-- Header Navegación -->
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/contactenos">Contáctenos</a></li>
+                <li><a href="/logout">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Grid Principal -->
+    <main>
+            <div class="mensaje-bienvenida">
+                <h2>¡Hola, {{ session['nombre'] }} {{ session['apellido'] }}!</h2>
+                <div class="avatar">
+            </div>
+
+            <div class="container mt-4">
+            <h3>Mis Mascotas</h3>
+            <br>
+            <div class="row">
+                {% for mascota in mascotas %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded-3 mb-3">
+                    <img src="{{ mascota.foto_paciente or '/static/img/default_pet.png' }}" class="card-img-top" style="height:200px;object-fit:cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ mascota.nombre_paciente }}</h5>
+                        <p class="card-text text-muted">{{ mascota.especie_paciente }} - {{ mascota.raza_paciente }}</p>
+                        <button class="btn btn-primary btn-sm ver-perfil"
+                        data-paciente='{{ mascota|tojson|safe }}'
+                        data-citas='{{ citas_por_paciente[mascota.id_paciente]|tojson|safe }}'
+                        data-consultas='{{ consultas_por_paciente[mascota.id_paciente]|tojson|safe }}'>
+                        Ver Perfil
+                        </button>  
+                    </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            </div>
+            <br>
+<!-- Modal Perfil Paciente -->
+{% include "modals/perfil_paciente.html" %}
+
+
+            <!-- Contenedor 3: Próximas citas -->
+            <div class="card-container">
+                <h3 style="color: #009bf4;">Próximas Citas</h3>
+                <p>No tienes citas pendientes.</p>
+                <button class="btn btn-success">Ver citas</button>
+                <button class="btn btn-primary">Ver Consultas</button>
+            </div>
+
+
+            
+        <!-- Modal Historial -->
+            <div id="modalPetHistory" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('modalPetHistory')">&times;</span>
+                    <h2>Historial Médico</h2>
+                    <div id="petHistoryContent"></div>
+                </div>
+            </div>
+
+        <!-- Modal Función en Desarrollo -->
+    </main>   
+
+    <!-- Footer -->
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll(".ver-perfil").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const paciente = JSON.parse(btn.dataset.paciente);
+                const citas = JSON.parse(btn.dataset.citas);
+                const consultas = JSON.parse(btn.dataset.consultas);
+
+                abrirModalPaciente(paciente, citas, consultas);
+
+                function mostrarCitas() {
+                    document.getElementById("contenedorCitas").style.display = "block";
+                    document.getElementById("contenedorConsultas").style.display = "none";
+                }
+
+                function mostrarConsultas() {
+                    document.getElementById("contenedorConsultas").style.display = "block";
+                    document.getElementById("contenedorCitas").style.display = "none";
+                }
+
+                function abrirModalPaciente(paciente, citas, consultas) {
+                    document.getElementById("nombre_paciente_modal").innerText = paciente.nombre_paciente;
+                    document.getElementById("nombre_completo_paciente").innerText = paciente.nombre_paciente;
+                    document.getElementById("propietario_modal").innerText = paciente.nombre_usuario + " " + paciente.apellido_usuario;
+                    document.getElementById("especie_modal").innerText = paciente.especie_paciente;
+                    document.getElementById("raza_modal").innerText = paciente.raza_paciente;
+                    document.getElementById("sexo_modal").innerText = paciente.sexo_paciente;
+                    document.getElementById("peso_modal").innerText = paciente.peso_paciente;
+                    document.getElementById("color_modal").innerText = paciente.color_pelaje_paciente;
+                    document.getElementById("edad_modal").innerText = paciente.edad_estimada_paciente || "N/A";
+                    document.getElementById("foto_paciente_modal").src = paciente.foto_paciente || "/static/img/default_pet.png";
+
+                // Citas
+                let citasHTML = "";
+                if (citas.length > 0) {
+                    citas.forEach(c => {
+                    citasHTML += `<li class="list-group-item"><b>${c.fecha} ${c.hora}</b> - ${c.motivo}</li>`;
+                    });
+                } else {
+                    citasHTML = "<li class='list-group-item text-muted'>No hay citas</li>";
+                }
+                document.getElementById("listaCitas").innerHTML = citasHTML;
+
+                // Consultas
+                let consultasHTML = "";
+                if (consultas.length > 0) {
+                    consultas.forEach(con => {
+                    consultasHTML += `<li class="list-group-item"><b>${con.fecha_consulta} ${con.hora_consulta}</b> - ${con.motivo_consulta}<br><em>${con.diagnostico}</em></li>`;
+                    });
+                } else {
+                    consultasHTML = "<li class='list-group-item text-muted'>No hay consultas</li>";
+                }
+                document.getElementById("listaConsultas").innerHTML = consultasHTML;
+
+                let modal = new bootstrap.Modal(document.getElementById("modalPerfilPaciente"));
+                modal.show();
+                }
+            }); 
+        });
+        
+</script>
+</body>
+</html>
