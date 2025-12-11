@@ -32,70 +32,71 @@
     <div class="alert alert-info">{{ text }}</div>
     {% endif %}
 
-    <form action="/registro_foto_des_adopcion" method="POST" enctype="multipart/form-data" class="container mt-4">
-        <!-- Selección de animal -->
-        <div class="mb-3">
-            <label for="id_rescatado" class="form-label">Seleccionar Animal Rescatado</label>
-            <select class="form-select" name="id_rescatado" id="id_rescatado" required>
-                <option value="">Seleccione un animal...</option>
-                {% for animal in animales %}
-                <option value="{{ animal[0] }}">{{ animal[1] }} - {{ animal[2] }} ({{ animal[3] }})</option>
-                {% endfor %}
+    <form action="/registrar_ficha_adopcion" method="POST" enctype="multipart/form-data" class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Datos del animal -->
+            <label>Nombre del postulado</label>
+            <input type="text" class="form-control" name="nombre_postulado" required>
+
+            <label>Fecha de ingreso</label>
+            <input type="date" class="form-control" name="fecha_ingreso" required>
+
+            <label>Estado de salud</label>
+            <select class="form-select" name="estado_salud" required>
+                <option value="Saludable">Saludable</option>
+                <option value="En tratamiento">En tratamiento</option>
+                <option value="Recuperado">Recuperado</option>
+            </select>
+
+            <label>Edad aproximada (meses)</label>
+            <input type="number" class="form-control" name="edad_aproximada_meses" required>
+        </div>
+
+        <div class="col-md-6">
+            <label>Especie</label>
+            <select class="form-select" name="especie" required>
+                <option value="Perro">Perro</option>
+                <option value="Gato">Gato</option>
+            </select>
+
+            <label>Raza</label>
+            <input type="text" class="form-control" name="raza" required>
+
+            <label>Sexo</label>
+            <select class="form-select" name="sexo" required>
+                <option value="Macho">Macho</option>
+                <option value="Hembra">Hembra</option>
+            </select>
+
+            <label>Carácter</label>
+            <select class="form-select" name="caracter" required>
+                <option value="Sociable">Sociable</option>
+                <option value="Activo">Activo</option>
+                <option value="Tímido">Tímido</option>
+            </select>
+
+            <label>Tamaño</label>
+            <select class="form-select" name="tamano" required>
+                <option value="Grande">Grande</option>
+                <option value="Mediano">Mediano</option>
+                <option value="Pequeño">Pequeño</option>
             </select>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <!-- Datos básicos del animal (autocompletados) -->
-                <label>Nombre</label>
-                <input type="text" class="form-control" name="nombre" id="nombre" required readonly>
+    <label class="mt-3">Descripción / Observaciones</label>
+    <textarea name="observaciones_adicionales" class="form-control"></textarea>
 
-                <label>Especie</label>
-                <input type="text" class="form-control" name="especie" id="especie" required readonly>
+    <label class="mt-3">Sube las fotos del animal</label>
+    <input type="file" name="fotos[]" accept="image/*" multiple class="form-control">
 
-                <label>Raza</label>
-                <input type="text" class="form-control" name="raza" id="raza" required readonly>
+    <label class="mt-3">Sube las fotos del animal</label>
+<input type="file" name="fotos[]" id="fotos" accept="image/*" multiple class="form-control">
+<div id="preview" class="mt-3 d-flex flex-wrap gap-2"></div>
 
-                <label>Sexo</label>
-                <input type="text" class="form-control" name="sexo" id="sexo" required readonly>
-
-                <label>Edad aproximada</label>
-                <input type="number" class="form-control" name="edad_aproximada" id="edad_aproximada" required readonly>
-            </div>
-
-            <div class="col-md-6">
-                <!-- Campos adicionales para adopción -->
-                <label>Estado de salud</label>
-                <select class="form-select" name="estado_salud" required>
-                    <option value="Saludable">Saludable</option>
-                    <option value="En tratamiento">En tratamiento</option>
-                    <option value="Grave">Grave</option>
-                </select>
-
-                <label>Carácter</label>
-                <select class="form-select" name="caracter" required>
-                    <option value="Sociable">Sociable</option>
-                    <option value="Tímido">Tímido</option>
-                    <option value="Activo">Activo</option>
-                </select>
-
-                <label>Comportamiento con humanos</label>
-                <textarea class="form-control" name="comportamiento_humanos" rows="2" required></textarea>
-
-                <label>Comportamiento con otros animales</label>
-                <textarea class="form-control" name="comportamiento_animales" rows="2" required></textarea>
-            </div>
-        </div>
-
-        <label class="mt-3">Historia del animal</label>
-        <textarea name="historia" class="form-control" rows="3" required></textarea>
-
-        <label class="mt-3">Subir fotos del animal (1-5 fotos, máximo 2MB cada una, JPG/PNG)</label>
-        <input type="file" name="fotos" id="fotos" accept="image/jpeg,image/jpg,image/png" multiple class="form-control" required>
-        <div id="preview" class="mt-3 d-flex flex-wrap gap-2"></div>
-
-        <button type="submit" class="btn btn-primary mt-4">Registrar Información para Adopción</button>
-    </form>
+    <button type="submit" class="btn btn-primary mt-4">Registrar</button>
+</form>
 
     <footer>
         <div>
@@ -106,50 +107,6 @@
             Powered by Petfriendly
         </div>
     </footer>
-
-    <script>
-        document.getElementById('fotos').addEventListener('change', function(event) {
-            const preview = document.getElementById('preview');
-            preview.innerHTML = '';
-
-            const files = event.target.files;
-            if (files.length > 5) {
-                alert('Máximo 5 imágenes permitidas');
-                event.target.value = '';
-                return;
-            }
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-
-                // Validar tamaño
-                if (file.size > 2 * 1024 * 1024) {
-                    alert(`La imagen ${file.name} excede los 2MB`);
-                    event.target.value = '';
-                    return;
-                }
-
-                // Validar formato
-                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-                if (!allowedTypes.includes(file.type)) {
-                    alert(`La imagen ${file.name} debe ser JPG o PNG`);
-                    event.target.value = '';
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.width = '150px';
-                    img.style.height = '150px';
-                    img.style.objectFit = 'cover';
-                    img.classList.add('border', 'rounded');
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
+    <script src="/static/js/registro_usuarios.js"></script>
 </body>
 </html>

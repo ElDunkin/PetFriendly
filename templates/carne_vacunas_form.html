@@ -22,6 +22,7 @@
             </li>
 
             <!-- Animales -->
+            
 
             <!-- Donaciones (submenú) -->
             <li class="dropdown">
@@ -60,12 +61,22 @@
 </div>
 
 </main>
+<footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+
 <script>
 document.getElementById("numero_documento").addEventListener("blur", function() {
     const documento = this.value;
     if (!documento) return;
 
-    fetch(`/obtener_pacientes/${documento}`)
+    fetch(`/obtener_mascotas/${documento}`)
         .then(res => res.json())
         .then(data => {
             const select = document.getElementById("id_paciente");

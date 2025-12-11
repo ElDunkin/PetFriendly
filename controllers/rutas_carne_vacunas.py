@@ -2,10 +2,11 @@ from flask import Blueprint, jsonify, render_template, request, redirect, url_fo
 import pymysql
 from config import mysql
 from models.conexion import obtener_conexion
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 import io
 
 
@@ -73,87 +74,61 @@ LISTADO_VACUNAS = [
 @rutas_carne_vacunas.route("/carne_vacunas/<int:id_paciente>/pdf")
 def carne_vacunas_pdf(id_paciente):
     # Validar rol
-    if "rol" not in session or session["rol"] not in ["Medico_Veterinario", "Administrador"]:
+    if "rol" not in session or session["rol"] not in ["veterinario", "administrativo"]:
         flash("Acceso denegado. Solo personal autorizado.", "danger")
-        return redirect(url_for("rutas_principales.index"))
+        return redirect(url_for("rutas_generales.index"))
 
-    conn = obtener_conexion()
-    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+    conn = obtener_conexion()()
+    with conn.cursor() as cursor:
         cursor.execute("SELECT * FROM paciente_animal WHERE id_paciente=%s", (id_paciente,))
         paciente = cursor.fetchone()
 
         cursor.execute("""
-            SELECT v.nombre_vacuna, v.fecha_aplicacion, v.proxima_aplicacion, v.observaciones, u.nombre_usuario AS veterinario
+            SELECT v.nombre_vacuna, v.fecha_aplicacion, v.proxima_aplicacion, u.nombre_usuario AS veterinario
             FROM vacunas v
-            LEFT JOIN usuarios u ON v.numero_documento = u.numero_documento
+            JOIN usuarios u ON v.numero_documento = u.numero_documento
             WHERE v.id_paciente=%s
             ORDER BY v.fecha_aplicacion ASC
         """, (id_paciente,))
         vacunas = cursor.fetchall()
     conn.close()
 
-    if not paciente:
-        flash("Paciente no encontrado.", "danger")
-        return redirect(url_for("rutas_principales.index"))
-
-    if not vacunas:
+    if not paciente or not vacunas:
         flash("No se puede generar el carné. El paciente no tiene vacunas registradas.", "warning")
-        return redirect(url_for("rutas_carne_vacunas.ver_carne", id_paciente=id_paciente))
+        return redirect(url_for("rutas_carne_vacunas.carne_vacunas", id_paciente=id_paciente))
 
-    # Crear PDF mejorado
+    # Crear PDF en memoria
     buffer = io.BytesIO()
-    pdf = SimpleDocTemplate(buffer, pagesize=letter)
-    elements = []
-    styles = getSampleStyleSheet()
+    pdf = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
 
-    # Título
-    title = Paragraph("Carné de Vacunación", styles['Title'])
-    elements.append(title)
-    elements.append(Spacer(1, 12))
+    # Encabezado
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(200, height - 50, "Carné de Vacunación")
 
-    # Información del paciente
-    paciente_info = f"""
-    <b>Información del Paciente:</b><br/>
-    Nombre: {paciente['nombre_paciente']}<br/>
-    ID Interno: {paciente['id_paciente']}<br/>
-    Especie: {paciente['especie_paciente']}<br/>
-    Raza: {paciente['raza_paciente']}<br/>
-    Sexo: {paciente['sexo_paciente']}<br/>
-    Peso: {paciente['peso_paciente']} kg
-    """
-    elements.append(Paragraph(paciente_info, styles['Normal']))
-    elements.append(Spacer(1, 12))
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(50, height - 100, f"Nombre: {paciente['nombre_paciente']}")
+    pdf.drawString(50, height - 120, f"ID Interno: {paciente['id_paciente']}")
 
     # Tabla de vacunas
-    data = [['Vacuna', 'Fecha Aplicación', 'Próxima Aplicación', 'Veterinario', 'Observaciones']]
+    y = height - 160
+    pdf.setFont("Helvetica-Bold", 12)
+    pdf.drawString(50, y, "Vacuna")
+    pdf.drawString(200, y, "Fecha Aplicación")
+    pdf.drawString(350, y, "Próxima Aplicación")
+    pdf.drawString(500, y, "Veterinario")
+
+    pdf.setFont("Helvetica", 11)
     for v in vacunas:
-        data.append([
-            v['nombre_vacuna'],
-            v['fecha_aplicacion'].strftime('%d/%m/%Y') if v['fecha_aplicacion'] else '-',
-            v['proxima_aplicacion'].strftime('%d/%m/%Y') if v['proxima_aplicacion'] else '-',
-            v['veterinario'] or '-',
-            v['observaciones'] or '-'
-        ])
+        y -= 20
+        pdf.drawString(50, y, v["nombre_vacuna"])
+        pdf.drawString(200, y, str(v["fecha_aplicacion"]))
+        pdf.drawString(350, y, str(v["proxima_aplicacion"] or "-"))
+        pdf.drawString(500, y, v["veterinario"])
 
-    table = Table(data)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
-    elements.append(table)
+    pdf.showPage()
+    pdf.save()
 
-    # Pie de página
-    elements.append(Spacer(1, 24))
-    footer = Paragraph("Documento generado por el sistema PetFriendly", styles['Italic'])
-    elements.append(footer)
-
-    pdf.build(elements)
     buffer.seek(0)
     return send_file(buffer, as_attachment=True, download_name=f"carne_vacunas_{paciente['id_paciente']}.pdf", mimetype="application/pdf")
 
@@ -184,63 +159,13 @@ def obtener_mascotas(numero_documento):
 
 @rutas_carne_vacunas.route("/carne_vacunas/ver/<int:id_paciente>")
 def ver_carne(id_paciente):
-    from datetime import date
     conn = obtener_conexion()
     with conn.cursor(pymysql.cursors.DictCursor) as cursor:
         cursor.execute("SELECT * FROM paciente_animal WHERE id_paciente = %s", (id_paciente,))
         mascota = cursor.fetchone()
 
-        cursor.execute("""
-            SELECT v.nombre_vacuna, v.fecha_aplicacion, v.proxima_aplicacion, v.observaciones,
-                   u.nombre_usuario AS veterinario
-            FROM vacunas v
-            LEFT JOIN usuarios u ON v.numero_documento = u.numero_documento
-            WHERE v.id_paciente = %s
-            ORDER BY v.fecha_aplicacion DESC
-        """, (id_paciente,))
+        cursor.execute("SELECT * FROM vacunas WHERE id_paciente = %s", (id_paciente,))
         vacunas = cursor.fetchall()
     conn.close()
 
-    return render_template("carne_vacunas_ver.html", mascota=mascota, vacunas=vacunas, today=date.today())
-
-@rutas_carne_vacunas.route("/carne_vacunas/agregar/<int:id_paciente>", methods=["GET", "POST"])
-def agregar_vacuna(id_paciente):
-    if "rol" not in session or session["rol"] not in ["Medico_Veterinario", "Administrador"]:
-        flash("Acceso denegado. Solo personal autorizado puede registrar vacunas.", "danger")
-        return redirect(url_for("rutas_login.login"))
-
-    conn = obtener_conexion()
-    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-        cursor.execute("SELECT * FROM paciente_animal WHERE id_paciente = %s", (id_paciente,))
-        mascota = cursor.fetchone()
-    conn.close()
-
-    if not mascota:
-        flash("Paciente no encontrado.", "danger")
-        return redirect(url_for("rutas_principales.index"))
-
-    if request.method == "POST":
-        nombre_vacuna = request.form.get("nombre_vacuna")
-        fecha_aplicacion = request.form.get("fecha_aplicacion")
-        proxima_aplicacion = request.form.get("proxima_aplicacion")
-        observaciones = request.form.get("observaciones")
-
-        if not nombre_vacuna or not fecha_aplicacion:
-            flash("Los campos 'Nombre de la vacuna' y 'Fecha de aplicación' son obligatorios.", "danger")
-            return redirect(request.url)
-
-        try:
-            conn = obtener_conexion()
-            with conn.cursor() as cursor:
-                cursor.execute("""
-                    INSERT INTO vacunas (id_paciente, nombre_vacuna, fecha_aplicacion, proxima_aplicacion, observaciones, numero_documento)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                """, (id_paciente, nombre_vacuna, fecha_aplicacion, proxima_aplicacion or None, observaciones or None, session["numero_documento"]))
-                conn.commit()
-            conn.close()
-            flash("Vacuna registrada exitosamente.", "success")
-            return redirect(url_for("rutas_carne_vacunas.ver_carne", id_paciente=id_paciente))
-        except Exception as e:
-            flash(f"Error al registrar la vacuna: {str(e)}", "danger")
-
-    return render_template("carne_vacunas_agregar.html", mascota=mascota, listado_vacunas=LISTADO_VACUNAS)
+    return render_template("carne_vacunas_ver.html", mascota=mascota, vacunas=vacunas)

@@ -1,5 +1,4 @@
 import os
-from datetime import timedelta
 from config import conexion_base_de_datos
 from controllers.rutas_principales import rutas_principales
 from controllers.rutas_usuarios import rutas_usuarios
@@ -19,16 +18,11 @@ from controllers.rutas_citas import rutas_citas
 from controllers.rutas_carne_vacunas import rutas_carne_vacunas
 from controllers.rutas_jornada import rutas_jornada
 from controllers.rutas_adopcion import rutas_adopciones
-from controllers.rutas_foto_des_adopciones import rutas_foto_des_adopciones
 
 
 
 main = conexion_base_de_datos()
 main.secret_key = os.urandom(24)
-
-# Configuración de sesión con timeout por inactividad (30 minutos)
-main.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
-main.config['SESSION_PERMANENT'] = True
 
 
 
@@ -58,7 +52,6 @@ main.register_blueprint(rutas_citas)
 main.register_blueprint(rutas_carne_vacunas)
 main.register_blueprint(rutas_jornada)
 main.register_blueprint(rutas_adopciones)
-main.register_blueprint(rutas_foto_des_adopciones)
 
 
 

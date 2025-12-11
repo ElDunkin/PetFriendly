@@ -1,283 +1,138 @@
-
+{% extends 'layout.html' %}
 {% block content %}
-<link rel="stylesheet" href="/static/css/generic.css">
-<link rel="stylesheet" href="/static/css/citas.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<header class="header-citas">
-  <div class="logo">
-    <nav class="menu">
-      <ul>
-        <li><a href="/dashboard_medico"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-        <li><a href="/registro_paciente_animal"><i class="fas fa-heart"></i> Gestion Paciente</a></li>
-        <li><a href="/seleccionar_paciente_consulta"><i class="fas fa-stethoscope"></i> Gestion Consulta</a></li>
-        <li><a href="/citas" class="active"><i class="fas fa-calendar-check"></i> Gestion Citas</a></li>
-        <li><a href="/consultar_donaciones"><i class="fas fa-hand-holding-heart"></i> Donaciones</a></li>
-      </ul>
-      <div class="btn-group">
-        <a href="{{ url_for('rutas_login.login') }}" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
-      </div>
-    </nav>
-  </div>
-</header>
+<div class="container mt-4">
 
-<main class="main-citas">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12">
-        <div class="citas-header">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h2 class="mb-1"><i class="fas fa-calendar-alt text-primary"></i> Gestión de Citas</h2>
-              <p class="text-muted mb-0">Administra las citas veterinarias de tus pacientes</p>
-            </div>
-            <button type="button" class="btn btn-primary btn-nueva-cita" data-bs-toggle="modal" data-bs-target="#modalNuevaCita">
-              <i class="fas fa-plus-circle"></i> Nueva Cita
-            </button>
-          </div>
-        </div>
+    <!-- Header con título y botón de nueva cita -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Gestión de Citas</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaCita">
+            <i class="fas fa-calendar-plus"></i> Nueva Cita
+        </button>
+    </div>
 
-        <!-- Controles de búsqueda y filtros -->
-        <div class="citas-controls">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <div class="search-box">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchCitas" class="form-control search-input" placeholder="Buscar por mascota, fecha, motivo...">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <select id="filtroEstado" class="form-select">
-                <option value="">Todos los estados</option>
-                <option value="Activa">Activa</option>
-                <option value="Cancelada">Cancelada</option>
-                <option value="Atendida">Atendida</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <div class="d-flex align-items-center">
-                <label for="registrosPorPaginaCitas" class="form-label me-2 mb-0">Mostrar:</label>
-                <select id="registrosPorPaginaCitas" class="form-select" style="width: auto;">
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tabla de citas -->
-        <div class="citas-table-container">
-          <table class="table table-hover citas-table" id="tablaCitas">
+    <!-- Tabla de citas -->
+    <div class="table-responsive shadow p-3 bg-white rounded">
+        <table class="table table-hover text-center">
             <thead class="table-dark">
-              <tr>
-                <th class="sortable" data-column="0">
-                  <i class="fas fa-paw"></i> Mascota
-                  <i class="fas fa-sort sort-icon"></i>
-                </th>
-                <th class="sortable" data-column="1">
-                  <i class="fas fa-calendar"></i> Fecha
-                  <i class="fas fa-sort sort-icon"></i>
-                </th>
-                <th class="sortable" data-column="2">
-                  <i class="fas fa-clock"></i> Hora
-                  <i class="fas fa-sort sort-icon"></i>
-                </th>
-                <th class="sortable" data-column="3">
-                  <i class="fas fa-notes-medical"></i> Motivo
-                  <i class="fas fa-sort sort-icon"></i>
-                </th>
-                <th class="sortable" data-column="4">
-                  <i class="fas fa-info-circle"></i> Estado
-                  <i class="fas fa-sort sort-icon"></i>
-                </th>
-              </tr>
+                <tr>
+                    <th>#</th>
+                    <th>Mascota</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
             </thead>
-            <tbody id="citasTableBody">
-              <!-- Los datos se cargarán dinámicamente con JavaScript -->
+            <tbody>
+                {% for c in citas %}
+                <tr>
+                    <td>{{ c.id_cita }}</td>
+                    <td>{{ c.nombre_paciente or 'Desconocido' }}</td>
+                    <td>{{ c.fecha }}</td>
+                    <td>{{ c.hora }}</td>
+                    <td>{{ c.motivo }}</td>
+                    <td>
+                        {% if c.estado == 'Activa' %}
+                            <span class="badge bg-success">Activa</span>
+                        {% elif c.estado == 'Cancelada' %}
+                            <span class="badge bg-danger">Cancelada</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Atendida</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <!-- Botón Editar -->
+                        <button class="btn btn-warning btn-sm btnEditarCita"
+                                data-id="{{ c.id_cita }}"
+                                data-fecha="{{ c.fecha }}"
+                                data-hora="{{ c.hora }}"
+                                data-motivo="{{ c.motivo }}"
+                                data-estado="{{ c.estado }}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarCita">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <!-- Botón Eliminar -->
+                        <a class="btn btn-danger btn-sm" 
+                           href="{{ url_for('rutas_citas.eliminar_cita', id=c.id_cita) }}"
+                           onclick="return confirm('¿Eliminar esta cita?');">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
             </tbody>
-          </table>
-        </div>
+        </table>
+    </div>
+</div>
 
-        <!-- Navegación de páginas -->
-        <div class="citas-pagination">
-          <div class="row align-items-center">
-            <div class="col-md-6">
-              <div id="infoRegistrosCitas" class="pagination-info">Mostrando 0 de 0 registros</div>
-            </div>
-            <div class="col-md-6">
-              <div id="paginacionCitas" class="pagination-controls d-flex justify-content-end gap-2"></div>
-            </div>
-          </div>
-        </div>
-  </div>
-</main>
-{% endblock %}
+<!-- Modal de crear cita (se mantiene el include original) -->
 {% include 'modals/registrar_cita.html' %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ================================ MODAL EDITAR CITA ================================ -->
+<div class="modal fade" id="modalEditarCita" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">Editar Cita</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('rutas_citas.actualizar_cita') }}" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="id_cita_edit" name="id_cita">
+                    <div class="mb-3">
+                        <label>Fecha</label>
+                        <input type="date" id="fecha_edit" name="fecha" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Hora</label>
+                        <input type="time" id="hora_edit" name="hora" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Motivo</label>
+                        <input type="text" id="motivo_edit" name="motivo" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Estado</label>
+                        <select id="estado_edit" name="estado" class="form-select">
+                            <option value="Activa">Activa</option>
+                            <option value="Cancelada">Cancelada</option>
+                            <option value="Atendida">Atendida</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-warning">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ================================ JAVASCRIPT ================================ -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const citasData = {{ citas|tojson|safe }};
+document.addEventListener("DOMContentLoaded", () => {
+    // Escuchar todos los botones de editar y cargar datos en el modal
+    document.querySelectorAll(".btnEditarCita").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            const fecha = this.dataset.fecha;
+            const hora = this.dataset.hora;
+            const motivo = this.dataset.motivo;
+            const estado = this.dataset.estado;
 
-    let currentPage = 1;
-    let registrosPorPagina = 5;
-    let filteredData = [...citasData];
-    let sortColumn = -1;
-    let sortDirection = 'asc';
-
-    const searchInput = document.getElementById('searchCitas');
-    const filtroEstado = document.getElementById('filtroEstado');
-    const registrosSelect = document.getElementById('registrosPorPaginaCitas');
-    const tableBody = document.getElementById('citasTableBody');
-    const infoRegistros = document.getElementById('infoRegistrosCitas');
-    const paginacion = document.getElementById('paginacionCitas');
-    const sortableHeaders = document.querySelectorAll('.sortable');
-
-    // Función de búsqueda y filtro
-    function applyFilters() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const estadoFilter = filtroEstado.value;
-
-        filteredData = citasData.filter(cita => {
-            const matchesSearch = cita.nombre_paciente.toLowerCase().includes(searchTerm) ||
-                                cita.fecha.includes(searchTerm) ||
-                                cita.hora.includes(searchTerm) ||
-                                cita.motivo.toLowerCase().includes(searchTerm) ||
-                                cita.estado.toLowerCase().includes(searchTerm);
-            const matchesEstado = !estadoFilter || cita.estado === estadoFilter;
-            return matchesSearch && matchesEstado;
-        });
-        currentPage = 1;
-        renderTable();
-        renderPagination();
-    }
-
-    searchInput.addEventListener('input', applyFilters);
-    filtroEstado.addEventListener('change', applyFilters);
-
-    // Función de ordenamiento
-    sortableHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            const column = parseInt(this.dataset.column);
-            if (sortColumn === column) {
-                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-            } else {
-                sortColumn = column;
-                sortDirection = 'asc';
-            }
-            sortData();
-            renderTable();
-            updateSortIcons();
+            document.getElementById("id_cita_edit").value = id;
+            document.getElementById("fecha_edit").value = fecha;
+            document.getElementById("hora_edit").value = hora;
+            document.getElementById("motivo_edit").value = motivo;
+            document.getElementById("estado_edit").value = estado;
         });
     });
-
-    function sortData() {
-        filteredData.sort((a, b) => {
-            let aVal = Object.values(a)[sortColumn];
-            let bVal = Object.values(b)[sortColumn];
-
-            if (typeof aVal === 'string') {
-                aVal = aVal.toLowerCase();
-                bVal = bVal.toLowerCase();
-            }
-
-            if (sortDirection === 'asc') {
-                return aVal > bVal ? 1 : -1;
-            } else {
-                return aVal < bVal ? 1 : -1;
-            }
-        });
-    }
-
-    function updateSortIcons() {
-        sortableHeaders.forEach(header => {
-            const icon = header.querySelector('i');
-            if (parseInt(header.dataset.column) === sortColumn) {
-                icon.className = sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
-            } else {
-                icon.className = 'fas fa-sort';
-            }
-        });
-    }
-
-    // Cambio de registros por página
-    registrosSelect.addEventListener('change', function() {
-        registrosPorPagina = parseInt(this.value);
-        currentPage = 1;
-        renderTable();
-        renderPagination();
-    });
-
-    function renderTable() {
-        const startIndex = (currentPage - 1) * registrosPorPagina;
-        const endIndex = startIndex + registrosPorPagina;
-        const pageData = filteredData.slice(startIndex, endIndex);
-
-        let html = '';
-        if (pageData.length === 0) {
-            html = '<tr><td colspan="5" class="text-center no-results"><i class="fas fa-search"></i><br>No se encontraron resultados.</td></tr>';
-        } else {
-            pageData.forEach(cita => {
-                const estadoClass = cita.estado === 'Activa' ? 'estado-activa' :
-                                  cita.estado === 'Cancelada' ? 'estado-cancelada' :
-                                  cita.estado === 'Atendida' ? 'estado-atendida' : '';
-                html += `
-                    <tr>
-                        <td><i class="fas fa-paw text-primary"></i> ${cita.nombre_paciente}</td>
-                        <td><i class="fas fa-calendar text-info"></i> ${cita.fecha}</td>
-                        <td><i class="fas fa-clock text-warning"></i> ${cita.hora}</td>
-                        <td><i class="fas fa-notes-medical text-secondary"></i> ${cita.motivo}</td>
-                        <td><span class="estado-badge ${estadoClass}">${cita.estado}</span></td>
-                    </tr>
-                `;
-            });
-        }
-
-        tableBody.innerHTML = html;
-
-        // Actualizar información de registros
-        const totalRegistros = filteredData.length;
-        const inicio = totalRegistros === 0 ? 0 : startIndex + 1;
-        const fin = Math.min(endIndex, totalRegistros);
-        infoRegistros.textContent = `Mostrando ${inicio} - ${fin} de ${totalRegistros} registros`;
-    }
-
-    function renderPagination() {
-        const totalPages = Math.ceil(filteredData.length / registrosPorPagina);
-        let html = '';
-
-        if (totalPages > 1) {
-            // Botón anterior
-            html += `<button class="btn btn-outline-primary btn-sm" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>« Anterior</button>`;
-
-            // Números de página
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === currentPage) {
-                    html += `<button class="btn btn-primary btn-sm active">${i}</button>`;
-                } else {
-                    html += `<button class="btn btn-outline-primary btn-sm" onclick="changePage(${i})">${i}</button>`;
-                }
-            }
-
-            // Botón siguiente
-            html += `<button class="btn btn-outline-primary btn-sm" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Siguiente »</button>`;
-        }
-
-        paginacion.innerHTML = html;
-    }
-
-    window.changePage = function(page) {
-        currentPage = page;
-        renderTable();
-        renderPagination();
-    };
-
-    // Render inicial
-    renderTable();
-    renderPagination();
-    updateSortIcons();
 });
 </script>
 
-
+{% endblock %}
