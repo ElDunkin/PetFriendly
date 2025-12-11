@@ -1,36 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>Login Empleados</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
+    <!-- Bootstrap CSS seguro -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+
     <link rel="stylesheet" href="/static/css/generic.css">
     <link rel="stylesheet" href="/static/css/login.css">
-
 </head>
 
 <body>
 
     <header>
         <div class="logo">
-            <nav class="menu">
-
-                <ul>
-                    <li><a href="/">Inicio</a></li>
-                    <li><a href="/servicios">Servicios</a></li>
-                    <li><a href="/contactenos">Contactenos</a></li>
-                </ul>
-            </nav>
+        <nav class="menu">
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/contactenos">Contáctenos</a></li>
+            </ul>
+        </nav>
     </header>
 
     <main>
+
+        <!-- Mensajes normales -->
         {% if text %}
-        <div class="alert alert-success">{{ text }}</div>
+            <div class="alert alert-success">{{ text }}</div>
         {% endif %}
         {% if textf %}
-        <div class="alert alert-danger">{{ textf }}</div>
+            <div class="alert alert-danger">{{ textf }}</div>
+        {% endif %}
+
+        <!-- Ocultos para modal -->
+        {% if logout_message %}
+            <div class="d-none" id="logoutMessage">{{ logout_message }}</div>
+        {% endif %}
+
+        {% if logout_message_error %}
+            <div class="d-none" id="logoutMessageError">{{ logout_message_error }}</div>
         {% endif %}
 
         <div class="login-container">
@@ -54,9 +64,7 @@
             </form>
         </div>
 
-
-
-        <!-- Modal -->
+        <!-- Modal Éxito -->
         <div class="modal fade" id="logoutModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -73,29 +81,57 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal Error -->
+        <div class="modal fade" id="logoutModalError" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ logout_message_error }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
+
     <footer>
         <div>
             Copyright © 2025 Developed by Trio Imperial co.
         </div>
-
         <div>
             Powered by Petfriendly
         </div>
     </footer>
-    
+
+    <!-- Mostrar modal automático -->
     {% if logout_message %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var modal = new bootstrap.Modal(document.getElementById('logoutModal'));
-        modal.show();
-    });
-</script>
-{% endif %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+            modal.show();
+        });
+    </script>
+    {% endif %}
 
-<!-- Bootstrap JS obligatorio -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
+    {% if logout_message_error %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = new bootstrap.Modal(document.getElementById('logoutModalError'));
+            modal.show();
+        });
+    </script>
+    {% endif %}
+
+    <!-- Bootstrap JS seguro -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
 </body>
-
 </html>

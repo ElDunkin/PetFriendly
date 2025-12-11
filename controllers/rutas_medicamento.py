@@ -178,9 +178,13 @@ def historial_movimientos(id_medicamento):
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT fecha, tipo, responsable, motivo, cantidad, observacion
-        FROM movimiento WHERE id_medicamento = %s
+        SELECT fecha_movimiento, tipo_movimiento, responsable_movimiento,
+               motivo_movimiemto, cantidad, observacion_observación
+        FROM movimiento 
+        WHERE id_medicamento = %s
+        ORDER BY fecha_movimiento DESC
     """, (id_medicamento,))
+
     rows = cur.fetchall()
     cur.close()
     conn.close()
@@ -195,4 +199,5 @@ def historial_movimientos(id_medicamento):
             'cantidad': r[4],
             'observacion': r[5] or ''
         })
+
     return jsonify(data)

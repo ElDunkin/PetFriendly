@@ -81,8 +81,8 @@ def logout():
     session.modified = True  # Fuerza la actualización de la sesión
 
     # Crear respuesta con headers para evitar caché del navegador
-    # resp = redirect(url_for('rutas_login.login', logout_message=f'Sesión cerrada correctamente. ¡Hasta pronto, {nombre_usuario}!'))
-    return render_template(
-        'login.html',
-        logout_message=f'Sesión cerrada correctamente. ¡Hasta pronto, {nombre_usuario}!'
-    )
+    resp = redirect(url_for('rutas_login.login', logout_message=f'Sesión cerrada correctamente. ¡Hasta pronto, {nombre_usuario}!'))
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp

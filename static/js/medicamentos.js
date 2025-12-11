@@ -2,15 +2,17 @@ document.addEventListener('DOMContentLoaded', function () {
     cargarMedicamentos();
 
     // Registrar Medicamento
-    document.getElementById('formMedicamento').onsubmit = async function(e) {
+    document.getElementById('formMedicamento').onsubmit = async function (e) {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(this).entries());
         data['cantidad_inicial'] = parseInt(data['cantidad_inicial']);
+
         const res = await fetch('/api/medicamentos', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+
         if (res.ok) {
             this.reset();
             cargarMedicamentos();
@@ -18,46 +20,60 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Registrar Movimiento (Entrada/Salida)
-    document.getElementById('formMovimiento').onsubmit = async function(e) {
+    // Registrar Movimiento
+    document.getElementById('formMovimiento').onsubmit = async function (e) {
         e.preventDefault();
         const form = this;
         const data = Object.fromEntries(new FormData(form).entries());
+
         data['cantidad'] = parseInt(data['cantidad']);
         data['id_medicamento'] = parseInt(data['medicamento_id']);
 
-        // Validaciones frontend
         if (data['cantidad'] <= 0) {
             alert("La cantidad debe ser mayor a cero");
             return;
         }
 
-        // Comprobar existencia para Salida
+        // Validación de Salida
         if (data['tipo'] === 'Salida') {
-            const fila = Array.from(document.querySelectorAll('#tablaMedicamentos tbody tr'))
-                .find(tr => parseInt(tr.querySelector('button.btn-success, button.btn-danger').getAttribute('onclick').match(/\d+/)[0]) === data['id_medicamento']);
+            const fila = [...document.querySelectorAll('#tablaMedicamentos tbody tr')]
+                .find(tr => tr.innerHTML.includes(`abrirMovimiento(${data['id_medicamento']}, 'Salida')`));
+
+            if (!fila) {
+                alert("No se encontró el medicamento en la tabla.");
+                return;
+            }
+
             const existencia_actual = parseInt(fila.children[1].innerText);
+
             if (data['cantidad'] > existencia_actual) {
                 alert("No hay suficiente stock para esta salida");
                 return;
             }
         }
 
-        // Validar responsable como número
+        // Validar documento
         if (!/^\d+$/.test(data['responsable'])) {
-            alert("El campo Responsable debe ser un número de documento válido");
+            alert("El campo Responsable debe ser un número válido");
             return;
         }
 
         const res = await fetch('/api/movimientos', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        const result = await res.json();
+
+        let result;
+        try {
+            result = await res.json();
+        } catch {
+            alert("Error interno del servidor.");
+            return;
+        }
 
         if (!res.ok) {
-            alert(result.error);
+            alert(result.error || "Error registrando movimiento");
         } else {
             cerrarModal('modalMovimiento');
             cargarMedicamentos();
@@ -65,21 +81,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Buscar medicamentos
-    document.getElementById('search').addEventListener('input', function() {
+    // Buscador
+    document.getElementById('search').addEventListener('input', function () {
         let term = this.value.toLowerCase();
         document.querySelectorAll('#tablaMedicamentos tbody tr').forEach(tr => {
-            let text = tr.innerText.toLowerCase();
-            tr.style.display = text.includes(term) ? '' : 'none';
+            tr.style.display = tr.innerText.toLowerCase().includes(term) ? '' : 'none';
         });
     });
 });
 
+// Cargar medicamentos
 async function cargarMedicamentos() {
     const res = await fetch('/api/medicamentos');
     const meds = await res.json();
+
     let tbody = document.querySelector('#tablaMedicamentos tbody');
     tbody.innerHTML = '';
+
     meds.forEach(m => {
         let tr = document.createElement('tr');
         tr.innerHTML = `
@@ -98,33 +116,50 @@ async function cargarMedicamentos() {
     });
 }
 
-window.abrirMovimiento = function(id_medicamento, tipo) {
+window.abrirMovimiento = function (id_medicamento, tipo) {
     document.getElementById('mov_medicamento_id').value = id_medicamento;
     document.getElementById('mov_tipo').value = tipo;
     document.getElementById('formMovimiento').reset();
 
-    // Mostrar mensaje si Salida y stock 0
+    // Si es salida validar stock
     if (tipo === 'Salida') {
-        const fila = Array.from(document.querySelectorAll('#tablaMedicamentos tbody tr'))
-            .find(tr => parseInt(tr.querySelector('button.btn-danger').getAttribute('onclick').match(/\d+/)[0]) === id_medicamento);
-        const existencia_actual = parseInt(fila.children[1].innerText);
-        if (existencia_actual === 0) {
-            alert("No hay stock disponible para salida");
-            return;
+        const fila = [...document.querySelectorAll('#tablaMedicamentos tbody tr')]
+            .find(tr => tr.innerHTML.includes(`abrirMovimiento(${id_medicamento}, 'Salida')`));
+
+        if (fila) {
+            const stock = parseInt(fila.children[1].innerText);
+            if (stock === 0) {
+                alert("No hay stock disponible para salida");
+                return;
+            }
         }
     }
 
     mostrarModal('modalMovimiento');
 };
 
-window.verHistorial = async function(id_medicamento) {
-    const res = await fetch(`/api/movimientos/${id_medicamento}`);
-    const movs = await res.json();
-    let tbody = document.querySelector('#tablaMovimientos tbody');
-    tbody.innerHTML = '';
+window.verHistorial = async function (id_medicamento) {
+    const modalBody = document.querySelector('#tablaMovimientos tbody');
 
-    if (movs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center">No hay movimientos registrados para este medicamento</td></tr>`;
+    if (!modalBody) {
+        alert("ERROR: No existe el modal 'modalHistorial' con la tabla de movimientos.");
+        return;
+    }
+
+    let res = await fetch(`/api/movimientos/${id_medicamento}`);
+    let movs;
+
+    try {
+        movs = await res.json();
+    } catch {
+        alert("⚠ Error obteniendo historial. La API devolvió HTML en lugar de JSON (probable error 500).");
+        return;
+    }
+
+    modalBody.innerHTML = '';
+
+    if (!Array.isArray(movs) || movs.length === 0) {
+        modalBody.innerHTML = `<tr><td colspan="6" class="text-center">No hay movimientos registrados</td></tr>`;
     } else {
         movs.forEach(m => {
             let tr = document.createElement('tr');
@@ -136,27 +171,28 @@ window.verHistorial = async function(id_medicamento) {
                 <td>${m.cantidad}</td>
                 <td>${m.observacion || ''}</td>
             `;
-            tbody.appendChild(tr);
+            modalBody.appendChild(tr);
         });
     }
 
     mostrarModal('modalHistorial');
 };
 
-// Mostrar y cerrar modales manuales
+// Modales manuales
 function mostrarModal(id) {
-    document.getElementById(id).classList.add('show');
-    document.getElementById(id).style.display = 'flex';
-}
-function cerrarModal(id) {
-    document.getElementById(id).classList.remove('show');
-    document.getElementById(id).style.display = 'none';
+    const modal = document.getElementById(id);
+    modal.classList.add('show');
+    modal.style.display = 'flex';
 }
 
-// Cierre de modales con btn-close
+function cerrarModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.remove('show');
+    modal.style.display = 'none';
+}
+
 document.querySelectorAll('.btn-close, .btn-secondary').forEach(btn => {
-    btn.addEventListener('click', function() {
-        let modal = btn.closest('.modal');
-        cerrarModal(modal.id);
+    btn.addEventListener('click', function () {
+        cerrarModal(btn.closest('.modal').id);
     });
 });

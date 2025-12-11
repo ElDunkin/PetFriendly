@@ -85,34 +85,53 @@ def registrar_animal_rescatado():
 
 @rutas_rescatados.route("/listar_animal_rescatado")
 def listar_animal_rescatado():
+    # --- 1. Paginación ---
+    page = int(request.args.get('page', 1))
+    per_page = 10
+    offset = (page - 1) * per_page
+
     conn = obtener_conexion()
     try:
         with conn.cursor(pymysql.cursors.DictCursor) as cur:
-            # 1. Traer todos los animales rescatados
-            cur.execute("SELECT * FROM animales_rescatados ORDER BY fecha_ingreso ASC")
+
+            # --- 2. Contar total de registros ---
+            cur.execute("SELECT COUNT(*) AS total FROM animales_rescatados")
+            total_records = cur.fetchone()['total']
+            total_pages = (total_records + per_page - 1) // per_page
+
+            # --- 3. Obtener animales con paginación ---
+            cur.execute("""
+                SELECT * 
+                FROM animales_rescatados 
+                ORDER BY fecha_ingreso ASC
+                LIMIT %s OFFSET %s
+            """, (per_page, offset))
             animales = cur.fetchall()
 
-            # 2. Traer historial de permanencia con el nombre del responsable
+            # --- 4. Traer historial con nombre de responsable ---
             cur.execute("""
                 SELECT pa.*, u.nombre_usuario AS responsable
                 FROM permanencia_animal pa
-                INNER JOIN usuarios u ON pa.numero_documento = u.numero_documento
+                INNER JOIN usuarios u 
+                    ON pa.numero_documento = u.numero_documento
                 ORDER BY pa.fecha_control DESC
             """)
             historial = cur.fetchall()
 
-        # 3. Agrupar el historial por cada animal
+        # --- 5. Agrupar historial por animal ---
         historial_por_animal = {}
         for registro in historial:
             id_rescatado = registro["id_rescatado"]
-            if id_rescatado not in historial_por_animal:
-                historial_por_animal[id_rescatado] = []
-            historial_por_animal[id_rescatado].append(registro)
+            historial_por_animal.setdefault(id_rescatado, []).append(registro)
 
+        # --- 6. Enviar datos a la plantilla ---
         return render_template(
             "rescatados/listar_animal_rescatado.html",
             animales=animales,
-            historial_por_animal=historial_por_animal
+            historial_por_animal=historial_por_animal,
+            page=page,
+            total_pages=total_pages,
+            per_page=per_page
         )
     finally:
         conn.close()

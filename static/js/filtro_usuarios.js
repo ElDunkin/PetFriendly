@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const tbody = tabla.querySelector("tbody");
     const filtroInput = document.getElementById("filtro");
-    const paginacionDiv = document.getElementById("paginacion");
+    const Div = document.getElementById("");
     const headers = Array.from(tabla.querySelectorAll("th[data-col]"));
 
     // Config
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tbody.innerHTML = "";
         if (rowsFiltered.length === 0) {
             tbody.innerHTML = '<tr><td colspan="8" class="text-center">No se encontraron registros.</td></tr>';
-            paginacionDiv.innerHTML = "";
+            Div.innerHTML = "";
             return;
         }
 
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderPagination(totalPages) {
-        paginacionDiv.innerHTML = "";
+        Div.innerHTML = "";
 
         // Mostrar paginación solo si hay más filas que rowsPerPage
         if (rowsFiltered.length <= rowsPerPage) return;
@@ -49,20 +49,20 @@ document.addEventListener("DOMContentLoaded", function () {
         // Prev
         const prev = createBtn("«", currentPage === 1 ? "btn-secondary disabled" : "btn-outline-primary");
         prev.addEventListener("click", () => renderTablePage(currentPage - 1));
-        paginacionDiv.appendChild(prev);
+        Div.appendChild(prev);
 
         // Números
         for (let i = 1; i <= totalPages; i++) {
             const isActive = i === currentPage;
             const btn = createBtn(i, isActive ? "btn-primary" : "btn-outline-primary");
             btn.addEventListener("click", () => renderTablePage(i));
-            paginacionDiv.appendChild(btn);
+            Div.appendChild(btn);
         }
 
         // Next
         const next = createBtn("»", currentPage === totalPages ? "btn-secondary disabled" : "btn-outline-primary");
         next.addEventListener("click", () => renderTablePage(currentPage + 1));
-        paginacionDiv.appendChild(next);
+        Div.appendChild(next);
     }
 
     // Ordenamiento por columna
