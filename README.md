@@ -1,4 +1,4 @@
-=====================================  **START** ===================================
+==================================== **START** ==================================
 
 <div align="center">
   <img width="511" height="488" alt="logo_PetFriendly" src="https://github.com/user-attachments/assets/5a814198-88d0-437c-b503-1818d012f421" />
