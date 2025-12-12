@@ -198,7 +198,8 @@ Incluye:
 - Diccionario de datos por tabla  
 - Llaves primarias y foráneas  
 
-*(Aquí puedes insertar una imagen del MER o dejar referencia al archivo correspondiente.)*
+<img width="1632" height="1270" alt="mer" src="https://github.com/user-attachments/assets/2f768f0a-de08-459e-9ea4-cfdd73b41bca" />
+
 
 ---
 
