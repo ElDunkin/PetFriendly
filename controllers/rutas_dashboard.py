@@ -7,8 +7,13 @@ rutas_dashboard = Blueprint('rutas_dashboard', __name__)
 @rutas_dashboard.route('/dashboard_administrador')
 def dashboard_administrador():
     # Seguridad: solo Admin
-    if session.get('rol') != 'Administrador':
+    if 'rol' not in session:
         return redirect(url_for('rutas_login.login'))
+
+    if session['rol'] != 'Administrador':
+        return redirect(url_for('rutas_login.login'))
+        
+    return render_template('dashboard_administrador.html')
 
     conn = obtener_conexion()
     cur = conn.cursor(pymysql.cursors.DictCursor)
