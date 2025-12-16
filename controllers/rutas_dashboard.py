@@ -7,13 +7,8 @@ rutas_dashboard = Blueprint('rutas_dashboard', __name__)
 @rutas_dashboard.route('/dashboard_administrador')
 def dashboard_administrador():
     # Seguridad: solo Admin
-    if 'rol' not in session:
+    if session.get('rol') != 'Administrador':
         return redirect(url_for('rutas_login.login'))
-
-    if session['rol'] != 'Administrador':
-        return redirect(url_for('rutas_login.login'))
-        
-    return render_template('dashboard_administrador.html')
 
     conn = obtener_conexion()
     cur = conn.cursor(pymysql.cursors.DictCursor)
@@ -26,7 +21,7 @@ def dashboard_administrador():
     cur.execute("SELECT COUNT(*) AS total FROM paciente_animal")
     total_animales = cur.fetchone()['total']
 
-    # 📊 Usuarios por rol
+    # Usuarios por rol
     cur.execute("""
     SELECT r.nombre_rol AS rol, COUNT(*) AS total
     FROM usuarios u
@@ -37,7 +32,7 @@ def dashboard_administrador():
     roles_labels = [u['rol'] for u in usuarios_roles]
     roles_data = [u['total'] for u in usuarios_roles]
 
-    # 💊 Donaciones Medicamentos vs Alimentos
+    # Donaciones Medicamentos vs Alimentos
     cur.execute("""SELECT 'Medicamentos' AS tipo, COUNT(*) AS total
                     FROM donaciones
                     UNION ALL
@@ -78,6 +73,15 @@ def dashboard_administrador():
     medicamentos_alerta = cur.fetchall()
     medicamentos_labels = [m['display_name'] for m in medicamentos_alerta]
     medicamentos_data = [m['existencia'] for m in medicamentos_alerta]
+    
+    # 📋 Procedimientos recientes
+    cur.execute("""
+    SELECT id_procedimiento, estado, fecha_procedimiento
+    FROM procedimientos
+    ORDER BY fecha_procedimiento DESC
+    LIMIT 10
+    """)
+    procedimientos = cur.fetchall()
 
     cur.close()
     conn.close()
@@ -96,7 +100,8 @@ def dashboard_administrador():
                             productos_alerta=productos_alerta,
                             medicamentos_labels=json.dumps(medicamentos_labels),
                             medicamentos_data=json.dumps(medicamentos_data),
-                            medicamentos_alerta=medicamentos_alerta)
+                            medicamentos_alerta=medicamentos_alerta,
+                            procedimientos=procedimientos)
 
 
 @rutas_dashboard.route('/dashboard_medico')
@@ -318,8 +323,8 @@ def api_usuarios():
     # Obtener todos los usuarios con información de rol
     cur.execute("""
         SELECT u.numero_documento, u.nombre_usuario, u.apellido_usuario,
-               u.tipo_documento_usuario, u.correo_electronico_usuario,
-               u.telefono, r.nombre_rol
+            u.tipo_documento_usuario, u.correo_electronico_usuario,
+            u.telefono, r.nombre_rol
         FROM usuarios u
         JOIN rol r ON u.id_rol = r.id_rol
         ORDER BY u.nombre_usuario ASC
