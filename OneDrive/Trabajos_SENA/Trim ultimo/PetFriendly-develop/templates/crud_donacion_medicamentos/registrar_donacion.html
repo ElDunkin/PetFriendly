@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Donación de Medicamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/registro_usuarios.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+                <li><a href="/gestion_insumos">Gestion Insumos</a></li>
+                <li><a href="/medicamento">Gestion Medicamentos</a></li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+    <h1>Registrar Donación de Medicamento</h1>
+
+    <form id="formDonacion">
+        <label class="form-label">Fecha y Hora de Ingreso</label>
+        <input type="text" class="form-control" value="(Automático)" disabled>
+        <label for="">Nombre del donante</label>
+        <input type="text" name="nombre_donante" id="nombre_donante">
+        <label for="">Contacto del donante</label>
+        <input type="text" name="contacto_donante" id="contacto_donante" placeholder="">
+        <label for="">Medicamento</label>
+        <input type="text" name="nombre_medicamento" id="nombre_medicamento" required placeholder="">
+        <label for="">Presentación</label>
+        <input type="text" name="presentacion" id="presentacion" required placeholder="">
+        <label for="">Cantidad</label>
+        <input type="number" name="cantidad" id="cantidad" required placeholder="">
+        <label for="">Unidad de medida</label>
+        <input type="text" name="unidad_medida" id="unidad_medida" required placeholder="">
+        <label for="">Lote</label>
+        <input type="text" name="lote" id="lote">
+        <label for="">fecha_vencimiento</label>
+        <input type="date" name="fecha_vencimiento" id="">
+        <label for="">Observaciones</label>
+        <input type="text" name="observaciones" id="observaciones" placeholder="">
+        <label for="estado">Estado:</label>
+        <select id="estado" name="estado">
+            <option value="en revision">En revisión</option>
+            <option value="trasladado">Trasladado a inventario</option>
+            <option value="descartado">Descartado</option>
+        </select>
+        <label for="">Recibido Por</label>
+        <input type="text" name="numero_documento" placeholder="Número de documento" required>
+        <button type="submit" class="btn btn-success">Registrar Donación</button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSolicitudes">
+        📋 Ver Solicitudes
+        </button>
+        
+</form>
+    {% include 'modals/modal_solicitudes.html' %}
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+        document.getElementById("formDonacion").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const datos = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch("/registrar_donacion", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos)
+        });
+
+        const resultado = await response.json();
+        if (response.ok) {
+            alert(resultado.mensaje);
+            e.target.reset();
+        } else {
+            alert("Error: " + resultado.error);
+        }
+    } catch (error) {
+        console.error("Error al registrar:", error);
+    }
+});
+
+    </script>
+</body>
+</html>

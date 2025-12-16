@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Carné de Vacunación</h2>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h4>{{ paciente.nombre_paciente }}</h4>
+            <p><strong>ID Interno:</strong> {{ paciente.id_paciente }}</p>
+            <p><strong>Especie:</strong> {{ paciente.especie_paciente }}</p>
+            <p><strong>Raza:</strong> {{ paciente.raza_paciente }}</p>
+        </div>
+    </div>
+
+    {% if vacunas %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Vacuna</th>
+                <th>Fecha Aplicación</th>
+                <th>Próxima Aplicación</th>
+                <th>Veterinario</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in vacunas %}
+            <tr>
+                <td>{{ v.nombre_vacuna }}</td>
+                <td>{{ v.fecha_aplicacion }}</td>
+                <td>{{ v.proxima_aplicacion or "-" }}</td>
+                <td>{{ v.veterinario }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('rutas_carne_vacunas.carne_vacunas_pdf', id_paciente=paciente.id_paciente) }}" class="btn btn-primary">
+        📄 Descargar en PDF
+    </a>
+    {% else %}
+    <div class="alert alert-warning">Este paciente no tiene vacunas registradas.</div>
+    {% endif %}
+
+    <a href="{{ url_for('rutas_generales.index') }}" class="btn btn-secondary mt-2">🔙 Volver</a>
+</div>
+{% endblock %}

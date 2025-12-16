@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/listar_usuarios.css">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+                <li><a href="/listar_consulta">Gestion Consultas</a></li>
+                <li><a href="/gestion_insumos">Gestion Insumos</a></li>
+                <li><a href="/medicamento">Gestion Medicamentos</a></li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+    <h1>Pacientes Registrados</h1>
+    {% if textM %}
+        <div class="alert alert-warning">{{ textM }}</div>
+    {% endif %}
+    {% if text %}
+        <div class="alert alert-success">{{ text }}</div>
+    {% endif %}
+    {% if textE %}
+        <div class="alert alert-danger">{{ textE }}</div>
+    {% endif %}
+
+    <div style="margin: 20px 0;">
+        <a href="/generar_reporte_consultas" class="btn btn-primary">📄 Generar Reporte PDF</a>
+    </div>
+
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>fecha_consulta</th>
+                    <th>hora_consulta</th>
+                    <th>motivo_consulta</th>
+                    <th>diagnostico</th>
+                    <th>tratamiento</th>
+                    <th>medicamentos</th>
+                    <th>observaciones</th>
+                    <th>estado</th>
+                    <th>firma</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consulta in consultas %}
+                <tr>
+                    <td>{{ consulta.fecha_consulta }}</td>
+                    <td>{{ consulta.hora_consulta }}</td>
+                    <td>{{ consulta.motivo_consulta }}</td>
+                    <td>{{ consulta.diagnostico }}</td>
+                    <td>{{ consulta.tratamiento }}</td>
+                    <td>{{ consulta.medicamentos }}</td>
+                    <td>{{ consulta.observaciones }}</td>
+                    <td>{{ consulta.estado_consulta }}</td>
+                    <td>{{ consulta.firma }}</td>
+                    <td>
+                        {% if consulta.estado_consulta !='Activa' %}
+                        <button class="btn btn-success btn-sm" disabled>Editar</button>
+                        <button class="btn btn-danger btn-sm" disabled>Cancelar</button>
+                        {% else %}
+                        <a href="/modificar_consultas/{{ consulta.id_consulta }}" class="btn btn-success">Editar</a>
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalCancelarConsulta{{ consulta.id_consulta }}">Cancelar</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% include 'modals/cancelar_consulta.html' %}
+                {% include 'modals/errorModal.html' %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('rutas_consultas.listar_consulta', page=page-1) }}">Anterior</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Anterior</span>
+                </li>
+                {% endif %}
+
+                {% for page_num in range(1, total_pages + 1) %}
+                <li class="page-item {% if page_num == page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('rutas_consultas.listar_consulta', page=page_num) }}">{{ page_num }}</a>
+                </li>
+                {% endfor %}
+
+                {% if page < total_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('rutas_consultas.listar_consulta', page=page+1) }}">Siguiente</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </main>
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+</body>
+</html>

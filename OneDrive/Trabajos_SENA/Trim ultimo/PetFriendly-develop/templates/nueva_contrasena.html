@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/recuperar.css">
+    <title>Nueva Contraseña</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/contactenos">Contactenos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="contenedor">
+    <h2>Nueva Contraseña</h2>
+    {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                    <p class="msg">{{ msg }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    <form method="POST">
+        <input type="password" name="nueva" placeholder="Nueva contraseña" required>
+        <button type="submit">Actualizar</button>
+    </form>
+</div>
+
+<footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+</body>
+</html>

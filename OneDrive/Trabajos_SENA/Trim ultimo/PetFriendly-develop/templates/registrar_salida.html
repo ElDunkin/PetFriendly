@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <h2>Registrar salida del animal</h2>
+
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label>Fecha de salida</label>
+      <input type="date" name="fecha_salida" class="form-control" value="{{ now().strftime('%Y-%m-%d') }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Motivo de salida</label>
+      <select name="motivo" id="motivo" class="form-select" required onchange="toggleReceptor(this.value)">
+        <option value="">-- Seleccione --</option>
+        <option value="Adopción">Adopción</option>
+        <option value="Traslado">Traslado</option>
+        <option value="Fallecimiento">Fallecimiento</option>
+      </select>
+    </div>
+
+    <div id="receptorFields" style="display:none;">
+      <div class="mb-3">
+        <label>Nombre adoptante/entidad</label>
+        <input type="text" name="receptor_nombre" class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label>Documento/NIT</label>
+        <input type="text" name="receptor_documento" class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label>Acta de salida (JPG/PNG)</label>
+        <input type="file" name="acta" accept=".jpg,.jpeg,.png" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label>Observaciones</label>
+      <textarea name="observaciones" class="form-control"></textarea>
+    </div>
+
+    <div class="alert alert-warning">
+      ¿Está seguro de registrar la salida de este animal? Esta acción <b>no podrá revertirse</b>.
+    </div>
+    <input type="hidden" name="confirmar" value="SI">
+
+    <button type="submit" class="btn btn-danger">Registrar salida</button>
+  </form>
+</div>
+
+<script>
+function toggleReceptor(motivo) {
+  document.getElementById("receptorFields").style.display = 
+    (motivo === "Adopción" || motivo === "Traslado") ? "block" : "none";
+}
+</script>
