@@ -1,14 +1,14 @@
-pip install Flask
-pip install Flask-Ext
-pip install mysql
-pip install Flask-MySQL
-pip install PyMySQL
-pip install Flask-Mail
-pip install twilio
-pip install flask_wtf
-pip install reportlab
-pip install mysql-connector-python
-pip install python-dotenv
-pip install gunicorn
-pip install flask-Session
-pip install cryptography
+Flask
+Flask-Ext
+mysql
+Flask-MySQL
+PyMySQL
+Flask-Mail
+twilio
+flask_wtf
+reportlab
+mysql-connector-python
+python-dotenv
+gunicorn
+flask-Session
+cryptography
