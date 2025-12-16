@@ -1,5 +1,47 @@
 {% extends 'layout.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 {% block content %}
+
+<header>
+    <div class="logo">
+        <nav class="menu">
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard {{ session['rol'] }}</a></li>
+
+                <!-- Gestión (submenú) -->
+                <li class="dropdown">
+                    <a href="#">Gestión ▼</a>
+                    <ul class="submenu">
+                        <li><a href="/registro_usuarios">Usuarios</a></li>
+                        <li><a href="/registro_paciente_animal">Pacientes</a></li>
+                        <li><a href="/gestion_insumos">Insumos</a></li>
+                        <li><a href="/medicamento">Medicamentos</a></li>
+                        <li><a href="/registrar_animal_rescatado">Animales Rescatados</a></li>
+                        <li><a href="/carne_vacunas">Carné de Vacunas</a></li>
+                        <li><a href="/jornadas">Jornadas</a></li>
+                        <li><a href="/registro_adopcion">Adopciones</a></li>
+                        <li><a href="/listar_procedimientos">Procedimientos Quiruricos</a></li>
+                    </ul>
+                </li>
+
+                <!-- Animales -->
+
+
+                <!-- Donaciones (submenú) -->
+                <li class="dropdown">
+                    <a href="#">Donaciones ▼</a>
+                    <ul class="submenu">
+                        <li><a href="/registrar_donacion">Medicamentos</a></li>
+                        <li><a href="/donaciones_alimentos">Alimentos</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.logout') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+</header>
 
 <div class="container mt-4">
 
@@ -35,30 +77,24 @@
                     <td>{{ c.motivo }}</td>
                     <td>
                         {% if c.estado == 'Activa' %}
-                            <span class="badge bg-success">Activa</span>
+                        <span class="badge bg-success">Activa</span>
                         {% elif c.estado == 'Cancelada' %}
-                            <span class="badge bg-danger">Cancelada</span>
+                        <span class="badge bg-danger">Cancelada</span>
                         {% else %}
-                            <span class="badge bg-secondary">Atendida</span>
+                        <span class="badge bg-secondary">Atendida</span>
                         {% endif %}
                     </td>
                     <td>
                         <!-- Botón Editar -->
-                        <button class="btn btn-warning btn-sm btnEditarCita"
-                                data-id="{{ c.id_cita }}"
-                                data-fecha="{{ c.fecha }}"
-                                data-hora="{{ c.hora }}"
-                                data-motivo="{{ c.motivo }}"
-                                data-estado="{{ c.estado }}"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalEditarCita">
+                        <button class="btn btn-warning btn-sm btnEditarCita" data-id="{{ c.id_cita }}"
+                            data-fecha="{{ c.fecha }}" data-hora="{{ c.hora }}" data-motivo="{{ c.motivo }}"
+                            data-estado="{{ c.estado }}" data-bs-toggle="modal" data-bs-target="#modalEditarCita">
                             <i class="fas fa-edit"></i>
                         </button>
 
                         <!-- Botón Eliminar -->
-                        <a class="btn btn-danger btn-sm" 
-                           href="{{ url_for('rutas_citas.eliminar_cita', id=c.id_cita) }}"
-                           onclick="return confirm('¿Eliminar esta cita?');">
+                        <a class="btn btn-danger btn-sm" href="{{ url_for('rutas_citas.eliminar_cita', id=c.id_cita) }}"
+                            onclick="return confirm('¿Eliminar esta cita?');">
                             <i class="fas fa-trash"></i>
                         </a>
                     </td>
@@ -113,26 +149,36 @@
     </div>
 </div>
 
+<footer>
+    <div>
+        Copyright © 2025 Developed by Trio Imperial co.
+    </div>
+
+    <div>
+        Powered by Petfriendly
+    </div>
+</footer>
+
 <!-- ================================ JAVASCRIPT ================================ -->
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    // Escuchar todos los botones de editar y cargar datos en el modal
-    document.querySelectorAll(".btnEditarCita").forEach(btn => {
-        btn.addEventListener("click", function () {
-            const id = this.dataset.id;
-            const fecha = this.dataset.fecha;
-            const hora = this.dataset.hora;
-            const motivo = this.dataset.motivo;
-            const estado = this.dataset.estado;
+    document.addEventListener("DOMContentLoaded", () => {
+        // Escuchar todos los botones de editar y cargar datos en el modal
+        document.querySelectorAll(".btnEditarCita").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const id = this.dataset.id;
+                const fecha = this.dataset.fecha;
+                const hora = this.dataset.hora;
+                const motivo = this.dataset.motivo;
+                const estado = this.dataset.estado;
 
-            document.getElementById("id_cita_edit").value = id;
-            document.getElementById("fecha_edit").value = fecha;
-            document.getElementById("hora_edit").value = hora;
-            document.getElementById("motivo_edit").value = motivo;
-            document.getElementById("estado_edit").value = estado;
+                document.getElementById("id_cita_edit").value = id;
+                document.getElementById("fecha_edit").value = fecha;
+                document.getElementById("hora_edit").value = hora;
+                document.getElementById("motivo_edit").value = motivo;
+                document.getElementById("estado_edit").value = estado;
+            });
         });
     });
-});
 </script>
 
 {% endblock %}

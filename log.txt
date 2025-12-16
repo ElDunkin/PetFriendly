@@ -143,3 +143,4 @@
 [2025-12-16 01:51:03] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
 [2025-12-16 01:52:56] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
 [2025-12-16 04:47:26] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1
+[2025-12-16 15:11:24] USUARIO: Duncan Nicolás Hernández Rodríguez | ACCION: LOGIN | TABLA: sistema | DETALLES: Inicio de sesión exitoso - Rol: Administrador - IP: 127.0.0.1

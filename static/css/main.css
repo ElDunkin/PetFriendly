@@ -112,13 +112,21 @@ input, select, textarea, button {
 }
 
 button {
+<<<<<<< HEAD
   background-color: #F41F00;
+=======
+  background-color: #3ba8e7;
+>>>>>>> bc4074d (diseño responsive)
   color: white;
   border: none;
   cursor: pointer;
 }
 
 button:hover {
+<<<<<<< HEAD
+=======
+  background-color: #009bf4;
+>>>>>>> bc4074d (diseño responsive)
   opacity: 0.9;
 }
 

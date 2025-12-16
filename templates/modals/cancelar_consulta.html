@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <div class="modal fade" id="modalCancelarConsulta{{ consulta.id_consulta }}" tabindex="-1" aria-labelledby="cancelarConsultaLabel" aria-hidden="true">
     <div class="modal-dialog">
     <form method="POST" action="{{ url_for('rutas_consultas.cancelar_consulta', id_consulta=consulta.id_consulta) }}">

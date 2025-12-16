@@ -1,28 +1,4 @@
-<div id="modalAnimales" class="modal">
-    <div class="modal-content">
-        <span class="cerrar" onclick="cerrarModal()">&times;</span>
-        <h3>Seleccionar Animal</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
-            {% if animales %}
-            {% for animal in animales %}
-            <div style="border: 1px solid #ccc; padding: 10px; text-align: center; border-radius: 10px;">
-                <img src="{{ url_for('static', filename='uploads/' ~ animal.foto_url) }}"
-                    alt="{{ animal.nombre_temporal }}"
-                    style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
-                <p><strong>{{ animal.nombre_temporal }}</strong></p>
-                <button type="button"
-                    onclick="seleccionarAnimal('{{ animal.id_rescatado }}', '{{ animal.nombre_temporal }}')">
-                    Seleccionar
-                </button>
-            </div>
-            {% endfor %}
-            {% else %}
-            <p>No hay animales disponibles en permanencia.</p>
-            {% endif %}
-    </div>
-</div>
-</div>
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <style>
     .modal {
         display: none;
@@ -62,6 +38,32 @@
         background: #243238;
     }
 </style>
+
+<div id="modalAnimales" class="modal">
+    <div class="modal-content">
+        <span class="cerrar" onclick="cerrarModal()">&times;</span>
+        <h3>Seleccionar Animal</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+            {% if animales %}
+            {% for animal in animales %}
+            <div style="border: 1px solid #ccc; padding: 10px; text-align: center; border-radius: 10px;">
+                <img src="{{ url_for('static', filename='uploads/' ~ animal.foto_url) }}"
+                    alt="{{ animal.nombre_temporal }}"
+                    style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                <p><strong>{{ animal.nombre_temporal }}</strong></p>
+                <button type="button"
+                    onclick="seleccionarAnimal('{{ animal.id_rescatado }}', '{{ animal.nombre_temporal }}')">
+                    Seleccionar
+                </button>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No hay animales disponibles en permanencia.</p>
+            {% endif %}
+    </div>
+</div>
+</div>
+
 
 <script>
     function abrirModal() {

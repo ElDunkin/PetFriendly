@@ -1,4 +1,6 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 {% for animal in animales %}
+
 <div class="modal fade" id="modal_Historial_{{ animal.id_rescatado }}" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
