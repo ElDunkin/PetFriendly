@@ -92,7 +92,7 @@
                         <td>Dr(a). {{ proc.nombre_veterinario }} {{ proc.apellido_veterinario }}</td>
                         <td>
                             <a href="/ver_procedimiento/{{ proc.id_procedimiento }}" class="btn btn-info btn-sm">👁️ Ver</a>
-                            {% if proc.estado != 'Cancelado' %}
+                            {% if proc.estado not in ['Cancelado', 'Completado'] %}
                                 <a href="/modificar_procedimiento/{{ proc.id_procedimiento }}" class="btn btn-warning btn-sm">✏️ Editar</a>
                                 <form action="{{ url_for('rutas_procedimientos.eliminar_procedimiento', id_procedimiento=proc.id_procedimiento) }}" method="POST" style="display: inline;">
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este procedimiento?')">🗑️ Eliminar</button>
