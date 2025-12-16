@@ -123,13 +123,23 @@ def registrar_movimiento():
         return jsonify({'error': 'No hay suficiente stock para esta salida'}), 400
 
     # Validar responsable (documento)
-    cur.execute("SELECT nombre, apellido FROM usuarios WHERE numero_documento = %s", (data['responsable'],))
+    cur.execute(
+    """
+    SELECT 
+        nombre_usuario AS nombre,
+        apellido_usuario AS apellido
+    FROM usuarios
+    WHERE numero_documento = %s
+    """,
+    (data['responsable'],)
+    )
     usuario = cur.fetchone()
     if not usuario:
         cur.close()
         conn.close()
-        return jsonify({'error': 'Documento de responsable no encontrado'}), 400
+        return jsonify({'error': 'Documento de responsable no encontrado'}), 404
     responsable_nombre = f"{usuario[0]} {usuario[1]}"
+    usuario = cur.fetchone()
 
     # Calcular nueva existencia
     nueva_existencia = existencia_actual + data['cantidad'] if data['tipo'] == 'Entrada' else existencia_actual - data['cantidad']
@@ -145,8 +155,8 @@ def registrar_movimiento():
     # Insertar movimiento
     cur.execute("""
         INSERT INTO movimiento (
-            id_medicamento, fecha, responsable, cantidad,
-            tipo, motivo, observacion
+            id_medicamento, fecha_movimiento, responsable_movieminto, cantidad,
+            tipo_movimiento, motivo_moviemiento, observacion_observación
         ) VALUES (%s, %s, %s, %s, %s, %s, %s)
     """, (
         data['id_medicamento'],
@@ -178,9 +188,9 @@ def historial_movimientos(id_medicamento):
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT fecha_movimiento, tipo_movimiento, responsable_movimiento,
-               motivo_movimiemto, cantidad, observacion_observación
-        FROM movimiento 
+        SELECT fecha_movimiento, tipo_movimiento, responsable_movieminto,
+               motivo_moviemiento, cantidad, observacion_observación
+        FROM movimiento
         WHERE id_medicamento = %s
         ORDER BY fecha_movimiento DESC
     """, (id_medicamento,))
@@ -200,4 +210,17 @@ def historial_movimientos(id_medicamento):
             'observacion': r[5] or ''
         })
 
+    return jsonify(data)
+
+@rutas_medicamentos.route('/api/veterinarios', methods=['GET'])
+def obtener_veterinarios():
+    conn = obtener_conexion()
+    cur = conn.cursor()
+    
+    cur.execute("SELECT numero_documento, nombre_usuario, apellido_usuario FROM usuarios WHERE id_rol = 2")
+    vets = cur.fetchall()
+    cur.close()
+    conn.close()
+    
+    data = [{'numero_documento': v[0], 'nombre': v[1], 'apellido': v[2]} for v in vets]
     return jsonify(data)
