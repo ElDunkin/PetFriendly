@@ -78,7 +78,6 @@ def dashboard_administrador():
     cur.execute("""
     SELECT id_procedimiento, estado, fecha_procedimiento
     FROM procedimientos_quirurgicos
-    FROM procedimientos
     ORDER BY fecha_procedimiento DESC
     LIMIT 10
     """)
@@ -102,7 +101,8 @@ def dashboard_administrador():
                             medicamentos_labels=json.dumps(medicamentos_labels),
                             medicamentos_data=json.dumps(medicamentos_data),
                             medicamentos_alerta=medicamentos_alerta,
-                            procedimiento=procedimiento)
+                            procedimiento=procedimiento
+                          )
 
 @rutas_dashboard.route('/dashboard_medico')
 def dashboard_medico():
