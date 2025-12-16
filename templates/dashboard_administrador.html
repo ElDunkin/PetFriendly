@@ -43,9 +43,11 @@
             {% endif %}
         <div>
                 <a href="/listar_procedimientos" class="btn btn-secondary">← Volver</a>
-                {% if procedimiento.estado not in ['Cancelado', 'Completado'] %}
-                    <a href="/modificar_procedimiento/{{ procedimiento.id_procedimiento }}" class="btn btn-warning">✏️ Editar</a>
-                {% endif %}
+            {% for procedimiento in procedimientos %}
+    {% if procedimiento.estado not in ['Cancelado', 'Completado'] %}
+        <a href="/modificar_procedimiento/{{ procedimiento.id_procedimiento }}" class="btn btn-warning">✏️ Editar</a>
+    {% endif %}
+{% endfor %}
             </div>
         </div>
 
