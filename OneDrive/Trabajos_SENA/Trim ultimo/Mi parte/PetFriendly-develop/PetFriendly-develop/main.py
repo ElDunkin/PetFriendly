@@ -25,7 +25,6 @@ main = conexion_base_de_datos()
 main.secret_key = os.urandom(24)
 
 
-
 UPLOAD_FOLDER = 'contratos'
 ALLOWED_EXTENSIONS = {'pdf'}
 MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB
