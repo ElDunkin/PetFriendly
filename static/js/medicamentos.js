@@ -121,6 +121,21 @@ window.abrirMovimiento = function (id_medicamento, tipo) {
     document.getElementById('mov_tipo').value = tipo;
     document.getElementById('formMovimiento').reset();
 
+    // Cargar veterinarios
+    const select = document.querySelector('select[name="responsable"]');
+    fetch('/api/veterinarios')
+    .then(res => res.json())
+    .then(vets => {
+        select.innerHTML = '<option value="">Seleccionar responsable *</option>';
+        vets.forEach(v => {
+            select.innerHTML += `<option value="${v.numero_documento}">${v.numero_documento} - ${v.nombre} ${v.apellido}</option>`;
+        });
+    })
+    .catch(err => {
+        console.error('Error cargando veterinarios:', err);
+        alert('Error cargando lista de responsables');
+    });
+
     // Si es salida validar stock
     if (tipo === 'Salida') {
         const fila = [...document.querySelectorAll('#tablaMedicamentos tbody tr')]
