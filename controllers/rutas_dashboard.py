@@ -77,11 +77,8 @@ def dashboard_administrador():
     # 📋 Procedimientos recientes
     cur.execute("""
     SELECT id_procedimiento, estado, fecha_procedimiento
-<<<<<<< HEAD
     FROM procedimientos_quirurgicos
-=======
     FROM procedimientos
->>>>>>> bc4074d (diseño responsive)
     ORDER BY fecha_procedimiento DESC
     LIMIT 10
     """)
@@ -105,12 +102,7 @@ def dashboard_administrador():
                             medicamentos_labels=json.dumps(medicamentos_labels),
                             medicamentos_data=json.dumps(medicamentos_data),
                             medicamentos_alerta=medicamentos_alerta,
-<<<<<<< HEAD
                             procedimiento=procedimiento)
-=======
-                            procedimientos=procedimiento)
->>>>>>> bc4074d (diseño responsive)
-
 
 @rutas_dashboard.route('/dashboard_medico')
 def dashboard_medico():
