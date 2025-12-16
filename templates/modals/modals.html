@@ -14,7 +14,9 @@
           <!-- Entrada/Salida -->
           <div id="movEntradaSalida">
             <div class="mb-2">
-              <input type="text" class="form-control" name="responsable" placeholder="Responsable (documento) *">
+              <select class="form-control" name="responsable" required>
+                <option value="">Seleccionar responsable *</option>
+              </select>
             </div>
             <div class="mb-2">
               <input type="number" class="form-control" name="cantidad" placeholder="Cantidad *">
@@ -73,6 +75,37 @@
           <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Historial -->
+<div class="modal" tabindex="-1" id="modalHistorial">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Historial de Movimientos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped" id="tablaMovimientos">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Acción</th>
+              <th>Responsable</th>
+              <th>Motivo</th>
+              <th>Cantidad</th>
+              <th>Observación</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
     </div>
   </div>
 </div>
