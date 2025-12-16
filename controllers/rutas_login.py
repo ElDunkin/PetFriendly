@@ -5,7 +5,7 @@ from models.conexion import obtener_conexion
 from models.log_system import log_system
 import pymysql
 
-rutas_login = Blueprint('rutas_login', _name_)
+rutas_login = Blueprint('rutas_login', __name__)
 
 
 @rutas_login.route('/login', methods=['GET', 'POST'])
