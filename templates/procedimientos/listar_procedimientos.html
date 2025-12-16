@@ -1,1 +1,151 @@
-hhh
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/listar_usuarios.css">
+    <title>Procedimientos Quirúrgicos</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+                <li><a href="/listar_consulta">Gestion Consultas</a></li>
+                <li><a href="/listar_procedimientos">Procedimientos Quirúrgicos</a></li>
+                <li><a href="/gestion_insumos">Gestion Insumos</a></li>
+                <li><a href="/medicamento">Gestion Medicamentos</a></li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+    <h1>Procedimientos Quirúrgicos Registrados</h1>
+
+    {% if request.args.get('text') %}
+        <div class="alert alert-success">{{ request.args.get('text') }}</div>
+    {% endif %}
+    {% if request.args.get('error') %}
+        <div class="alert alert-danger">{{ request.args.get('error') }}</div>
+    {% endif %}
+
+    <div style="margin: 20px 0; display: flex; gap: 10px;">
+        <a href="/registrar_procedimiento" class="btn btn-success">➕ Registrar Nuevo Procedimiento</a>
+        <a href="/generar_reporte_procedimientos" class="btn btn-primary">📄 Generar Reporte PDF</a>
+    </div>
+
+    <main>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Paciente</th>
+                    <th>Tipo de Cirugía</th>
+                    <th>Estado Post-Op</th>
+                    <th>Estado</th>
+                    <th>Veterinario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if procedimientos %}
+                    {% for proc in procedimientos %}
+                    <tr>
+                        <td>{{ proc.id_procedimiento }}</td>
+                        <td>{{ proc.fecha_procedimiento.strftime('%d/%m/%Y') if proc.fecha_procedimiento else 'N/A' }}</td>
+                        <td>
+                            <strong>{{ proc.nombre_paciente }}</strong><br>
+                            <small>{{ proc.especie_paciente }} - {{ proc.raza_paciente }}</small>
+                        </td>
+                        <td>{{ proc.tipo_cirugia }}</td>
+                        <td>
+                            {% if proc.estado_post_operatorio == 'Estable' %}
+                                <span class="badge bg-success">{{ proc.estado_post_operatorio }}</span>
+                            {% elif proc.estado_post_operatorio == 'En observación' %}
+                                <span class="badge bg-warning">{{ proc.estado_post_operatorio }}</span>
+                            {% elif proc.estado_post_operatorio == 'Crítico' %}
+                                <span class="badge bg-danger">{{ proc.estado_post_operatorio }}</span>
+                            {% else %}
+                                <span class="badge bg-info">{{ proc.estado_post_operatorio }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if proc.estado == 'Completado' %}
+                                <span class="badge bg-success">{{ proc.estado }}</span>
+                            {% elif proc.estado == 'En proceso' %}
+                                <span class="badge bg-primary">{{ proc.estado }}</span>
+                            {% elif proc.estado == 'Programado' %}
+                                <span class="badge bg-info">{{ proc.estado }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ proc.estado }}</span>
+                            {% endif %}
+                        </td>
+                        <td>Dr(a). {{ proc.nombre_veterinario }} {{ proc.apellido_veterinario }}</td>
+                        <td>
+                            <a href="/ver_procedimiento/{{ proc.id_procedimiento }}" class="btn btn-info btn-sm">👁️ Ver</a>
+                            {% if proc.estado != 'Cancelado' %}
+                                <a href="/modificar_procedimiento/{{ proc.id_procedimiento }}" class="btn btn-warning btn-sm">✏️ Editar</a>
+                                <form action="{{ url_for('rutas_procedimientos.eliminar_procedimiento', id_procedimiento=proc.id_procedimiento) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este procedimiento?')">🗑️ Eliminar</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center">No hay procedimientos quirúrgicos registrados</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- Paginación -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('rutas_procedimientos.listar_procedimientos', page=page-1) }}">Anterior</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Anterior</span>
+                </li>
+                {% endif %}
+
+                {% for page_num in range(1, total_pages + 1) %}
+                <li class="page-item {% if page_num == page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('rutas_procedimientos.listar_procedimientos', page=page_num) }}">{{ page_num }}</a>
+                </li>
+                {% endfor %}
+
+                {% if page < total_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('rutas_procedimientos.listar_procedimientos', page=page+1) }}">Siguiente</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </main>
+
+    <footer>
+        <div>Copyright © 2025 Developed by Trio Imperial co.</div>
+        <div>Powered by Petfriendly</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
