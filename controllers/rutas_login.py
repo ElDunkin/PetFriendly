@@ -5,7 +5,7 @@ from models.conexion import obtener_conexion
 from models.log_system import log_system
 import pymysql
 
-rutas_login = Blueprint('rutas_login', __name__)
+rutas_login = Blueprint('rutas_login', _name_)
 
 
 @rutas_login.route('/login', methods=['GET', 'POST'])
@@ -25,6 +25,9 @@ def login():
         WHERE u.correo_electronico_usuario = %s
         ''', (correo_electronico_usuario,))
         usuario = cur.fetchone()
+        
+        cur.close()
+        conn.close()
 
         if usuario and usuario['contrasena'] == contrasena_hash:
             # Guardamos en sesión los datos necesarios
