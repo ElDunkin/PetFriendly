@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/registro_usuarios.css">
+    <title>Registrar Procedimiento Quirúrgico</title>
+</head>
+<body>
+    <header>
+        <nav class="menu">
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/listar_procedimientos">Procedimientos Quirúrgicos</a></li>
+            </ul>
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Registrar Procedimiento Quirúrgico</h1>
+
+        {% if request.args.get('error') %}
+            <div class="alert alert-danger">{{ request.args.get('error') }}</div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" class="needs-validation">
+            <div class="row">
+                <!-- Información del Paciente -->
+                <div class="col-md-6">
+                    <h4 class="mb-3">Información del Paciente</h4>
+
+                    <div class="mb-3">
+                        <label for="id_paciente" class="form-label">Paciente *</label>
+                        <select class="form-select" id="id_paciente" name="id_paciente" required>
+                            <option value="">Seleccione un paciente</option>
+                            {% for paciente in pacientes %}
+                                <option value="{{ paciente.id_paciente }}">
+                                    {{ paciente.nombre_paciente }} - {{ paciente.especie_paciente }} ({{ paciente.raza_paciente }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Información del Veterinario -->
+                <div class="col-md-6">
+                    <h4 class="mb-3">Veterinario Responsable</h4>
+
+                    <div class="mb-3">
+                        <label for="numero_documento" class="form-label">Veterinario *</label>
+                        <select class="form-select" id="numero_documento" name="numero_documento" required>
+                            <option value="">Seleccione un veterinario</option>
+                            {% for vet in veterinarios %}
+                                <option value="{{ vet.numero_documento }}">
+                                    Dr(a). {{ vet.nombre_usuario }} {{ vet.apellido_usuario }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Información del Procedimiento -->
+            <h4 class="mb-3">Detalles del Procedimiento</h4>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="fecha_procedimiento" class="form-label">Fecha del Procedimiento *</label>
+                        <input type="date" class="form-control" id="fecha_procedimiento" name="fecha_procedimiento" required>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="hora_inicio" class="form-label">Hora de Inicio *</label>
+                        <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="hora_fin" class="form-label">Hora de Finalización</label>
+                        <input type="time" class="form-control" id="hora_fin" name="hora_fin">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="tipo_cirugia" class="form-label">Tipo de Cirugía *</label>
+                        <input type="text" class="form-control" id="tipo_cirugia" name="tipo_cirugia" 
+                               placeholder="Ej: Esterilización, Extracción dental, etc." required>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">Estado del Procedimiento *</label>
+                        <select class="form-select" id="estado" name="estado" required>
+                            <option value="Programado">Programado</option>
+                            <option value="En proceso">En proceso</option>
+                            <option value="Completado">Completado</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcion_procedimiento" class="form-label">Descripción del Procedimiento *</label>
+                <textarea class="form-control" id="descripcion_procedimiento" name="descripcion_procedimiento" 
+                          rows="4" placeholder="Describa detalladamente el procedimiento realizado" required></textarea>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Información de Anestesia -->
+            <h4 class="mb-3">Anestesia</h4>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="anestesia_utilizada" class="form-label">Anestesia Utilizada</label>
+                        <input type="text" class="form-control" id="anestesia_utilizada" name="anestesia_utilizada" 
+                               placeholder="Ej: Isoflurano, Ketamina, etc.">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="dosis_anestesia" class="form-label">Dosis de Anestesia</label>
+                        <input type="text" class="form-control" id="dosis_anestesia" name="dosis_anestesia" 
+                               placeholder="Ej: 5mg/kg">
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Estado Post-Operatorio -->
+            <h4 class="mb-3">Estado Post-Operatorio</h4>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="estado_post_operatorio" class="form-label">Estado Post-Operatorio *</label>
+                        <select class="form-select" id="estado_post_operatorio" name="estado_post_operatorio" required>
+                            <option value="En observación">En observación</option>
+                            <option value="Estable">Estable</option>
+                            <option value="Crítico">Crítico</option>
+                            <option value="Recuperado">Recuperado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="proximo_control" class="form-label">Próximo Control</label>
+                        <input type="date" class="form-control" id="proximo_control" name="proximo_control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="complicaciones" class="form-label">Complicaciones</label>
+                <textarea class="form-control" id="complicaciones" name="complicaciones" 
+                          rows="3" placeholder="Describa cualquier complicación durante o después del procedimiento"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea class="form-control" id="observaciones" name="observaciones" 
+                          rows="3" placeholder="Observaciones adicionales sobre el procedimiento"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="recomendaciones" class="form-label">Recomendaciones</label>
+                <textarea class="form-control" id="recomendaciones" name="recomendaciones" 
+                          rows="3" placeholder="Recomendaciones para el cuidado post-operatorio"></textarea>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Archivos Adjuntos -->
+            <h4 class="mb-3">Archivos Adjuntos</h4>
+
+            <div class="mb-3">
+                <label for="archivos_procedimiento" class="form-label">Adjuntar Archivos (Máximo 5 archivos, 5MB cada uno)</label>
+                <input type="file" class="form-control" id="archivos_procedimiento" name="archivos_procedimiento" 
+                       multiple accept=".png,.jpg,.jpeg,.pdf,.doc,.docx">
+                <small class="form-text text-muted">Formatos permitidos: PNG, JPG, JPEG, PDF, DOC, DOCX</small>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <a href="/listar_procedimientos" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">💾 Registrar Procedimiento</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="mt-5">
+        <div>Copyright © 2025 Developed by Trio Imperial co.</div>
+        <div>Powered by Petfriendly</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
