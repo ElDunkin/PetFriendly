@@ -77,7 +77,7 @@ def dashboard_administrador():
     # 📋 Procedimientos recientes
     cur.execute("""
     SELECT id_procedimiento, estado, fecha_procedimiento
-    FROM procedimientos
+    FROM procedimientos_quirurgicos
     ORDER BY fecha_procedimiento DESC
     LIMIT 10
     """)
