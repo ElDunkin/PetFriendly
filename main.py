@@ -19,6 +19,7 @@ from controllers.rutas_carne_vacunas import rutas_carne_vacunas
 from controllers.rutas_jornada import rutas_jornada
 from controllers.rutas_adopcion import rutas_adopciones
 from controllers.rutas_procedimientos import rutas_procedimientos
+main.register_blueprint(rutas_procedimientos)
 
 
 
