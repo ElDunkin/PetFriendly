@@ -1,0 +1,156 @@
+/* ===============================
+   RESET Y BASE
+   =============================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  color: #243238;
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===============================
+   CONTENEDORES GENERALES
+   =============================== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 1rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.col {
+  flex: 1 1 100%; /* Mobile first: full width */
+}
+
+/* ===============================
+   CABECERA Y NAVEGACIÓN
+   =============================== */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.nav a {
+  display: block;
+  padding: 0.75rem;
+  background: #0C254B;
+  color: #fff;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* ===============================
+   TARJETAS / CARDS
+   =============================== */
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+/* ===============================
+   TABLAS
+   =============================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  display: block;
+}
+
+th, td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+thead {
+  background-color: #0C254B;
+  color: white;
+}
+
+/* ===============================
+   FORMULARIOS
+   =============================== */
+input, select, textarea, button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+button {
+  background-color: #F41F00;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* ===============================
+   MEDIA QUERIES
+   =============================== */
+
+/* Tablets */
+@media (min-width: 576px) {
+  .nav {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .col {
+    flex: 1 1 calc(50% - 1rem);
+  }
+}
+
+/* Laptops / Desktop */
+@media (min-width: 992px) {
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .col {
+    flex: 1 1 calc(33.33% - 1rem);
+  }
+
+  .nav {
+    justify-content: flex-end;
+  }
+}
