@@ -121,6 +121,17 @@ window.abrirMovimiento = function (id_medicamento, tipo) {
     document.getElementById('mov_tipo').value = tipo;
     document.getElementById('formMovimiento').reset();
 
+    // Cambiar título del modal
+    document.getElementById('movTitulo').textContent = tipo === 'Entrada' ? 'Registrar Entrada' : 'Registrar Salida';
+
+    // Cambiar opciones del motivo según el tipo
+    const motivoSelect = document.querySelector('select[name="motivo"]');
+    if (tipo === 'Entrada') {
+        motivoSelect.innerHTML = '<option value="">Motivo *</option><option value="Reposición">Reposición</option><option value="Donación">Donación</option>';
+    } else {
+        motivoSelect.innerHTML = '<option value="">Motivo *</option><option value="Uso clínico">Uso clínico</option><option value="Pérdida">Pérdida</option><option value="Vencimiento">Vencimiento</option><option value="Otro">Otro</option>';
+    }
+
     // Cargar veterinarios
     const select = document.querySelector('select[name="responsable"]');
     fetch('/api/veterinarios')
