@@ -81,7 +81,7 @@ def dashboard_administrador():
     ORDER BY fecha_procedimiento DESC
     LIMIT 10
     """)
-    procedimientos = cur.fetchall()
+    procedimiento = cur.fetchall()
 
     cur.close()
     conn.close()
@@ -101,7 +101,7 @@ def dashboard_administrador():
                             medicamentos_labels=json.dumps(medicamentos_labels),
                             medicamentos_data=json.dumps(medicamentos_data),
                             medicamentos_alerta=medicamentos_alerta,
-                            procedimientos=procedimientos)
+                            procedimientos=procedimiento)
 
 
 @rutas_dashboard.route('/dashboard_medico')
