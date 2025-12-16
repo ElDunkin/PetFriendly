@@ -7,11 +7,8 @@ pip install Flask-Mail
 pip install twilio
 pip install flask_wtf
 pip install reportlab
-
-
-
-py -3 -m venv EntornoVirtual
-EntornoVirtual\Scripts\activate
-py main.py run
-flask --app main run
-mysql -h localhost -u root -p
+pip install mysql-connector-python
+pip install python-dotenv
+pip install gunicorn
+pip install flask-Session
+pip install cryptography
