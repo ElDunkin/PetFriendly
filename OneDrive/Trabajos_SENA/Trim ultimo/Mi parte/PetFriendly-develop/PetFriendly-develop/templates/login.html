@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Empleados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/login.css">
+    
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/contactenos">Contactenos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% if text %}
+                <div class="alert alert-success">{{ text }}</div>
+        {% endif %}
+        {% if textf %}
+                <div class="alert alert-danger">{{ textf }}</div>
+        {% endif %}
+        {% if logout_message %}
+                <div class="alert alert-info">{{ logout_message }}</div>
+        {% endif %}
+        <div class="login-container">
+            <h1>Centro Veterinario Patitas</h1>
+            <h2>Iniciar Sesión</h2>
+            
+            <form method="POST" action="{{ url_for('rutas_login.login') }}">
+                <input type="text" name="correo_electronico_usuario" placeholder="Correo" required>
+                <input type="password" name="contrasena" placeholder="Contraseña" required>
+            
+                <div class="extra">
+                    <a href="/recuperar">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button type="submit">Ingresar</button>
+
+                <label class="keep-session">
+                    Mantener la sesión iniciada
+                <input type="checkbox">
+                </label>
+            </form>
+        </div>
+    </main>
+    
+
+    <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+</body>
+</html>

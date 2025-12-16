@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar Donaciones de Medicamentos</title>
+    <link rel="stylesheet" href="/static/css/generic.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+        <nav class="menu">
+            
+            <ul>
+                <li><a href="/dashboard_administrador">Dashboard</a></li>
+                <li><a href="/registro_usuarios">Gestion Usuarios</a></li>
+                <li><a href="/registro_paciente_animal">Gestion Paciente</a></li>
+                <li><a href="/gestion_insumos">Gestion Insumos</a></li>
+                <li><a href="/registrar_animal_rescatado">Animales Rescatados</a></li>
+                <li><a href="/medicamento">Gestion Medicamentos</a></li>
+                <li><a href="/registrar_donacion">Donaciones</a></li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+    <h1>Consulta de Donaciones</h1>
+
+    <div class="filtros">
+        <label for="filtro_fecha">Fecha:</label>
+        <input type="date" id="filtro_fecha">
+
+        <label for="filtro_medicamento">Nombre del Medicamento:</label>
+        <input type="text" id="filtro_medicamento">
+
+        <label for="filtro_donante">Nombre del Donante:</label>
+        <input type="text" id="filtro_donante">
+
+        <label for="filtro_estado">Estado:</label>
+        <select id="filtro_estado">
+            <option value="">Todos</option>
+            <option value="en revision">En revisión</option>
+            <option value="trasladado">Trasladado a inventario</option>
+            <option value="descartado">Descartado</option>
+        </select>
+
+        <button id="btn-buscar">Buscar</button>
+    </div>
+
+    <table id="tabla-donaciones">
+        <thead>
+            <tr>
+                <th>ID Donación</th>
+                <th>Fecha</th>
+                <th>Donante</th>
+                <th>Medicamento</th>
+                <th>Cantidad</th>
+                <th>Estado</th>
+                <th>Observaciones</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+
+     <footer>
+        <div>
+            Copyright © 2025 Developed by Trio Imperial co.
+        </div>
+
+        <div>
+            Powered by Petfriendly
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnBuscar = document.getElementById('btn-buscar');
+            const tablaCuerpo = document.querySelector('#tabla-donaciones tbody');
+
+            // Función para obtener y mostrar los datos
+            const cargarDonaciones = async () => {
+                const fecha = document.getElementById('filtro_fecha').value;
+                const medicamento = document.getElementById('filtro_medicamento').value;
+                const donante = document.getElementById('filtro_donante').value;
+                const estado = document.getElementById('filtro_estado').value;
+                
+                // Construir la URL de la consulta con los filtros
+                const url = `/consultar_donaciones?fecha=${fecha}&medicamento=${medicamento}&donante=${donante}&estado=${estado}`;
+
+                try {
+                    const response = await fetch(url);
+                    const donaciones = await response.json();
+
+                    tablaCuerpo.innerHTML = ''; // Limpiar la tabla
+                    
+                    if (donaciones.length > 0) {
+                        donaciones.forEach(donacion => {
+                            const fila = document.createElement('tr');
+                            fila.innerHTML = `
+                                <td>${donacion.id}</td>
+                                <td>${donacion.fecha_donacion}</td>
+                                <td>${donacion.nombre_donante}</td>
+                                <td>${donacion.nombre_medicamento}</td>
+                                <td>${donacion.cantidad} ${donacion.unidad_medida}</td>
+                                <td>${donacion.estado}</td>
+                                <td>${donacion.observaciones || ''}</td>
+                                <td>
+                                    ${donacion.estado === 'en revision' ? `<button onclick="revisarDonacion(${donacion.id})">Revisar</button>` : ''}
+                                </td>
+                            `;
+                            tablaCuerpo.appendChild(fila);
+                        });
+                    } else {
+                        tablaCuerpo.innerHTML = '<tr><td colspan="8">No se encontraron donaciones con los filtros aplicados.</td></tr>';
+                    }
+
+                } catch (error) {
+                    console.error('Error al cargar las donaciones:', error);
+                    alert('No se pudo cargar la información. Inténtelo de nuevo.');
+                }
+            };
+            
+            btnBuscar.addEventListener('click', cargarDonaciones);
+
+            // Cargar datos al iniciar la página
+            cargarDonaciones();
+        });
+
+        // Esta función redirige al usuario a la página de revisión
+        function revisarDonacion(donacionId) {
+            window.location.href = `/revisar_medicamento/${donacionId}`;
+        }
+
+    </script>
+</body>
+</html>

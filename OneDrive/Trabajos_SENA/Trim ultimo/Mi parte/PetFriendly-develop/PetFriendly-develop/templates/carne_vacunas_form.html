@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/generic.css">
+<header>
+    <div class="logo">
+    <nav class="menu">
+        <ul>
+            <li><a href="/dashboard_administrador">Dashboard</a></li>
+
+            <!-- Gestión (submenú) -->
+            <li class="dropdown">
+                <a href="#">Gestión ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registro_usuarios">Usuarios</a></li>
+                    <li><a href="/registro_paciente_animal">Pacientes</a></li>
+                    <li><a href="/gestion_insumos">Insumos</a></li>
+                    <li><a href="/medicamento">Medicamentos</a></li>
+                    <li><a href="/registrar_animal_rescatado">Animales Rescatados</a></li>
+                    <li><a href="/carne_vacunas">Carné de Vacunas</a></li>
+                    <li><a href="/jornadas">Jornadas</a></li>
+                </ul>
+            </li>
+
+            <!-- Animales -->
+
+            <!-- Donaciones (submenú) -->
+            <li class="dropdown">
+                <a href="#">Donaciones ▼</a>
+                <ul class="submenu">
+                    <li><a href="/registrar_donacion">Medicamentos</a></li>
+                    <li><a href="/donaciones_alimentos">Alimentos</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="btn-group">
+            <a href="{{ url_for('rutas_login.login') }}" class="btn-cupo">🔒 Cerrar Sesión</a>
+        </div>
+    </nav>
+</header>
+<main>
+<div class="container mt-4">
+    <h3>Generar Carné de Vacunas</h3>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="numero_documento" class="form-label">Documento del Cliente</label>
+            <input type="text" id="numero_documento" name="numero_documento" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_paciente" class="form-label">Mascotas</label>
+            <select id="id_paciente" name="id_paciente" class="form-select" disabled required>
+                <option value="">Seleccione una mascota</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Generar Carné</button>
+    </form>
+</div>
+
+</main>
+<script>
+document.getElementById("numero_documento").addEventListener("blur", function() {
+    const documento = this.value;
+    if (!documento) return;
+
+    fetch(`/obtener_pacientes/${documento}`)
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("id_paciente");
+            select.innerHTML = '<option value="">Seleccione una mascota</option>';
+
+            if (data.length > 0) {
+                select.disabled = false;
+                data.forEach(m => {
+                    const option = document.createElement("option");
+                    option.value = m.id_paciente;
+                    option.textContent = m.nombre_paciente;
+                    select.appendChild(option);
+                });
+            } else {
+                select.disabled = true;
+                alert("No se encontraron mascotas para este cliente.");
+            }
+        });
+});
+</script>
+{% endblock %}
