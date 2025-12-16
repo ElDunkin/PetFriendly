@@ -38,8 +38,10 @@
 
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Detalle del Procedimiento Quirúrgico #{{ procedimiento.id_procedimiento }}</h1>
-            <div>
+            {% if procedimiento is defined %}
+                  <h1>Detalle del Procedimiento Quirúrgico #{{ procedimiento.id_procedimiento }}</h1>
+            {% endif %}
+        <div>
                 <a href="/listar_procedimientos" class="btn btn-secondary">← Volver</a>
                 {% if procedimiento.estado not in ['Cancelado', 'Completado'] %}
                     <a href="/modificar_procedimiento/{{ procedimiento.id_procedimiento }}" class="btn btn-warning">✏️ Editar</a>
