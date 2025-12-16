@@ -101,7 +101,7 @@ def dashboard_administrador():
                             medicamentos_labels=json.dumps(medicamentos_labels),
                             medicamentos_data=json.dumps(medicamentos_data),
                             medicamentos_alerta=medicamentos_alerta,
-                            procedimientos=procedimiento)
+                            procedimiento=procedimiento)
 
 
 @rutas_dashboard.route('/dashboard_medico')
