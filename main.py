@@ -54,6 +54,7 @@ main.register_blueprint(rutas_citas)
 main.register_blueprint(rutas_carne_vacunas)
 main.register_blueprint(rutas_jornada)
 main.register_blueprint(rutas_adopciones)
+main.register_blueprint(rutas_procedimientos)
 
 if __name__ == '__main__':
     main.run(debug=True)
