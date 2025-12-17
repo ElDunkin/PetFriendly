@@ -20,6 +20,7 @@ from controllers.rutas_carne_vacunas import rutas_carne_vacunas
 from controllers.rutas_jornada import rutas_jornada
 from controllers.rutas_adopcion import rutas_adopciones
 from controllers.rutas_procedimientos import rutas_procedimientos
+from controllers.rutas_efectivo import rutas_donaciones
 
 
 
@@ -56,6 +57,7 @@ main.register_blueprint(rutas_carne_vacunas)
 main.register_blueprint(rutas_jornada)
 main.register_blueprint(rutas_adopciones)
 main.register_blueprint(rutas_procedimientos)
+main.register_blueprint(rutas_donaciones)
 
 if __name__ == '__main__':
     main.run(debug=True)
