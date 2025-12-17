@@ -283,6 +283,27 @@ CREATE TABLE `archivos_procedimiento` (
     FOREIGN KEY (`id_procedimiento`) REFERENCES `procedimientos_quirurgicos`(`id_procedimiento`) ON DELETE CASCADE
 );
 
+CREATE TABLE `donaciones_monetarias` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `fecha` DATE NOT NULL,
+    `nombre_donante` VARCHAR(255),
+    `tipo_entrega` ENUM('Dinero en efectivo', 'Transferencia electrónica', 'Depósito bancario', 'Donación en línea') NOT NULL,
+    `monto` DECIMAL(12,2) NOT NULL CHECK (monto > 0),
+    `destino` ENUM('Uso general del centro', 'Caso específico') NOT NULL,
+    `caso_especifico` VARCHAR(255),
+    `observaciones` VARCHAR(300),
+    `comprobante` VARCHAR(255),
+    `usuario_registro` VARCHAR(100) NOT NULL,
+    `fecha_registro` DATETIME NOT NULL,
+    CONSTRAINT chk_caso_especifico CHECK (destino = 'Uso general del centro' OR (destino = 'Caso específico' AND caso_especifico IS NOT NULL))
+);
+
+
+CREATE INDEX idx_fecha ON donaciones_monetarias(fecha);
+CREATE INDEX idx_nombre_donante ON donaciones_monetarias(nombre_donante);
+CREATE INDEX idx_tipo_entrega ON donaciones_monetarias(tipo_entrega);
+
+
 
 -- VISTAS
 
@@ -743,6 +764,31 @@ VALUES
 'Paciente en ayuno, exámenes prequirúrgicos realizados', 
 'Pendiente realización del procedimiento', 
 '2025-10-05', 1002, 'Programado');
+
+INSERT INTO `donaciones_monetarias`
+(`fecha`, `nombre_donante`, `tipo_entrega`, `monto`, `destino`, `caso_especifico`, `observaciones`, `comprobante`, `usuario_registro`, `fecha_registro`)
+VALUES
+('2025-12-01', 'Juan Pérez', 'Dinero en efectivo', 50000, 'Uso general del centro', NULL, 'Donación puntual', NULL, 'admin', NOW()),
+('2025-11-28', 'Fundación Patitas', 'Transferencia electrónica', 150000, 'Caso específico', 'Max el gato', 'Para su tratamiento', NULL, 'gestor', NOW()),
+('2025-11-30', 'Ana Gómez', 'Depósito bancario', 200000, 'Uso general del centro', NULL, '', NULL, 'admin', NOW()),
+('2025-12-02', 'Luis Martínez', 'Donación en línea', 75000, 'Caso específico', 'Boby el perro', '', NULL, 'gestor', NOW()),
+('2025-12-03', 'Carlos Ramírez', 'Dinero en efectivo', 120000, 'Uso general del centro', NULL, '', NULL, 'admin', NOW()),
+('2025-12-04', 'María Fernández', 'Transferencia electrónica', 90000, 'Caso específico', 'Luna la gata', 'Urgente', NULL, 'gestor', NOW()),
+('2025-12-05', 'Andrés Castro', 'Depósito bancario', 50000, 'Uso general del centro', NULL, '', NULL, 'admin', NOW()),
+('2025-12-06', 'Patricia Morales', 'Donación en línea', 250000, 'Caso específico', 'Rex el perro', '', NULL, 'gestor', NOW()),
+('2025-12-07', 'David Hernández', 'Dinero en efectivo', 100000, 'Uso general del centro', NULL, 'Donación mensual', NULL, 'admin', NOW()),
+('2025-12-08', 'Sofía López', 'Transferencia electrónica', 180000, 'Caso específico', 'Nala la gata', '', NULL, 'gestor', NOW()),
+('2025-12-09', 'Fernando Torres', 'Depósito bancario', 300000, 'Uso general del centro', NULL, '', NULL, 'admin', NOW()),
+('2025-12-10', 'Laura Jiménez', 'Donación en línea', 60000, 'Caso específico', 'Rocky el perro', '', NULL, 'gestor', NOW()),
+('2025-12-11', 'Ricardo Díaz', 'Dinero en efectivo', 80000, 'Uso general del centro', NULL, 'Donación puntual', NULL, 'admin', NOW()),
+('2025-12-12', 'Valentina Rojas', 'Transferencia electrónica', 120000, 'Caso específico', 'Simba el gato', '', NULL, 'gestor', NOW()),
+('2025-12-13', 'Jorge Cárdenas', 'Depósito bancario', 95000, 'Uso general del centro', NULL, '', NULL, 'admin', NOW()),
+('2025-12-14', 'Camila Torres', 'Donación en línea', 150000, 'Caso específico', 'Milo el perro', '', NULL, 'gestor', NOW()),
+('2025-12-15', 'Paola Sánchez', 'Dinero en efectivo', 50000, 'Uso general del centro', NULL, '', NULL, 'admin', NOW()),
+('2025-12-16', 'Diego Peña', 'Transferencia electrónica', 200000, 'Caso específico', 'Lola la gata', '', NULL, 'gestor', NOW()),
+('2025-12-16', 'Natalia Morales', 'Depósito bancario', 100000, 'Uso general del centro', NULL, 'Donación recurrente', NULL, 'admin', NOW()),
+('2025-12-16', 'Esteban Vargas', 'Donación en línea', 175000, 'Caso específico', 'Thor el perro', '', NULL, 'gestor', NOW());
+
 
 
 -- CONSULTAS
